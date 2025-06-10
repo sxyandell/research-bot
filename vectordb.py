@@ -100,6 +100,6 @@ for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_re
     print(f"Content: {doc[:200]}...")
     print(f"Embedding (first 10 dimensions): {embedding[:10]}")
 
-print("Sample documents:")
-results = collection.peek()
-print(results)
+# print("Sample documents:")
+# results = collection.peek()
+# print(results)

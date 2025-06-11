@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Scan RAG Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .file-upload {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: #764ba2;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .chat-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .bot-message {
+            background: white;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .data-preview {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow: auto;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .example-queries {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .example-queries h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .example-query {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .example-query:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 Genetic Scan RAG Platform</h1>
+            <p>Upload your QTL data and ask intelligent questions about your genetic scan results</p>
+        </div>
+        
+        <div class="upload-section">
+            <div class="file-upload" onclick="document.getElementById('csvFile').click()">
+                <input type="file" id="csvFile" accept=".csv" />
+                <h3>📁 Upload Your Genetic Scan CSV File</h3>
+                <p>Click here to select your QTL data file (CSV format)</p>
+            </div>
+            <div id="uploadStatus"></div>
+            <div id="dataPreview" class="data-preview" style="display: none;"></div>
+            
+            <div class="api-config" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <h3 style="color: #333; margin-bottom: 15px;">🔑 OpenAI API Configuration</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="password" id="apiKey" placeholder="Enter your OpenAI API key..." 
+                           style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px;">
+                    <select id="modelSelect" style="padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                    <button id="saveApiKey" onclick="saveApiKey()" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Save
+                    </button>
+                </div>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    Your API key is stored locally and never sent to our servers. Get your key from 
+                    <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #667eea;">OpenAI Platform</a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="example-queries">
+            <h3>💡 Example Questions You Can Ask (powered by AI):</h3>
+            <div class="example-query" onclick="setQuery('What are the top 5 QTLs with highest LOD scores and what do they tell us?')">
+                What are the top 5 QTLs with highest LOD scores and what do they tell us?
+            </div>
+            <div class="example-query" onclick="setQuery('Explain the relationship between LOD scores and p-values in my data')">
+                Explain the relationship between LOD scores and p-values in my data
+            </div>
+            <div class="example-query" onclick="setQuery('Which chromosomes show the most significant QTLs and why might this be important?')">
+                Which chromosomes show the most significant QTLs and why might this be important?
+            </div>
+            <div class="example-query" onclick="setQuery('Are there any patterns in the gene types that have high LOD scores?')">
+                Are there any patterns in the gene types that have high LOD scores?
+            </div>
+            <div class="example-query" onclick="setQuery('What can you tell me about the confidence intervals for my strongest QTLs?')">
+                What can you tell me about the confidence intervals for my strongest QTLs?
+            </div>
+        </div>
+        
+        <div class="chat-section">
+            <div class="chat-header">
+                <h2>🤖 Ask Questions About Your Data</h2>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <strong>Genetic RAG Assistant:</strong> Hello! Please upload your genetic scan CSV file to start analyzing your QTL data. Once uploaded, you can ask me questions about LOD scores, chromosomal positions, p-values, and more!
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Ask a question about your genetic data..." disabled />
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let geneticData = [];
+        let dataLoaded = false;
+        let openaiApiKey = '';
+        let selectedModel = 'gpt-4';
+        
+        // Load saved API key on page load
+        window.addEventListener('load', function() {
+            const savedKey = localStorage.getItem('openai_api_key');
+            const savedModel = localStorage.getItem('openai_model');
+            if (savedKey) {
+                openaiApiKey = savedKey;
+                document.getElementById('apiKey').value = '';
+            }
+            if (savedModel) {
+                selectedModel = savedModel;
+                document.getElementById('modelSelect').value = savedModel;
+            }
+        });
+        
+        function saveApiKey() {
+            const keyInput = document.getElementById('apiKey');
+            const modelSelect = document.getElementById('modelSelect');
+            
+            if (keyInput.value && keyInput.value !== '') {
+                openaiApiKey = keyInput.value;
+                localStorage.setItem('openai_api_key', openaiApiKey);
+            }
+            
+            selectedModel = modelSelect.value;
+            localStorage.setItem('openai_model', selectedModel);
+            
+            keyInput.value = '';
+            
+            // Show success message
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'status success';
+            statusDiv.innerHTML = '✅ API configuration saved!';
+            statusDiv.style.marginTop = '10px';
+            
+            const configDiv = document.querySelector('.api-config');
+            const existingStatus = configDiv.querySelector('.status');
+            if (existingStatus) existingStatus.remove();
+            configDiv.appendChild(statusDiv);
+            
+            setTimeout(() => statusDiv.remove(), 3000);
+        }
+        
+        // File upload handling
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                loadCSVData(file);
+            }
+        });
+        
+        function loadCSVData(file) {
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = '<div class="status">Loading data... <div class="loading"></div></div>';
+            
+            Papa.parse(file, {
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.errors.length > 0) {
+                        statusDiv.innerHTML = '<div class="status error">Error parsing CSV: ' + results.errors[0].message + '</div>';
+                        return;
+                    }
+                    
+                    geneticData = results.data;
+                    dataLoaded = true;
+                    
+                    statusDiv.innerHTML = '<div class="status success">✅ Successfully loaded ' + geneticData.length + ' genetic records!</div>';
+                    
+                    // Show data preview
+                    showDataPreview();
+                    
+                    // Enable chat input
+                    document.getElementById('userInput').disabled = false;
+                    document.getElementById('sendBtn').disabled = false;
+                    
+                    addBotMessage("Great! I've loaded your genetic scan data with " + geneticData.length + " records. I can now use AI to answer complex questions about your QTL data. Make sure you've entered your OpenAI API key above!");
+                },
+                error: function(error) {
+                    statusDiv.innerHTML = '<div class="status error">Error reading file: ' + error.message + '</div>';
+                }
+            });
+        }
+        
+        function showDataPreview() {
+            const previewDiv = document.getElementById('dataPreview');
+            if (geneticData.length > 0) {
+                const sample = geneticData[0];
+                const keys = Object.keys(sample).slice(0, 10); // Show first 10 columns
+                let preview = "Sample data columns:\n";
+                keys.forEach(key => {
+                    preview += key + ": " + sample[key] + "\n";
+                });
+                previewDiv.textContent = preview;
+                previewDiv.style.display = 'block';
+            }
+        }
+        
+        function setQuery(query) {
+            if (dataLoaded) {
+                document.getElementById('userInput').value = query;
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message || !dataLoaded) return;
+            
+            if (!openaiApiKey) {
+                addBotMessage("⚠️ Please enter your OpenAI API key in the configuration section above to use AI-powered analysis.");
+                return;
+            }
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            // Show typing indicator
+            addTypingIndicator();
+            
+            // Process the query with OpenAI
+            processQueryWithAI(message);
+        }
+        
+        function addUserMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = '<strong>You:</strong> ' + message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function addBotMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+            messageDiv.innerHTML = '<strong>Genetic RAG Assistant:</strong> ' + message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.innerHTML = '<strong>Genetic RAG Assistant:</strong> <div class="loading"></div> Analyzing your data...';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        async function processQueryWithAI(query) {
+            try {
+                // Prepare relevant data context for the AI
+                const dataContext = prepareDataContext(query);
+                
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${openaiApiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: selectedModel,
+                        messages: [
+                            {
+                                role: "system",
+                                content: `You are a genetics expert analyzing QTL (Quantitative Trait Loci) data from a genetic scan. The data contains information about liver gene expression QTLs in mice, including LOD scores, p-values, chromosomal positions, confidence intervals, and gene information.
+
+Key data fields:
+- qtl_lod: LOD score (higher = stronger evidence for QTL)
+- qtl_pval: p-value (lower = more significant)
+- qtl_qval: q-value (FDR-adjusted p-value)
+- qtl_chr: chromosome location
+- qtl_pos: position on chromosome (Mb)
+- qtl_ci_lo/qtl_ci_hi: confidence interval bounds
+- gene_symbol: gene name
+- gene_type: type of gene
+- cis: whether QTL is cis-acting (TRUE/FALSE)
+
+Provide detailed, scientifically accurate interpretations. Include specific numbers from the data. Explain biological significance when relevant.`
+                            },
+                            {
+                                role: "user",
+                                content: `Question: ${query}\n\nRelevant data context:\n${dataContext}`
+                            }
+                        ],
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                removeTypingIndicator();
+                
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    addBotMessage(data.choices[0].message.content);
+                } else {
+                    addBotMessage("I received an unexpected response from the AI. Please try rephrasing your question.");
+                }
+                
+            } catch (error) {
+                removeTypingIndicator();
+                console.error('Error calling OpenAI API:', error);
+                
+                if (error.message.includes('401')) {
+                    addBotMessage("❌ Invalid API key. Please check your OpenAI API key in the configuration section.");
+                } else if (error.message.includes('429')) {
+                    addBotMessage("⚠️ Rate limit exceeded. Please wait a moment and try again.");
+                } else {
+                    addBotMessage("❌ Error processing your question: " + error.message + ". Please try again or check your API key.");
+                }
+            }
+        }
+        
+        function prepareDataContext(query) {
+            // Intelligently select relevant data based on the query
+            let relevantData = [];
+            const lowerQuery = query.toLowerCase();
+            
+            // For queries about top/highest values, get top records
+            if (lowerQuery.includes('top') || lowerQuery.includes('highest') || lowerQuery.includes('best')) {
+                relevantData = [...geneticData]
+                    .filter(row => row.qtl_lod != null)
+                    .sort((a, b) => b.qtl_lod - a.qtl_lod)
+                    .slice(0, 20);
+            }
+            // For chromosome-specific queries
+            else if (lowerQuery.includes('chromosome') || lowerQuery.includes('chr')) {
+                const chrMatch = query.match(/chr(?:omosome)?\s*(\d+)/i);
+                if (chrMatch) {
+                    const chrNum = chrMatch[1];
+                    relevantData = geneticData.filter(row => row.qtl_chr == chrNum).slice(0, 50);
+                }
+            }
+            // For p-value queries
+            else if (lowerQuery.includes('p-value') || lowerQuery.includes('significant')) {
+                relevantData = geneticData
+                    .filter(row => row.qtl_pval != null)
+                    .sort((a, b) => a.qtl_pval - b.qtl_pval)
+                    .slice(0, 20);
+            }
+            // For general analysis, provide a representative sample
+            else {
+                // Mix of top LOD scores and some random samples
+                const topLOD = [...geneticData]
+                    .filter(row => row.qtl_lod != null)
+                    .sort((a, b) => b.qtl_lod - a.qtl_lod)
+                    .slice(0, 10);
+                
+                const randomSample = [];
+                for (let i = 0; i < 10 && i < geneticData.length; i += Math.floor(geneticData.length / 10)) {
+                    randomSample.push(geneticData[i]);
+                }
+                
+                relevantData = [...topLOD, ...randomSample];
+            }
+            
+            // Format the data for the AI
+            let context = `Dataset summary: ${geneticData.length} total records\n\n`;
+            
+            // Add statistical overview
+            const lodScores = geneticData.map(row => row.qtl_lod).filter(x => x != null);
+            const avgLOD = lodScores.reduce((sum, val) => sum + val, 0) / lodScores.length;
+            const maxLOD = Math.max(...lodScores);
+            
+            context += `Statistical overview:\n`;
+            context += `- Average LOD score: ${avgLOD.toFixed(2)}\n`;
+            context += `- Maximum LOD score: ${maxLOD.toFixed(2)}\n`;
+            context += `- Total chromosomes: ${[...new Set(geneticData.map(row => row.qtl_chr))].length}\n\n`;
+            
+            context += `Sample of relevant records:\n`;
+            relevantData.slice(0, 15).forEach((row, i) => {
+                context += `${i+1}. Gene: ${row.gene_symbol || 'N/A'} | LOD: ${row.qtl_lod} | P-val: ${row.qtl_pval} | Chr: ${row.qtl_chr} | Pos: ${row.qtl_pos} | Cis: ${row.cis} | Type: ${row.gene_type || 'N/A'}\n`;
+            });
+            
+            return context;
+        }
+        
+        // Allow Enter key to send message
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

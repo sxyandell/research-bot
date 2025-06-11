@@ -20,9 +20,9 @@ GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # List available models first
-print("Available models:")
-for model in genai.list_models():
-    print(f"- {model.name}")
+# print("Available models:")
+# for model in genai.list_models():
+#     print(f"- {model.name}")
 
 # Initialize with the correct model name
 client = genai.GenerativeModel('gemini-1.0-pro')
@@ -51,9 +51,15 @@ def load_qtl_chunks(file_path='qtl_chunks_top_qtls_only.json'):
     return [chunk['content'] for chunk in chunks]  # Extract just the content for embedding
 
 def create_chroma_db(documents, name):
-    # Initialize ChromaDB
-    chroma_client = chromadb.Client()
+    # Initialize ChromaDB with persistent storage
+    chroma_client = chromadb.PersistentClient(path="./chroma_db")
     
+    # Delete collection if it exists
+    try:
+        chroma_client.delete_collection(name=name)
+    except:
+        pass
+        
     # Create collection with Google's embedding function
     collection = chroma_client.create_collection(
         name=name,
@@ -84,6 +90,7 @@ for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['
     print(f"\nDocument {i+1}:")
     print(f"Content: {doc[:100]}...")  # Show first 100 chars
     print(f"Embedding (first 5 dimensions): {embedding[:5]}")  # Show first 5 dimensions to keep output readable
+    print("*"*100)
 
 # Example query with embeddings
 query_text = "What are the top 5 QTLs with highest LOD scores and what do they tell us?"
@@ -99,7 +106,10 @@ for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_re
     print(f"\nResult {i+1}:")
     print(f"Content: {doc[:200]}...")
     print(f"Embedding (first 10 dimensions): {embedding[:10]}")
+    print("-"*100)
+
 
 # print("Sample documents:")
 # results = collection.peek()
 # print(results)
+

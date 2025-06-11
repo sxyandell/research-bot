@@ -17,12 +17,12 @@ from dotenv import load_dotenv, dotenv_values
 load_dotenv('config.env')
 
 GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=AIzaSyBoPSlZo-AtwUBq-aEhsSwCIanCiSVS-YE)
+genai.configure(api_key=GOOGLE_API_KEY)
 
 # List available models first
-print("Available models:")
-for model in genai.list_models():
-    print(f"- {model.name}")
+# print("Available models:")
+# for model in genai.list_models():
+#     print(f"- {model.name}")
 
 # Initialize with the correct model name
 client = genai.GenerativeModel('gemini-1.0-pro')
@@ -44,7 +44,7 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             
         return embeddings
 
-def load_qtl_chunks(file_path='qtl_chunks_top_qtls_only.json'):
+def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
     """Load QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)
@@ -87,14 +87,16 @@ all_results = collection.get(
     include=['documents', 'embeddings']
 )
 
-print("\nDocument Embeddings:")
+print("\nFirst 5 Document Embeddings:")
 for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['embeddings'])):
+    if i >= 5:  # Only show first 5
+        break
     print(f"\nDocument {i+1}:")
     print(f"Content: {doc[:100]}...")  # Show first 100 chars
     print(f"Embedding (first 5 dimensions): {embedding[:5]}")  # Show first 5 dimensions to keep output readable
 
 # Example query with embeddings
-query_text = "What are the top 5 QTLs with highest LOD scores and what do they tell us?"
+query_text = "What is the top QTL with highest LOD score and what do they tell us?"
 query_results = collection.query(
     query_texts=[query_text],
     n_results=2,
@@ -111,4 +113,3 @@ for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_re
 # print("Sample documents:")
 # results = collection.peek()
 # print(results)
-#test

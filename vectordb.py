@@ -111,3 +111,4 @@ for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_re
 # print("Sample documents:")
 # results = collection.peek()
 # print(results)
+#test

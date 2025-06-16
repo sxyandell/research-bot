@@ -24,7 +24,7 @@ genai.configure(api_key=GOOGLE_API_KEY)
 # for model in genai.list_models():
 #     print(f"- {model.name}")
 
-# Initialize with the correct model name
+# Initialize the client
 client = genai.GenerativeModel('gemini-1.0-pro')
 
 class GoogleEmbeddingFunction(EmbeddingFunction):
@@ -35,16 +35,16 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             
         embeddings = []
         for text in input:
-            embedding = genai.embed_content(
+            result = genai.embed_content(
                 model='embedding-001',
                 content=text,
-                task_type="retrieval_document"
+                task_type="SEMANTIC_SIMILARITY"
             )
-            embeddings.append(embedding['embedding'])
+            embeddings.append(result['embedding'])
             
         return embeddings
 
-def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
+def load_qtl_chunks(file_path='qtl_chunks_row.json'):
     """Load QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)
@@ -89,8 +89,6 @@ all_results = collection.get(
 
 print("\nFirst 5 Document Embeddings:")
 for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['embeddings'])):
-    if i >= 5:  # Only show first 5
-        break
     print(f"\nDocument {i+1}:")
     print(f"Content: {doc[:100]}...")  # Show first 100 chars
     print(f"Embedding (first 5 dimensions): {embedding[:5]}")  # Show first 5 dimensions to keep output readable
@@ -106,6 +104,8 @@ query_results = collection.query(
 print("\nQuery Results:")
 print(f"Query: {query_text}")
 for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_results['embeddings'][0])):
+    if i >= 5:  # Only show first 5
+        break
     print(f"\nResult {i+1}:")
     print(f"Content: {doc[:200]}...")
     print(f"Embedding (first 10 dimensions): {embedding[:10]}")

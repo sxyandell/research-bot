@@ -1,5 +1,6 @@
 import chromadb
 import google.generativeai as genai
+from google.generativeai import types
 from dotenv import load_dotenv
 import os
 from typing import List, Dict, Any
@@ -14,13 +15,12 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             
         embeddings = []
         for text in input:
-            embedding = genai.embed_content(
-                model='models/embedding-001',  # This is the correct embedding model name
+            result = genai.embed_content(
+                model="embedding-001",
                 content=text,
-                task_type="retrieval_document",
-                title="QTL data"
+                task_type="RETRIEVAL_QUERY"
             )
-            embeddings.append(embedding['embedding'])
+            embeddings.append(result['embedding'])
             
         return embeddings
 
@@ -84,7 +84,23 @@ class QTLChatbot:
     
     def _create_prompt(self, query: str, context: str) -> str:
         """Create a prompt for the LLM using the query and context."""
-        return f"""
+        return f"""You are a helpful research assistant specializing in QTL (Quantitative Trait Loci) analysis. 
+Your task is to analyze and explain QTL data from a mouse genetics study.
+
+Below you'll find relevant QTL data entries that match the user's query. Each entry contains information about:
+- Gene symbols and their types
+- LOD scores (measure of statistical significance)
+- Chromosomal locations and positions
+- Whether the QTL is cis or trans-acting
+- Additional statistical measures like p-values and confidence intervals
+
+Use this information to provide a clear, scientifically accurate answer. When discussing QTLs:
+1. Always cite specific LOD scores and positions when they're relevant
+2. Explain the significance of cis vs trans-acting QTLs if mentioned
+3. Note any patterns in gene types or chromosomal locations
+4. Be explicit about statistical significance using LOD scores and p-values
+
+If you cannot answer the question based on the provided context, say so clearly and explain what additional information would be needed.
 Context:
 {context}
 
@@ -92,12 +108,21 @@ Question: {query}
 
 Answer the question using ONLY the information provided above. Be specific and cite the data where relevant."""
     
-    def query(self, user_input: str, n_results: int = 2) -> str:
+    def process_query(self, user_input: str, n_results: int = 3) -> str:
         """Process a user query and return a response."""
         try:
-            # Get relevant chunks from ChromaDB
+            # Get query embedding using the same function as documents
+            embedding_fn = GoogleEmbeddingFunction()
+            query_embedding = embedding_fn([user_input])[0]  # Get first (and only) embedding
+            
+            # Debug print the embedding
+            print("\nDEBUG - Query Embedding:")
+            print(f"Dimensions: {len(query_embedding)}")
+            print(f"First 5 values: {query_embedding[:5]}")
+            
+            # Get relevant chunks from ChromaDB using the embedding
             results = self.collection.query(
-                query_texts=[user_input],
+                query_embeddings=[query_embedding],
                 n_results=n_results,
                 include=['documents', 'distances']
             )
@@ -143,7 +168,7 @@ Answer the question using ONLY the information provided above. Be specific and c
                 print("\nGoodbye!")
                 break
             
-            response = self.query(user_input)
+            response = self.process_query(user_input)
             print("\nAssistant:", textwrap.fill(response, width=80))
 
 if __name__ == "__main__":

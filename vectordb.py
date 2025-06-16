@@ -39,7 +39,7 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             result = genai.embed_content(
                 model='embedding-001',
                 content=text,
-                task_type="SEMANTIC_SIMILARITY"
+                task_type="RETRIEVAL_DOCUMENT"
             )
             embeddings.append(result['embedding'])
             
@@ -103,21 +103,21 @@ for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['
 
 # Example query with embeddings
 
-query_text = "What is the top QTL with highest LOD score and what do they tell us?"
-query_results = collection.query(
-    query_texts=[query_text],
-    n_results=2,
-    include=['documents', 'embeddings']
-)
+# query_text = "What is the top QTL with highest LOD score and what do they tell us?"
+# query_results = collection.query(
+#     query_texts=[query_text],
+#     n_results=2,
+#     include=['documents', 'embeddings']
+# )
 
-print("\nQuery Results:")
-print(f"Query: {query_text}")
-for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_results['embeddings'][0])):
-    if i >= 5:  # Only show first 5
-        break
-    print(f"\nResult {i+1}:")
-    print(f"Content: {doc[:200]}...")
-    print(f"Embedding (first 10 dimensions): {embedding[:10]}")
+# print("\nQuery Results:")
+# print(f"Query: {query_text}")
+# for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_results['embeddings'][0])):
+#     if i >= 5:  # Only show first 5
+#         break
+#     print(f"\nResult {i+1}:")
+#     print(f"Content: {doc[:200]}...")
+#     print(f"Embedding (first 10 dimensions): {embedding[:10]}")
 
 # print("Sample documents:")
 # results = collection.peek()

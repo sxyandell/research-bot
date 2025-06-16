@@ -1,0 +1,1041 @@
+INCORRECT ANSWERS REPORT
+================================================================================
+
+Total Incorrect Answers: 37
+
+Question 1:
+----------------------------------------
+Question: Compare the cis/trans-acting nature of Apoh and Grm6. What are the implications?
+Answer: Both *Apoh* and *Grm6* QTLs are identified as cis-acting.  This means that the QTL affecting the expression or function of each gene is located on the same chromosome as the gene itself.
+
+Specifically, the *Apoh* QTL has a LOD score of 43.80, located on Chromosome 11 at position 108.25 Mb (confidence interval 108.17-108.60 Mb), while the *Grm6* QTL has a LOD score of 15.24, located on Chromosome 11 at position 50.76 Mb (confidence interval 50.64-51.24 Mb).  Both have very low p-values (7.69e-05) and low q-values (0.000112), indicating strong statistical significance.
+
+The implication of both QTLs being cis-acting is that the genetic variants influencing the expression or function of *Apoh* and *Grm6* are likely located within or very near to these genes themselves, rather than being located elsewhere in the genome (trans-acting).  This suggests a direct regulatory effect on the respective genes.  The difference in LOD scores suggests that the *Apoh* QTL has a much stronger effect than the *Grm6* QTL.
+
+Confidence: 1.00
+
+Context:
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Grm6 | LOD Score: 15.2428935034295 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 50.761617 Mb | Confidence Interval: 50.639 - 51.238 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 2:
+----------------------------------------
+Question: Compare the LOD scores between Apoh and Grm6. Which one shows stronger evidence?
+Answer: The QTL for *Apoh* shows much stronger evidence than the QTL for *Grm6*.  The *Apoh* QTL has a LOD score of 43.80053082, while the *Grm6* QTL has a LOD score of 15.2428935034295.  A higher LOD score indicates stronger evidence for linkage between the gene and the quantitative trait.
+
+Confidence: 1.00
+
+Context:
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Grm6 | LOD Score: 15.2428935034295 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 50.761617 Mb | Confidence Interval: 50.639 - 51.238 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 3:
+----------------------------------------
+Question: Which chromosome shows the highest concentration of significant QTLs?
+Answer: Based solely on the provided data, Chromosome X shows the highest concentration of significant QTLs.  This is because it contains QTL Entry #1, which has the highest LOD score (43.71) among the listed entries, indicating strong statistical significance for its association with the *Scml2* gene at position 159.299436 Mb.  While other chromosomes (16 and 4) contain significant QTLs, none exhibit a LOD score as high as the QTL on chromosome X.  The analysis is limited to the three entries provided; other QTLs might exist on different chromosomes.
+
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Apoh
+- Missing type: cis
+
+Context:
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 4:
+----------------------------------------
+Question: What is the correlation between LOD scores and confidence interval width?
+Answer: Based solely on the provided data, a definitive correlation between LOD scores and confidence interval width cannot be established. While we observe variation in both LOD scores and confidence interval widths across the three QTL entries:
+
+* **QTL Entry #1 (Cdc45):** LOD score 11.73, Confidence Interval width 1.551 Mb
+* **QTL Entry #2 (Scmh1):** LOD score 31.69, Confidence Interval width 2.95 Mb
+* **QTL Entry #3 (Apoh):** LOD score 43.80, Confidence Interval width 0.433 Mb
+
+There is no consistent pattern.  Entry #2 has a higher LOD score than Entry #1 but a wider confidence interval. Entry #3 has the highest LOD score but the narrowest confidence interval.  More data points would be required to determine if a correlation exists between these two variables.  Additional information such as data from more QTLs and potentially the method used for confidence interval calculation would be necessary to definitively assess the relationship.
+
+Confidence: 1.00
+
+Context:
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 5:
+----------------------------------------
+Question: What percentage of genes show cis-acting effects versus trans-acting effects?
+Answer: Based on the provided data, 66.7% of the genes show cis-acting effects, while 33.3% show trans-acting effects.
+
+Out of three identified QTLs, two ( *Scml2* on Chromosome X and *Scmh1* on Chromosome 4) exhibit cis-acting effects (LOD scores of 43.71 and 31.69, respectively, both with very low p-values below 0.0001 after FDR correction), while one (*Cav2* on Chromosome 14) shows a trans-acting effect (LOD score of 9.16, p-value of 0.004 after FDR correction).  This translates to a 2/3 (66.7%) ratio of cis-acting to trans-acting QTLs in this dataset.
+
+Confidence: 0.80
+
+Missing Information:
+- Answer lacks statistical analysis
+
+Context:
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 6:
+----------------------------------------
+Question: How do the confidence intervals of Narf and Apoh compare?
+Answer: The confidence interval for *Narf* is 121.133 - 121.316 Mb on Chromosome 11.  The confidence interval for *Apoh* is 108.168 - 108.601 Mb, also on Chromosome 11.  Therefore, the *Apoh* confidence interval is located approximately 12.5 Mb upstream (closer to the telomere) of the *Narf* confidence interval on the same chromosome.
+
+Confidence: 1.00
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 7:
+----------------------------------------
+Question: Compare the LOD scores between Narf and Apoh. Which one shows stronger evidence?
+Answer: The QTL for *Apoh* shows stronger evidence than the QTL for *Narf*.  The LOD score for *Apoh* is 43.80, while the LOD score for *Narf* is 19.46.  A higher LOD score indicates stronger evidence for a QTL.  Both QTLs are cis-acting and located on chromosome 11, but *Apoh*'s significantly higher LOD score suggests a much more substantial effect on the trait being studied.
+
+Confidence: 1.00
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Apoh | LOD Score: 43.80053082 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 108.252349 Mb | Confidence Interval: 108.168 - 108.601 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 8:
+----------------------------------------
+Question: Which chromosome shows the highest concentration of significant QTLs?
+Answer: Based solely on the provided data, Chromosome X shows the highest concentration of significant QTLs.  This is because only one QTL is reported for each of Chromosomes 4 and 16, while Chromosome X contains one QTL with a significantly higher LOD score (Scml2; LOD score: 43.71090364) compared to the QTLs on Chromosomes 4 (Scmh1; LOD score: 31.69417352) and 16 (Cdc45; LOD score: 11.72679732).  While all three QTLs exhibit very low p-values (7.69230769230769e-05), and are significant after FDR correction (Q-value < 0.0001),  the much higher LOD score for the QTL on Chromosome X suggests a stronger association with the trait being studied.
+
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Narf
+- Missing type: cis
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 9:
+----------------------------------------
+Question: What is the relationship between chromosomal position and QTL effect size?
+Answer: Based solely on the provided data, a direct relationship between chromosomal position and QTL effect size (as measured by LOD score) cannot be definitively established.  While we have three QTLs with varying LOD scores and chromosomal locations, the information is insufficient to determine a trend.
+
+Specifically:
+
+* **QTL Entry #1 (Scml2):** Shows a high LOD score of 43.71 on Chromosome X at position 159.299436 Mb.
+* **QTL Entry #2 (Scmh1):** Shows a moderately high LOD score of 31.69 on Chromosome 4 at position 120.422164 Mb.
+* **QTL Entry #3 (Cdc45):** Shows a lower LOD score of 11.73 on Chromosome 16 at position 18.491698 Mb.
+
+Although Scml2 (highest LOD score) is located on the X chromosome and Cdc45 (lowest LOD score) is on Chromosome 16,  this limited dataset does not allow us to conclude that chromosomal location predicts QTL effect size. More QTL data across different chromosomes and positions would be needed to assess any potential correlation.  Furthermore, factors beyond chromosomal location, such as the specific genes involved and their regulatory mechanisms, likely influence QTL effect size.
+
+Confidence: 1.00
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 10:
+----------------------------------------
+Question: How many genes exceed the significance threshold for QTL detection?
+Answer: All three genes (Scml2, Cdc45, and Scmh1) exceed the significance threshold for QTL detection.  While the provided p-value (7.69230769230769e-05) is consistent across all entries, the LOD scores are all above 10, generally considered a significant threshold in QTL analysis.  Specifically:  Scml2 shows a LOD score of 43.71, Scmh1 a LOD score of 31.69, and Cdc45 a LOD score of 11.73.  The Q-values (FDR) further support the significance of these findings (0.0001122218180753 for all three).  Therefore, based on the provided data, three genes show statistically significant QTLs.
+
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Narf
+- Missing type: cis
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 11:
+----------------------------------------
+Question: What percentage of genes show cis-acting effects versus trans-acting effects?
+Answer: Based on the provided data, 66.7% of the genes show cis-acting effects, while 33.3% show trans-acting effects.
+
+Two out of three QTLs (QTL Entry #2: *Scml2* and QTL Entry #3: *Scmh1*) exhibit cis-acting effects (with LOD scores of 43.71 and 31.69, respectively, and highly significant p-values < 0.0001),  while one QTL (QTL Entry #1: *Cav2*) shows a trans-acting effect (LOD score of 9.16, p-value = 0.004).
+
+Confidence: 0.80
+
+Missing Information:
+- Answer lacks statistical analysis
+
+Context:
+Gene: Narf | LOD Score: 19.45686424 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 121.132704 Mb | Confidence Interval: 121.133 - 121.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 12:
+----------------------------------------
+Question: What is the LOD score for Cav2?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 47
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cav2
+- Missing type: trans
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+================================================================================
+
+Question 13:
+----------------------------------------
+Question: How significant is the QTL effect for Cav2?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 47
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cav2
+- Missing type: trans
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+================================================================================
+
+Question 14:
+----------------------------------------
+Question: Which gene has a stronger statistical significance between Cav2 and Cdc45?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 47
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 15:
+----------------------------------------
+Question: Compare the cis/trans-acting nature of Cav2 and Cdc45. What are the implications?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 46
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 16:
+----------------------------------------
+Question: What is the relationship between gene type and QTL effect size?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 45
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+================================================================================
+
+Question 17:
+----------------------------------------
+Question: How many genes exceed the significance threshold for QTL detection?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 44
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cav2
+- Missing type: trans
+
+Context:
+Gene: Cav2 | LOD Score: 9.157078702 | P-value: 0.0043846153846153 | Location: Chromosome 14, Position 43.949528 Mb | Confidence Interval: 40.873 - 44.202 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0058260405996656
+================================================================================
+
+Question 18:
+----------------------------------------
+Question: What are the key characteristics of Cdc45?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 44
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cdc45
+- Missing type: cis
+
+Context:
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 19:
+----------------------------------------
+Question: What is the LOD score for Cdc45?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 44
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cdc45
+- Missing type: cis
+
+Context:
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 20:
+----------------------------------------
+Question: What are the differences in chromosomal locations between Cdc45 and Grm6?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 43
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Grm6 | LOD Score: 15.2428935034295 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 50.761617 Mb | Confidence Interval: 50.639 - 51.238 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 21:
+----------------------------------------
+Question: Which gene has a stronger statistical significance between Cdc45 and Grm6?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 43
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Grm6 | LOD Score: 15.2428935034295 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 50.761617 Mb | Confidence Interval: 50.639 - 51.238 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 22:
+----------------------------------------
+Question: How many genes exceed the significance threshold for QTL detection?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 43
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cdc45
+- Missing type: cis
+
+Context:
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 23:
+----------------------------------------
+Question: How significant is the QTL effect for Gnai3?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 42
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Gnai3
+- Missing type: cis
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 24:
+----------------------------------------
+Question: What is the LOD score for Gnai3?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 42
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Gnai3
+- Missing type: cis
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 25:
+----------------------------------------
+Question: Compare the cis/trans-acting nature of Gnai3 and Cdc45. What are the implications?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 42
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 26:
+----------------------------------------
+Question: Which gene has a stronger statistical significance between Gnai3 and Cdc45?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 41
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Cdc45 | LOD Score: 11.72679732 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 18.491698 Mb | Confidence Interval: 18.466 - 20.017 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 27:
+----------------------------------------
+Question: Are there any genes that appear to have opposing effects on the same trait?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 41
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Gnai3
+- Missing type: cis
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 28:
+----------------------------------------
+Question: What is the correlation between LOD scores and confidence interval width?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 40
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Gnai3 | LOD Score: 67.86779356 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.1978 Mb | Confidence Interval: 107.742 - 108.198 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 29:
+----------------------------------------
+Question: How significant is the QTL effect for Scmh1?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 40
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Scmh1
+- Missing type: cis
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 30:
+----------------------------------------
+Question: What are the key characteristics of Scmh1?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 40
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Scmh1
+- Missing type: cis
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 31:
+----------------------------------------
+Question: What are the differences in chromosomal locations between Scmh1 and Cav2?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 40
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Cav2 | LOD Score: 10.39128354 | P-value: 0.0002307692307692 | Location: Chromosome 6, Position 17.348408 Mb | Confidence Interval: 16.391 - 17.467 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0003286976753678
+================================================================================
+
+Question 32:
+----------------------------------------
+Question: Compare the cis/trans-acting nature of Scmh1 and Cav2. What are the implications?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 39
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+
+Gene: Cav2 | LOD Score: 10.39128354 | P-value: 0.0002307692307692 | Location: Chromosome 6, Position 17.348408 Mb | Confidence Interval: 16.391 - 17.467 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0003286976753678
+================================================================================
+
+Question 33:
+----------------------------------------
+Question: Are there any clusters of genes with similar QTL effects in the dataset?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 39
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Scmh1
+- Missing type: cis
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 34:
+----------------------------------------
+Question: Are there any genes that appear to have opposing effects on the same trait?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 39
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Scmh1
+- Missing type: cis
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 35:
+----------------------------------------
+Question: What is the correlation between LOD scores and confidence interval width?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 39
+}
+]
+Confidence: 1.00
+
+Context:
+Gene: Scmh1 | LOD Score: 31.69417352 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 120.422164 Mb | Confidence Interval: 120.103 - 123.053 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753
+================================================================================
+
+Question 36:
+----------------------------------------
+Question: Which chromosome contains Cav2?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 38
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cav2
+- Missing type: cis
+
+Context:
+Gene: Cav2 | LOD Score: 10.39128354 | P-value: 0.0002307692307692 | Location: Chromosome 6, Position 17.348408 Mb | Confidence Interval: 16.391 - 17.467 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0003286976753678
+================================================================================
+
+Question 37:
+----------------------------------------
+Question: What are the key characteristics of Cav2?
+Answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 38
+}
+]
+Confidence: 0.60
+
+Missing Information:
+- Missing gene: Cav2
+- Missing type: cis
+
+Context:
+Gene: Cav2 | LOD Score: 10.39128354 | P-value: 0.0002307692307692 | Location: Chromosome 6, Position 17.348408 Mb | Confidence Interval: 16.391 - 17.467 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0003286976753678
+================================================================================
+
+
+SUMMARY STATISTICS
+========================================
+
+Confidence Distribution:
+- High: 19 answers
+- Medium: 18 answers
+- Low: 0 answers
+
+Total Missing Information Items: 38
+Total Incorrect Information Items: 0

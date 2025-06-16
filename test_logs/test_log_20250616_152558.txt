@@ -1,0 +1,415 @@
+QTL Chatbot Test Log - 2025-06-16 15:25:58
+================================================================================
+
+Loading dataset...
+
+Testing 20 questions...
+
+Testing question 1/20
+Question: What is the LOD score for Apoh?
+Expected answer: The LOD score for *Apoh* is 43.80053082.  This is stated in QTL Entry #1.
+
+Chatbot answer: The LOD score for *Apoh* is 43.80053082.  This is found in QTL Entry #1.
+
+Response time: 0.91 seconds
+Exact Match: 0
+F1 Score: 0.923
+
+Testing question 2/20
+Question: Which chromosome contains Apoh?
+Expected answer: Based on QTL Entry #1, the *Apoh* gene is located on Chromosome 11 at position 108.252349 Mb.
+
+Chatbot answer: Based on QTL Entry #1, the *Apoh* gene is located on Chromosome 11, at position 108.252349 Mb.
+
+Response time: 0.73 seconds
+Exact Match: 0
+F1 Score: 0.938
+
+Testing question 3/20
+Question: How significant is the QTL effect for Narf?
+Expected answer: The QTL effect for *Narf* is highly significant.  The analysis shows a LOD score of 19.45686424 and a p-value of 7.69230769230769e-05.  The low p-value, along with a high LOD score, indicates strong statistical evidence that the *Narf* gene at Chromosome 11, position 121.132704 Mb (confidence interval 121.133 - 121.316 Mb) is associated with the quantitative trait being studied.  Furthermore, the Q-value (FDR) of 0.0001122218180753 confirms the significance even after correcting for multiple testing.  The QTL is cis-acting, meaning the effect is local to the *Narf* gene itself.
+
+Chatbot answer: The QTL effect for *Narf* is highly significant.  The analysis shows a LOD score of 19.46 at chromosome 11, position 121.132704 Mb.  This is further supported by a p-value of 7.69 x 10⁻⁵ and a Q-value (FDR corrected p-value) of 0.00011, indicating that the probability of observing this result by chance is extremely low.  The confidence interval for this QTL is 121.133 - 121.316 Mb, suggesting a relatively precise localization.  The QTL is also identified as cis-acting, meaning the QTL affects the expression of *Narf* itself.
+
+Response time: 1.57 seconds
+Exact Match: 0
+F1 Score: 0.484
+
+Testing question 4/20
+Question: What type of gene is Narf?
+Expected answer: Based on QTL Entry #1, the gene *Narf* is a protein-coding gene.  This is explicitly stated in the entry.
+
+Chatbot answer: Based on QTL Entry #1, the gene *Narf* is a protein-coding gene.  This is explicitly stated in the entry.
+
+Response time: 0.65 seconds
+Exact Match: 1
+F1 Score: 1.000
+
+Testing question 5/20
+Question: Where is Cav2 located on the chromosome?
+Expected answer: Based on the provided QTL data, the gene *Cav2* has been identified at two locations:
+
+1. **Chromosome 6, Position 17.348408 Mb:** This QTL shows a high LOD score of 10.39, a low p-value of 0.00023, and is classified as cis-acting.  The confidence interval for this QTL is 16.391 - 17.467 Mb.
+
+2. **Chromosome 14, Position 43.949528 Mb:** This QTL has a LOD score of 9.16 and a p-value of 0.0044, and is classified as trans-acting. The confidence interval is 40.873 - 44.202 Mb.
+
+
+The presence of *Cav2* at two chromosomal locations suggests either two distinct QTLs affecting the same gene or a complex genetic interaction.  The difference in the cis/trans nature of these QTLs highlights the different ways the *Cav2* gene might influence the trait being studied.
+
+Chatbot answer: Based on the provided data, the *Cav2* gene is located in two different chromosomal locations, suggesting the presence of multiple QTLs affecting this gene:
+
+1. **Chromosome 6:**  At position 17.348408 Mb, with a confidence interval of 16.391 - 17.467 Mb. This QTL is cis-acting (meaning it's located near the gene it regulates).  The LOD score for this QTL is 10.39128354, and the p-value is 0.0002307692307692, indicating strong statistical significance.
+
+2. **Chromosome 14:** At position 43.949528 Mb, with a confidence interval of 40.873 - 44.202 Mb. This QTL is trans-acting (meaning it's located on a different chromosome than the gene it regulates). The LOD score is 9.157078702, and the p-value is 0.0043846153846153, also indicating significant, though slightly less strong than the cis-acting QTL, statistical significance.
+
+Response time: 2.41 seconds
+Exact Match: 0
+F1 Score: 0.527
+
+Testing question 6/20
+Question: What type of gene is Cav2?
+Expected answer: Based on the provided QTL data, *Cav2* is a protein-coding gene.  This is explicitly stated in both QTL Entry #1 and QTL Entry #2.
+
+Chatbot answer: Based on the provided QTL data, Cav2 is a protein-coding gene.  This is explicitly stated in both QTL Entry #1 and QTL Entry #2.
+
+Response time: 0.71 seconds
+Exact Match: 0
+F1 Score: 0.950
+
+Testing question 7/20
+Question: Is Cdc45 a cis or trans-acting QTL?
+Expected answer: Based on QTL Entry #1, *Cdc45* is a **cis-acting** QTL.  This is explicitly stated in the entry.  The LOD score is 11.73 and the QTL is located on Chromosome 16 at position 18.49 Mb.
+
+Chatbot answer: Based on QTL Entry #1, *Cdc45* is a **cis-acting** QTL.  This is explicitly stated in the entry.  The LOD score for this QTL is 11.73, located on Chromosome 16 at position 18.49 Mb, with a p-value of 7.69e-05.
+
+Response time: 1.04 seconds
+Exact Match: 0
+F1 Score: 0.828
+
+Testing question 8/20
+Question: What are the key characteristics of Cdc45?
+Expected answer: Based on the provided data, the gene *Cdc45* shows a strong association with a quantitative trait.  Specifically, QTL Entry #1 reveals a cis-acting QTL for *Cdc45* on Chromosome 16 at position 18.491698 Mb.  This QTL has a high LOD score of 11.72679732, a p-value of 7.69230769230769e-05, and a Q-value (FDR) of 0.0001122218180753, all indicating high statistical significance. The confidence interval for this QTL spans from 18.466 Mb to 20.017 Mb.  The gene type is listed as "protein_coding".  The cis-acting nature implies that the QTL's effect on the quantitative trait is directly at or near the *Cdc45* gene itself.
+
+Chatbot answer: Based on the provided data, the gene *Cdc45* is associated with a QTL located on Chromosome 16 at position 18.491698 Mb.  This QTL has a high LOD score of 11.72679732 and a low p-value of 7.69230769230769e-05, indicating strong statistical significance.  The Q-value (FDR) of 0.0001122218180753 further supports the significance after correcting for multiple testing.  The QTL is cis-acting, meaning the *Cdc45* gene itself is likely directly involved in influencing the associated quantitative trait.  The confidence interval for this QTL spans 18.466 Mb to 20.017 Mb on Chromosome 16.  Finally, the gene type of *Cdc45* is identified as protein-coding.
+
+Response time: 1.87 seconds
+Exact Match: 0
+F1 Score: 0.667
+
+Testing question 9/20
+Question: What is the statistical significance (p-value) for Gnai3?
+Expected answer: The p-value for *Gnai3* is 7.69230769230769e-05, as reported in QTL Entry #1.
+
+Chatbot answer: The p-value for *Gnai3* is 7.69230769230769e-05, as stated in QTL Entry #1.
+
+Response time: 0.72 seconds
+Exact Match: 0
+F1 Score: 0.917
+
+Testing question 10/20
+Question: What is the confidence interval for Gnai3?
+Expected answer: The confidence interval for the *Gnai3* QTL is 107.742 - 108.198 Mb on Chromosome 3.  This is stated in QTL Entry #1.
+
+Chatbot answer: The confidence interval for the *Gnai3* QTL is 107.742 - 108.198 Mb on Chromosome 3.  This is stated in QTL Entry #1.
+
+Response time: 0.83 seconds
+Exact Match: 1
+F1 Score: 1.000
+
+Testing question 11/20
+Question: What are the key characteristics of Scmh1?
+Expected answer: Based on the provided data, *Scmh1* is a protein-coding gene located on Chromosome 4 at position 120.422164 Mb.  A QTL associated with this gene shows a high LOD score of 31.69417352 and a p-value of 7.69230769230769e-05, indicating strong statistical significance.  The QTL is cis-acting, meaning the QTL affects the expression of the gene at the same locus. The confidence interval for this QTL spans from 120.103 Mb to 123.053 Mb.  After correcting for multiple testing (FDR), the Q-value is 0.0001122218180753, further supporting the significance of this QTL.
+
+Chatbot answer: Based on the provided data, *Scmh1* is a protein-coding gene located on Chromosome 4 at position 120.422164 Mb.  A QTL analysis shows a strong association with this gene, exhibiting a high LOD score of 31.69417352 and a p-value of 7.69230769230769e-05.  This QTL is cis-acting, meaning the QTL affects the expression of the gene at the same locus. The confidence interval for this QTL spans from 120.103 Mb to 123.053 Mb.  The Q-value (FDR) is 0.0001122218180753, indicating strong significance after correcting for multiple testing.
+
+Response time: 1.76 seconds
+Exact Match: 0
+F1 Score: 0.864
+
+Testing question 12/20
+Question: Where is Scmh1 located on the chromosome?
+Expected answer: Based on QTL Entry #1, the gene *Scmh1* is located on Chromosome 4 at position 120.422164 Mb.  The confidence interval for this location is 120.103 Mb to 123.053 Mb.
+
+Chatbot answer: Based on QTL Entry #1, the gene *Scmh1* is located on Chromosome 4 at position 120.422164 Mb.  The 95% confidence interval for this location is 120.103 - 123.053 Mb.
+
+Response time: 0.90 seconds
+Exact Match: 0
+F1 Score: 0.920
+
+Testing question 13/20
+Question: What is the LOD score for Cav2?
+Expected answer: The gene *Cav2* shows two QTLs with different LOD scores.  One QTL is located on chromosome 6 at position 17.348408 Mb and has a LOD score of 10.39128354.  The other QTL for *Cav2* is located on chromosome 14 at position 43.949528 Mb and has a LOD score of 9.157078702.
+
+Chatbot answer: The gene *Cav2* has two QTL entries with different LOD scores.  QTL Entry #1 shows a LOD score of 10.39128354 on chromosome 6, while QTL Entry #2 shows a LOD score of 9.157078702 on chromosome 14.
+
+Response time: 1.10 seconds
+Exact Match: 0
+F1 Score: 0.561
+
+Testing question 14/20
+Question: What is the statistical significance (p-value) for Cav2?
+Expected answer: The provided data shows two QTLs associated with the *Cav2* gene.  
+
+* **QTL Entry #1:**  has a p-value of 0.0002307692307692, indicating strong statistical significance for a cis-acting effect on chromosome 6 at position 17.348408 Mb.
+
+* **QTL Entry #2:** has a p-value of 0.0043846153846153, indicating a significant, but less strong, statistical significance for a trans-acting effect on chromosome 14 at position 43.949528 Mb.
+
+Chatbot answer: The provided data shows two QTLs associated with the *Cav2* gene.  
+
+*   **QTL Entry #1:** This cis-acting QTL on Chromosome 6 (position 17.348408 Mb) has a p-value of 0.0002307692307692.
+
+*   **QTL Entry #2:** This trans-acting QTL on Chromosome 14 (position 43.949528 Mb) has a p-value of 0.0043846153846153.
+
+Therefore, *Cav2* shows statistical significance at two different chromosomal locations with different p-values.
+
+Response time: 1.47 seconds
+Exact Match: 0
+F1 Score: 0.723
+
+Testing question 15/20
+Question: What type of gene is H19?
+Expected answer: Based on QTL Entry #1, H19 is a long non-coding RNA (lncRNA) gene.  This is explicitly stated in the entry.
+
+Chatbot answer: Based on QTL Entry #1, the gene *H19* is a long non-coding RNA (lncRNA).  This is explicitly stated in the entry.
+
+Response time: 0.68 seconds
+Exact Match: 0
+F1 Score: 0.842
+
+Testing question 16/20
+Question: Is H19 a cis or trans-acting QTL?
+Expected answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 57
+}
+]
+Chatbot answer: Based on QTL Entry #1, H19 is a **cis-acting** QTL.  The entry explicitly states "Type: cis-acting" for the H19 gene located on Chromosome 7 at position 142.058691 Mb.
+
+Response time: 0.80 seconds
+Exact Match: 0
+F1 Score: 0.051
+
+Testing question 17/20
+Question: Which chromosome contains Scml2?
+Expected answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 57
+}
+]
+Chatbot answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 41
+}
+]
+Response time: 0.22 seconds
+Exact Match: 0
+F1 Score: 0.981
+
+Testing question 18/20
+Question: Is Scml2 a cis or trans-acting QTL?
+Expected answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 57
+}
+]
+Chatbot answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 41
+}
+]
+Response time: 0.25 seconds
+Exact Match: 0
+F1 Score: 0.981
+
+Testing question 19/20
+Question: What is the position of Grm6 on the chromosome?
+Expected answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 57
+}
+]
+Chatbot answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 41
+}
+]
+Response time: 0.38 seconds
+Exact Match: 0
+F1 Score: 0.981
+
+Testing question 20/20
+Question: What is the statistical significance (p-value) for Grm6?
+Expected answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 56
+}
+]
+Chatbot answer: An error occurred: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-1.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 15
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 40
+}
+]
+Response time: 0.45 seconds
+Exact Match: 0
+F1 Score: 0.981
+
+Results saved to test_logs\qa_test_results_20250616_152558.json
+
+Testing complete!
+Average response time: 0.97 seconds
+
+Test Results Summary:
+==================================================
+Total Questions Tested: 20
+Average Response Time: 0.97 seconds
+
+Evaluation Metrics:
+Exact Match Rate: 10.0%
+F1 Score: 0.806
+Precision: 0.811
+Recall: 0.803
+==================================================

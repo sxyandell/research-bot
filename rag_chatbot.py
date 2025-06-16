@@ -108,7 +108,7 @@ Question: {query}
 
 Answer the question using ONLY the information provided above. Be specific and cite the data where relevant."""
     
-    def process_query(self, user_input: str, n_results: int = 3) -> str:
+    def process_query(self, user_input: str, n_results: int = 5) -> str:
         """Process a user query and return a response."""
         try:
             # Get query embedding using the same function as documents
@@ -116,9 +116,9 @@ Answer the question using ONLY the information provided above. Be specific and c
             query_embedding = embedding_fn([user_input])[0]  # Get first (and only) embedding
             
             # Debug print the embedding
-            print("\nDEBUG - Query Embedding:")
-            print(f"Dimensions: {len(query_embedding)}")
-            print(f"First 5 values: {query_embedding[:5]}")
+            # print("\nDEBUG - Query Embedding:")
+            # print(f"Dimensions: {len(query_embedding)}")
+            # print(f"First 5 values: {query_embedding[:5]}")
             
             # Get relevant chunks from ChromaDB using the embedding
             results = self.collection.query(
@@ -134,12 +134,12 @@ Answer the question using ONLY the information provided above. Be specific and c
             prompt = self._create_prompt(user_input, context)
             
             # Debug printing
-            print("\n" + "="*80)
-            print("DEBUG - Retrieved Context:")
-            print(context)
-            print("\nDEBUG - Full Prompt to AI:")
-            print(prompt)
-            print("="*80 + "\n")
+            # print("\n" + "="*80)
+            # print("DEBUG - Retrieved Context:")
+            # print(context)
+            # print("\nDEBUG - Full Prompt to AI:")
+            # print(prompt)
+            # print("="*80 + "\n")
             
             # Generate response using Gemini
             response = self.model.generate_content(prompt)

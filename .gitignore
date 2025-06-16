@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 # Environment variables and secrets
 config.env
 .env
 *.env
+=======
+# Environment files
+.env
+*.env
+config.env
+.env.local
+.env.*.local
+>>>>>>> origin/feature/experimental-bot-changes
 
 # Python
 __pycache__/
@@ -9,7 +18,10 @@ __pycache__/
 *$py.class
 *.so
 .Python
+<<<<<<< HEAD
 env/
+=======
+>>>>>>> origin/feature/experimental-bot-changes
 build/
 develop-eggs/
 dist/
@@ -28,13 +40,21 @@ wheels/
 
 # Virtual Environment
 venv/
+<<<<<<< HEAD
 ENV/
+=======
+env/
+ENV/
+.venv/
+.env/
+>>>>>>> origin/feature/experimental-bot-changes
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+<<<<<<< HEAD
 *~
 
 # Logs
@@ -50,3 +70,25 @@ chroma_db/
 # QTL data files
 qtl_chunks_*.json
 
+=======
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Model files and data
+*.pkl
+*.h5
+*.model
+*.bin
+
+# Logs
+*.log
+logs/
+log/
+
+# Local development
+.local/
+.history/ 
+>>>>>>> origin/feature/experimental-bot-changes

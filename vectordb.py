@@ -24,6 +24,7 @@ genai.configure(api_key=GOOGLE_API_KEY)
 # for model in genai.list_models():
 #     print(f"- {model.name}")
 
+
 # Initialize the client
 client = genai.GenerativeModel('gemini-1.0-pro')
 
@@ -44,13 +45,14 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             
         return embeddings
 
-def load_qtl_chunks(file_path='qtl_chunks_row.json'):
+def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
     """Load QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)
     return [chunk['content'] for chunk in chunks]  # Extract just the content for embedding
 
 def create_chroma_db(documents, name):
+
     # Initialize ChromaDB with persistent storage
     chroma_client = chromadb.PersistentClient(path="./chroma_db")
     
@@ -87,13 +89,20 @@ all_results = collection.get(
     include=['documents', 'embeddings']
 )
 
+
 print("\nFirst 5 Document Embeddings:")
+for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['embeddings'])):
+    if i >= 5:  # Only show first 5
+        break
+
+print("\nDocument Embeddings:")
 for i, (doc, embedding) in enumerate(zip(all_results['documents'], all_results['embeddings'])):
     print(f"\nDocument {i+1}:")
     print(f"Content: {doc[:100]}...")  # Show first 100 chars
     print(f"Embedding (first 5 dimensions): {embedding[:5]}")  # Show first 5 dimensions to keep output readable
 
 # Example query with embeddings
+
 query_text = "What is the top QTL with highest LOD score and what do they tell us?"
 query_results = collection.query(
     query_texts=[query_text],
@@ -113,3 +122,4 @@ for i, (doc, embedding) in enumerate(zip(query_results['documents'][0], query_re
 # print("Sample documents:")
 # results = collection.peek()
 # print(results)
+

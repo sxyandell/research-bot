@@ -108,7 +108,7 @@ Question: {query}
 
 Answer the question using ONLY the information provided above. Be specific and cite the data where relevant."""
     
-    def process_query(self, user_input: str, n_results: int = 5) -> str:
+    def process_query(self, user_input: str, n_results: int = 7) -> str:
         """Process a user query and return a response."""
         try:
             # Get query embedding using the same function as documents

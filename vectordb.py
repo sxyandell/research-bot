@@ -44,6 +44,10 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             embeddings.append(result['embedding'])
             
         return embeddings
+    
+    def name(self) -> str:
+        """Return the name of the embedding function."""
+        return "google_embedding_function"
 
 def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
     """Load QTL chunks from JSON file"""

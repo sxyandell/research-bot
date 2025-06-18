@@ -82,4 +82,13 @@ log/
 results/
 results/*
 
+# Test results
+results1/
+results1/*
 
+# Test results
+deepeval_results/
+deepeval_results/*
+
+chroma_db/
+chroma_db/*

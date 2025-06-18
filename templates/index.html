@@ -4,126 +4,597 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧬 Genetic QTL Research Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1e40af',
+                        'secondary-blue': '#3b82f6',
+                        'accent-green': '#10b981',
+                        'accent-purple': '#8b5cf6',
+                        'accent-orange': '#f59e0b',
+                        'bg-primary': '#0f172a',
+                        'bg-secondary': '#1e293b',
+                        'bg-tertiary': '#334155',
+                        'dna-a': '#ff6b6b',
+                        'dna-t': '#4ecdc4',
+                        'dna-g': '#45b7d1',
+                        'dna-c': '#96ceb4',
+                    },
+                    animation: {
+                        'dna-rotate': 'dnaRotate 20s linear infinite',
+                        'float': 'float 15s infinite linear',
+                        'typing-dots': 'typingDots 1.4s ease-in-out infinite',
+                        'pulse-dna': 'pulse 2s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        dnaRotate: {
+                            '0%': { transform: 'translateY(-10%) rotate(15deg)' },
+                            '100%': { transform: 'translateY(10%) rotate(375deg)' },
+                        },
+                        float: {
+                            '0%': { transform: 'translateY(100vh) scale(0)', opacity: '0' },
+                            '10%': { opacity: '0.6', transform: 'scale(1)' },
+                            '90%': { opacity: '0.6' },
+                            '100%': { transform: 'translateY(-100px) scale(0)', opacity: '0' },
+                        },
+                        typingDots: {
+                            '0%, 60%, 100%': { transform: 'translateY(0)' },
+                            '30%': { transform: 'translateY(-10px)' },
+                        },
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+    <style>
+        /* DNA Animation Keyframes */
+        @keyframes dnaRotate {
+            0% { transform: translateY(-10%) rotate(15deg); }
+            100% { transform: translateY(10%) rotate(375deg); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; transform: scale(1); }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100px) scale(0); opacity: 0; }
+        }
+        
+        @keyframes typingDots {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes chromosomeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(8deg); }
+        }
+
+        @keyframes chromosomeDrift {
+            0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+            25% { transform: translateX(10px) translateY(-15px) rotate(3deg); }
+            50% { transform: translateX(-5px) translateY(-25px) rotate(-2deg); }
+            75% { transform: translateX(-8px) translateY(-10px) rotate(4deg); }
+        }
+
+        /* Chromosome Container */
+        .chromosome-container {
+            animation: chromosomeDrift 20s ease-in-out infinite;
+        }
+
+        /* Chromosome Styles */
+        .chromosome {
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .chromosome-large {
+            width: 18px;
+            height: 120px;
+            animation: chromosomeFloat 12s ease-in-out infinite;
+        }
+        
+        .chromosome-medium {
+            width: 16px;
+            height: 100px;
+            animation: chromosomeFloat 15s ease-in-out infinite;
+            animation-delay: -3s;
+        }
+        
+        .chromosome-small {
+            width: 14px;
+            height: 80px;
+            animation: chromosomeFloat 18s ease-in-out infinite;
+            animation-delay: -6s;
+        }
+        
+        .chromosome-x {
+            width: 15px;
+            height: 90px;
+            animation: chromosomeFloat 14s ease-in-out infinite;
+            animation-delay: -9s;
+        }
+        
+        /* Sister Chromatids - Create proper X shape */
+        .chromatid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .chromatid-1 {
+            z-index: 2;
+        }
+        
+        .chromatid-2 {
+            z-index: 1;
+        }
+        
+        /* First chromatid - left side of X */
+        .chromatid-1 .chromatid-arm-p {
+            width: 6px;
+            height: 46%;
+            border-radius: 3px 3px 0 0;
+            background: linear-gradient(180deg, #8b5cf6, #6366f1, #3b82f6);
+            opacity: 0.8;
+            position: absolute;
+            top: 0;
+            left: 45%;
+            transform: translateX(-50%) rotate(-8deg);
+            transform-origin: bottom center;
+            box-shadow: 0 0 4px rgba(139, 92, 246, 0.4);
+            animation: chromatidSway1 10s ease-in-out infinite;
+        }
+        
+        .chromatid-1 .chromatid-arm-q {
+            width: 6px;
+            height: 50%;
+            border-radius: 0 0 3px 3px;
+            background: linear-gradient(180deg, #3b82f6, #2563eb, #1d4ed8);
+            opacity: 0.8;
+            position: absolute;
+            bottom: 0;
+            left: 55%;
+            transform: translateX(-50%) rotate(8deg);
+            transform-origin: top center;
+            box-shadow: 0 0 4px rgba(59, 130, 246, 0.4);
+            animation: chromatidSway1 10s ease-in-out infinite;
+            animation-delay: -5s;
+        }
+        
+        /* Second chromatid - right side of X */
+        .chromatid-2 .chromatid-arm-p {
+            width: 6px;
+            height: 46%;
+            border-radius: 3px 3px 0 0;
+            background: linear-gradient(180deg, #a855f7, #7c3aed, #6366f1);
+            opacity: 0.7;
+            position: absolute;
+            top: 0;
+            left: 55%;
+            transform: translateX(-50%) rotate(8deg);
+            transform-origin: bottom center;
+            box-shadow: 0 0 4px rgba(168, 85, 247, 0.4);
+            animation: chromatidSway2 10s ease-in-out infinite;
+            animation-delay: -2s;
+        }
+        
+        .chromatid-2 .chromatid-arm-q {
+            width: 6px;
+            height: 50%;
+            border-radius: 0 0 3px 3px;
+            background: linear-gradient(180deg, #6366f1, #4f46e5, #3730a3);
+            opacity: 0.7;
+            position: absolute;
+            bottom: 0;
+            left: 45%;
+            transform: translateX(-50%) rotate(-8deg);
+            transform-origin: top center;
+            box-shadow: 0 0 4px rgba(99, 102, 241, 0.4);
+            animation: chromatidSway2 10s ease-in-out infinite;
+            animation-delay: -7s;
+        }
+        
+        @keyframes chromatidSway1 {
+            0%, 100% { 
+                transform: translateX(-50%) rotate(-8deg); 
+            }
+            50% { 
+                transform: translateX(-50%) rotate(-6deg); 
+            }
+        }
+        
+        @keyframes chromatidSway2 {
+            0%, 100% { 
+                transform: translateX(-50%) rotate(8deg); 
+            }
+            50% { 
+                transform: translateX(-50%) rotate(6deg); 
+            }
+        }
+        
+        .chromosome-centromere {
+            position: absolute;
+            width: 14px;
+            height: 6px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+            border-radius: 50%;
+            top: 46%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            opacity: 0.9;
+            animation: centromerePulse 3s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            z-index: 10;
+        }
+        
+        /* Chromosome Bands */
+        .chromosome-bands {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .band {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1px;
+            animation: bandPulse 4s ease-in-out infinite;
+        }
+        
+        .band:nth-child(odd) {
+            animation-delay: -2s;
+        }
+        
+        @keyframes centromerePulse {
+            0%, 100% { 
+                transform: translateX(-50%) translateY(-50%) scaleY(1) scaleX(1); 
+                opacity: 0.9; 
+                box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            }
+            50% { 
+                transform: translateX(-50%) translateY(-50%) scaleY(1.3) scaleX(1.2); 
+                opacity: 1; 
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+            }
+        }
+        
+        @keyframes bandPulse {
+            0%, 100% { opacity: 0.6; transform: scaleX(1); }
+            50% { opacity: 0.9; transform: scaleX(1.1); }
+        }
+
+        /* Genetic Elements (floating nucleotides) */
+        .genetic-element {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0.7;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .nucleotide-a {
+            background: radial-gradient(circle, #ff6b6b, #ff5252);
+            color: white;
+        }
+        
+        .nucleotide-t {
+            background: radial-gradient(circle, #4ecdc4, #26a69a);
+            color: white;
+        }
+        
+        .nucleotide-g {
+            background: radial-gradient(circle, #45b7d1, #2196f3);
+            color: white;
+        }
+        
+        .nucleotide-c {
+            background: radial-gradient(circle, #96ceb4, #4caf50);
+            color: white;
+        }
+        
+        .gene-symbol {
+            background: radial-gradient(circle, #8b5cf6, #673ab7);
+            font-size: 16px;
+        }
+
+        /* Animation delays for particles */
+        .particle-1 { animation-delay: 0s; }
+        .particle-2 { animation-delay: -3s; }
+        .particle-3 { animation-delay: -6s; }
+        .particle-4 { animation-delay: -9s; }
+        .particle-5 { animation-delay: -12s; }
+        .typing-dot-1 { animation-delay: 0s; }
+        .typing-dot-2 { animation-delay: 0.2s; }
+        .typing-dot-3 { animation-delay: 0.4s; }
+    </style>
 </head>
-<body>
-    <div class="background-animation">
-        <div class="dna-strand strand-1"></div>
-        <div class="dna-strand strand-2"></div>
-        <div class="floating-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
+<body class="font-inter bg-bg-primary text-slate-100 leading-relaxed overflow-x-hidden min-h-screen">
+    <!-- Background Animation -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <!-- Chromosome Structures -->
+        <div class="absolute left-[6%] top-[5%] chromosome-container">
+            <div class="chromosome chromosome-large">
+                <!-- Sister Chromatid 1 -->
+                <div class="chromatid chromatid-1">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <!-- Sister Chromatid 2 -->
+                <div class="chromatid chromatid-2">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <!-- Centromere connecting both chromatids -->
+                <div class="chromosome-centromere"></div>
+                <!-- Chromosome bands -->
+                <div class="chromosome-bands">
+                    <div class="band" style="top: 10%"></div>
+                    <div class="band" style="top: 25%"></div>
+                    <div class="band" style="top: 65%"></div>
+                    <div class="band" style="top: 85%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute right-[6%] top-[15%] chromosome-container">
+            <div class="chromosome chromosome-medium">
+                <div class="chromatid chromatid-1">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromatid chromatid-2">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromosome-centromere"></div>
+                <div class="chromosome-bands">
+                    <div class="band" style="top: 15%"></div>
+                    <div class="band" style="top: 35%"></div>
+                    <div class="band" style="top: 70%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute left-[15%] top-[60%] chromosome-container">
+            <div class="chromosome chromosome-small">
+                <div class="chromatid chromatid-1">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromatid chromatid-2">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromosome-centromere"></div>
+                <div class="chromosome-bands">
+                    <div class="band" style="top: 20%"></div>
+                    <div class="band" style="top: 75%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute right-[15%] top-[70%] chromosome-container">
+            <div class="chromosome chromosome-x">
+                <div class="chromatid chromatid-1">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromatid chromatid-2">
+                    <div class="chromatid-arm-p"></div>
+                    <div class="chromatid-arm-q"></div>
+                </div>
+                <div class="chromosome-centromere"></div>
+                <div class="chromosome-bands">
+                    <div class="band" style="top: 12%"></div>
+                    <div class="band" style="top: 30%"></div>
+                    <div class="band" style="top: 60%"></div>
+                    <div class="band" style="top: 80%"></div>
+                </div>
+            </div>
+        </div>
+
+
+        
+        <!-- Floating Genetic Elements -->
+        <div class="absolute inset-0">
+            <div class="absolute left-[20%] genetic-element nucleotide-a animate-float particle-1">A</div>
+            <div class="absolute left-[40%] genetic-element nucleotide-t animate-float particle-2">T</div>
+            <div class="absolute left-[60%] genetic-element nucleotide-g animate-float particle-3">G</div>
+            <div class="absolute left-[80%] genetic-element nucleotide-c animate-float particle-4">C</div>
+            <div class="absolute left-[30%] genetic-element gene-symbol animate-float particle-5">🧬</div>
         </div>
     </div>
 
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="dna-icon">🧬</div>
-                    <div class="title-group">
-                        <h1>Genetic QTL Research Assistant</h1>
-                        <p class="subtitle">AI-Powered Quantitative Trait Loci Analysis</p>
+    <div class="min-h-screen flex flex-col max-w-7xl mx-auto px-4">
+        <!-- Header -->
+        <header class="py-6 border-b border-white/5 backdrop-blur-lg bg-bg-primary/80 sticky top-0 z-50">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="text-5xl animate-pulse-dna">🧬</div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent-green to-secondary-blue bg-clip-text text-transparent">
+                            Genetic QTL Research Assistant
+                        </h1>
+                        <p class="text-slate-400 text-sm md:text-base">AI-Powered Quantitative Trait Loci Analysis</p>
                     </div>
                 </div>
-                <div class="stats-panel" id="statsPanel">
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalQTLs">---</span>
-                        <span class="stat-label">QTLs</span>
+                
+                <!-- Stats Panel -->
+                <div class="flex gap-6 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-accent-green" id="totalQTLs">---</div>
+                        <div class="text-xs text-slate-400">QTLs</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalGenes">---</span>
-                        <span class="stat-label">Genes</span>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-secondary-blue" id="totalGenes">---</div>
+                        <div class="text-xs text-slate-400">Genes</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalChromosomes">---</span>
-                        <span class="stat-label">Chromosomes</span>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-accent-purple" id="totalChromosomes">---</div>
+                        <div class="text-xs text-slate-400">Chromosomes</div>
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="main-content">
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot-message welcome-message">
-                        <div class="message-avatar">🧬</div>
-                        <div class="message-content">
-                            <div class="message-text">
-                                <h3>Welcome to the Genetic QTL Research Assistant! 🔬</h3>
-                                <p>I'm here to help you analyze quantitative trait loci (QTL) data from liver tissue research. I can:</p>
-                                <ul>
-                                    <li>🧮 <strong>Calculate statistics</strong> (averages, counts, ranges)</li>
-                                    <li>🔍 <strong>Find specific QTLs</strong> by gene or chromosome</li>
-                                    <li>📊 <strong>Compare cis vs trans regulation</strong></li>
-                                    <li>🧬 <strong>Provide biological interpretation</strong></li>
-                                    <li>📈 <strong>Explain LOD scores and significance</strong></li>
-                                </ul>
-                                <p><strong>Try asking:</strong> "What's the average LOD score?" or "How many QTLs are on chromosome 11?"</p>
-                            </div>
+        <!-- Main Content -->
+        <main class="flex-1 flex gap-6 py-6">
+            <!-- Chat Container -->
+            <div class="flex-1 flex flex-col bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
+                <!-- Chat Messages -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-4 max-h-[calc(100vh-300px)]" id="chatMessages">
+                    <!-- Welcome Message -->
+                    <div class="flex gap-4 animate-slide-in">
+                        <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-accent-green to-secondary-blue rounded-full flex items-center justify-center text-xl">
+                            🧬
+                        </div>
+                        <div class="flex-1 bg-bg-secondary/50 rounded-2xl rounded-tl-none p-4 border border-white/10">
+                            <h3 class="text-xl font-semibold text-accent-green mb-2">Welcome to the Genetic QTL Research Assistant! 🔬</h3>
+                            <p class="text-slate-300 mb-3">I'm here to help you analyze quantitative trait loci (QTL) data from liver tissue research. I can:</p>
+                            <ul class="space-y-2 text-slate-300">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-accent-orange">🧮</span>
+                                    <span><strong>Calculate statistics</strong> (averages, counts, ranges)</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-accent-green">🔍</span>
+                                    <span><strong>Find specific QTLs</strong> by gene or chromosome</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-secondary-blue">📊</span>
+                                    <span><strong>Compare cis vs trans regulation</strong></span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-accent-purple">🧬</span>
+                                    <span><strong>Provide biological interpretation</strong></span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-accent-orange">📈</span>
+                                    <span><strong>Explain LOD scores and significance</strong></span>
+                                </li>
+                            </ul>
+                            <p class="text-slate-400 mt-3">
+                                <strong>Try asking:</strong> "What's the average LOD score?" or "How many QTLs are on chromosome 11?"
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input type="text" id="messageInput" placeholder="Ask about QTLs, genes, chromosomes, or statistics..." autocomplete="off">
-                        <button id="sendButton" class="send-button">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <!-- Input Container -->
+                <div class="p-6 border-t border-white/10">
+                    <div class="flex gap-3">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="Ask about QTLs, genes, chromosomes, or statistics..." 
+                            autocomplete="off"
+                            class="flex-1 bg-bg-secondary border border-white/20 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-green focus:border-transparent transition-all duration-200"
+                        >
+                        <button 
+                            id="sendButton" 
+                            class="bg-gradient-to-r from-accent-green to-secondary-blue text-white px-6 py-3 rounded-xl hover:from-accent-green/80 hover:to-secondary-blue/80 focus:outline-none focus:ring-2 focus:ring-accent-green transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="22" y1="2" x2="11" y2="13"></line>
                                 <polygon points="22,2 15,22 11,13 2,9"></polygon>
                             </svg>
                         </button>
                     </div>
-                    <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                        <div class="typing-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                    
+                    <!-- Typing Indicator -->
+                    <div class="flex items-center gap-3 mt-3 hidden" id="typingIndicator">
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 bg-accent-green rounded-full animate-typing-dots typing-dot-1"></div>
+                            <div class="w-2 h-2 bg-accent-green rounded-full animate-typing-dots typing-dot-2"></div>
+                            <div class="w-2 h-2 bg-accent-green rounded-full animate-typing-dots typing-dot-3"></div>
                         </div>
-                        <span>AI is analyzing...</span>
+                        <span class="text-slate-400 text-sm">AI is analyzing...</span>
                     </div>
                 </div>
             </div>
 
-            <div class="sidebar">
-                <div class="info-panel">
-                    <h3>🔬 Research Focus</h3>
-                    <p>Liver tissue QTL analysis from DO1200 mouse population</p>
+            <!-- Sidebar -->
+            <div class="w-80 space-y-6 hidden lg:block">
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-lg font-semibold text-accent-green mb-3 flex items-center gap-2">
+                        🔬 Research Focus
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">Liver tissue QTL analysis from DO1200 mouse population</p>
                     
-                    <h3>📊 Data Overview</h3>
-                    <div class="data-metrics">
-                        <div class="metric">
-                            <span class="metric-label">Analysis Type:</span>
-                            <span class="metric-value">Additive Effects</span>
+                    <h3 class="text-lg font-semibold text-secondary-blue mb-3 flex items-center gap-2">
+                        📊 Data Overview
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400 text-sm">Analysis Type:</span>
+                            <span class="text-slate-300 text-sm font-medium">Additive Effects</span>
                         </div>
-                        <div class="metric">
-                            <span class="metric-label">Tissue:</span>
-                            <span class="metric-value">Liver</span>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400 text-sm">Tissue:</span>
+                            <span class="text-slate-300 text-sm font-medium">Liver</span>
                         </div>
-                        <div class="metric">
-                            <span class="metric-label">Population:</span>
-                            <span class="metric-value">DO1200 Mice</span>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400 text-sm">Population:</span>
+                            <span class="text-slate-300 text-sm font-medium">DO1200 Mice</span>
                         </div>
                     </div>
 
-                    <h3>🧬 Sample Queries</h3>
-                    <div class="sample-queries">
-                        <button class="query-button" onclick="sendSampleQuery('What is the average LOD score?')">
+                    <h3 class="text-lg font-semibold text-accent-purple mb-3 mt-6 flex items-center gap-2">
+                        🧬 Sample Queries
+                    </h3>
+                    <div class="space-y-2">
+                        <button 
+                            class="w-full text-left p-3 bg-bg-secondary/50 hover:bg-bg-secondary border border-white/10 rounded-lg text-sm text-slate-300 hover:text-white transition-all duration-200"
+                            onclick="sendSampleQuery('What is the average LOD score?')"
+                        >
                             Average LOD Score
                         </button>
-                        <button class="query-button" onclick="sendSampleQuery('How many cis-acting vs trans-acting QTLs?')">
+                        <button 
+                            class="w-full text-left p-3 bg-bg-secondary/50 hover:bg-bg-secondary border border-white/10 rounded-lg text-sm text-slate-300 hover:text-white transition-all duration-200"
+                            onclick="sendSampleQuery('How many cis-acting vs trans-acting QTLs?')"
+                        >
                             Cis vs Trans QTLs
                         </button>
-                        <button class="query-button" onclick="sendSampleQuery('Which gene has the highest LOD score?')">
+                        <button 
+                            class="w-full text-left p-3 bg-bg-secondary/50 hover:bg-bg-secondary border border-white/10 rounded-lg text-sm text-slate-300 hover:text-white transition-all duration-200"
+                            onclick="sendSampleQuery('Which gene has the highest LOD score?')"
+                        >
                             Highest LOD Score
                         </button>
-                        <button class="query-button" onclick="sendSampleQuery('Tell me about chromosome 11 QTLs')">
+                        <button 
+                            class="w-full text-left p-3 bg-bg-secondary/50 hover:bg-bg-secondary border border-white/10 rounded-lg text-sm text-slate-300 hover:text-white transition-all duration-200"
+                            onclick="sendSampleQuery('Tell me about chromosome 11 QTLs')"
+                        >
                             Chromosome Analysis
                         </button>
                     </div>

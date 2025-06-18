@@ -36,7 +36,6 @@ class GeneticChatbot {
     updateSendButtonState() {
         const hasContent = this.messageInput.value.trim().length > 0;
         this.sendButton.disabled = this.isProcessing || !hasContent;
-        this.sendButton.style.opacity = (this.isProcessing || !hasContent) ? '0.5' : '1';
     }
     
     async loadStats() {
@@ -133,23 +132,32 @@ class GeneticChatbot {
     
     addMessage(content, sender, isError = false) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message`;
+        messageDiv.className = 'flex gap-4 animate-slide-in';
         
         if (isError) {
-            messageDiv.classList.add('error-message');
+            messageDiv.classList.add('opacity-75');
         }
         
         // Create avatar
         const avatar = document.createElement('div');
-        avatar.className = 'message-avatar';
-        avatar.textContent = sender === 'user' ? '👤' : '🧬';
+        if (sender === 'user') {
+            avatar.className = 'flex-shrink-0 w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-700 rounded-full flex items-center justify-center text-xl';
+            avatar.textContent = '👤';
+        } else {
+            avatar.className = 'flex-shrink-0 w-10 h-10 bg-gradient-to-br from-accent-green to-secondary-blue rounded-full flex items-center justify-center text-xl';
+            avatar.textContent = '🧬';
+        }
         
         // Create content
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
+        if (sender === 'user') {
+            contentDiv.className = 'flex-1 bg-bg-tertiary/50 rounded-2xl rounded-tl-none p-4 border border-white/10';
+        } else {
+            contentDiv.className = 'flex-1 bg-bg-secondary/50 rounded-2xl rounded-tl-none p-4 border border-white/10';
+        }
         
         const textDiv = document.createElement('div');
-        textDiv.className = 'message-text';
+        textDiv.className = 'text-slate-300';
         
         // Process content for better formatting
         const processedContent = this.processMessageContent(content);
@@ -176,277 +184,55 @@ class GeneticChatbot {
     }
     
     processMessageContent(content) {
-        // Convert markdown-style formatting to HTML
+        // Convert markdown-style formatting to HTML with Tailwind classes
         let processed = content
             // Bold text **text** or __text__
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/__(.*?)__/g, '<strong>$1</strong>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+            .replace(/__(.*?)__/g, '<strong class="text-white font-semibold">$1</strong>')
             // Italic text *text* or _text_
-            .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
-            .replace(/(?<!_)_([^_]+)_(?!_)/g, '<em>$1</em>')
+            .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em class="italic text-slate-200">$1</em>')
+            .replace(/(?<!_)_([^_]+)_(?!_)/g, '<em class="italic text-slate-200">$1</em>')
             // Code blocks ```code```
-            .replace(/```([\s\S]*?)```/g, '<code class="code-block">$1</code>')
+            .replace(/```([\s\S]*?)```/g, '<pre class="bg-bg-primary border border-white/20 rounded-lg p-3 mt-2 mb-2 text-sm font-mono text-accent-green overflow-x-auto"><code>$1</code></pre>')
             // Inline code `code`
-            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/`([^`]+)`/g, '<code class="bg-bg-primary px-2 py-1 rounded text-sm font-mono text-accent-green border border-white/20">$1</code>')
             // Line breaks
             .replace(/\n/g, '<br>')
             // Headers
-            .replace(/^### (.*$)/gm, '<h4>$1</h4>')
-            .replace(/^## (.*$)/gm, '<h3>$1</h3>')
-            .replace(/^# (.*$)/gm, '<h2>$1</h2>');
+            .replace(/^### (.*$)/gm, '<h4 class="text-lg font-semibold text-accent-purple mt-4 mb-2">$1</h4>')
+            .replace(/^## (.*$)/gm, '<h3 class="text-xl font-semibold text-secondary-blue mt-4 mb-2">$1</h3>')
+            .replace(/^# (.*$)/gm, '<h2 class="text-2xl font-bold text-accent-green mt-4 mb-2">$1</h2>');
         
         return processed;
     }
     
     showTypingIndicator() {
-        this.typingIndicator.style.display = 'flex';
-        this.scrollToBottom();
+        this.typingIndicator.classList.remove('hidden');
     }
     
     hideTypingIndicator() {
-        this.typingIndicator.style.display = 'none';
+        this.typingIndicator.classList.add('hidden');
     }
     
     scrollToBottom() {
-        setTimeout(() => {
-            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-        }, 100);
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
     }
     
     focusInput() {
-        setTimeout(() => {
-            this.messageInput.focus();
-        }, 100);
+        this.messageInput.focus();
     }
 }
 
-// Sample query function for sidebar buttons
+// Sample query function
 function sendSampleQuery(query) {
-    const chatbot = window.chatbotInstance;
-    if (chatbot && !chatbot.isProcessing) {
+    const chatbot = window.chatbot;
+    if (chatbot) {
         chatbot.messageInput.value = query;
         chatbot.sendMessage();
     }
 }
 
-// Add some CSS for the processed content
-const style = document.createElement('style');
-style.textContent = `
-    .message-text h2 {
-        color: var(--accent-green);
-        font-size: 1.2rem;
-        margin: 0.5rem 0;
-        font-weight: 600;
-    }
-    
-    .message-text h3 {
-        color: var(--accent-green);
-        font-size: 1.1rem;
-        margin: 0.5rem 0;
-        font-weight: 600;
-    }
-    
-    .message-text h4 {
-        color: var(--secondary-blue);
-        font-size: 1rem;
-        margin: 0.4rem 0;
-        font-weight: 600;
-    }
-    
-    .message-text code {
-        background: var(--bg-secondary);
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85rem;
-        color: var(--accent-orange);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .message-text .code-block {
-        display: block;
-        background: var(--bg-secondary);
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-        white-space: pre-wrap;
-        overflow-x: auto;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        line-height: 1.4;
-    }
-    
-    .message-text em {
-        font-style: italic;
-        color: var(--text-secondary);
-    }
-    
-    .error-message .message-content {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
-        border-color: rgba(239, 68, 68, 0.3);
-    }
-    
-    .error-message .message-avatar {
-        background: #ef4444;
-    }
-    
-    /* Custom scrollbar for better UX */
-    .chat-messages::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    .chat-messages::-webkit-scrollbar-track {
-        background: var(--bg-secondary);
-        border-radius: 4px;
-    }
-    
-    .chat-messages::-webkit-scrollbar-thumb {
-        background: linear-gradient(45deg, var(--accent-green), var(--secondary-blue));
-        border-radius: 4px;
-    }
-    
-    .chat-messages::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(45deg, var(--secondary-blue), var(--accent-purple));
-    }
-    
-    /* Loading states */
-    .send-button:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
-    
-    /* Enhance query buttons */
-    .query-button:active {
-        transform: translateX(2px) scale(0.98);
-    }
-    
-    /* Add pulse animation for DNA icon */
-    .dna-icon {
-        transition: transform 0.3s ease;
-    }
-    
-    .dna-icon:hover {
-        transform: scale(1.1) rotate(5deg);
-    }
-    
-    /* Add shimmer effect for loading stats */
-    .stat-number.loading {
-        background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
-        background-size: 200px 100%;
-        animation: shimmer 1.5s infinite;
-        border-radius: 4px;
-    }
-    
-    @keyframes shimmer {
-        0% { background-position: -200px 0; }
-        100% { background-position: calc(200px + 100%) 0; }
-    }
-    
-    /* Enhance welcome message */
-    .welcome-message .message-content {
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-    }
-    
-    /* Add typing animation enhancement */
-    .typing-indicator {
-        animation: fadeInUp 0.3s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-`;
-
-document.head.appendChild(style);
-
-// Initialize the chatbot when the page loads
+// Initialize chatbot when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.chatbotInstance = new GeneticChatbot();
-    
-    // Add some particle interaction
-    const particles = document.querySelectorAll('.particle');
-    particles.forEach((particle, index) => {
-        particle.addEventListener('mouseenter', () => {
-            particle.style.transform = 'scale(2)';
-            particle.style.opacity = '1';
-        });
-        
-        particle.addEventListener('mouseleave', () => {
-            particle.style.transform = 'scale(1)';
-            particle.style.opacity = '0.6';
-        });
-    });
-    
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        // Focus input with Ctrl/Cmd + K
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            window.chatbotInstance.focusInput();
-        }
-        
-        // Clear chat with Ctrl/Cmd + Shift + C
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-            e.preventDefault();
-            if (confirm('Clear all chat messages?')) {
-                const welcomeMessage = document.querySelector('.welcome-message');
-                window.chatbotInstance.chatMessages.innerHTML = '';
-                if (welcomeMessage) {
-                    window.chatbotInstance.chatMessages.appendChild(welcomeMessage.cloneNode(true));
-                }
-            }
-        }
-    });
-});
-
-// Add some easter eggs for fun
-let konamiCode = [];
-const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-
-document.addEventListener('keydown', (e) => {
-    konamiCode.push(e.code);
-    if (konamiCode.length > konamiSequence.length) {
-        konamiCode = konamiCode.slice(1);
-    }
-    
-    if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
-        // Easter egg: DNA dance
-        const dnaIcon = document.querySelector('.dna-icon');
-        if (dnaIcon) {
-            dnaIcon.style.animation = 'none';
-            setTimeout(() => {
-                dnaIcon.style.animation = 'spin 1s linear 3, pulse 2s ease-in-out infinite';
-            }, 10);
-        }
-        
-        // Add some fun particles
-        for (let i = 0; i < 10; i++) {
-            setTimeout(() => {
-                const particle = document.createElement('div');
-                particle.innerHTML = '🧬';
-                particle.style.position = 'fixed';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = '-50px';
-                particle.style.fontSize = '2rem';
-                particle.style.zIndex = '1000';
-                particle.style.pointerEvents = 'none';
-                particle.style.animation = 'float 3s linear forwards';
-                document.body.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 3000);
-            }, i * 200);
-        }
-        
-        konamiCode = [];
-    }
-});
-
-// CSS keyframes are handled in the style element above 
+    window.chatbot = new GeneticChatbot();
+}); 

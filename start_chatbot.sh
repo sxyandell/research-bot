@@ -23,7 +23,7 @@ if [ ! -d "chroma_db" ]; then
 fi
 
 # Set default port if not specified
-PORT=${1:-51176}
+PORT=${1:-51174}
 HOST=${2:-0.0.0.0}
 
 echo "🔧 Configuration:"

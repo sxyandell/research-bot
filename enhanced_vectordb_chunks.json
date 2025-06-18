@@ -1,0 +1,1607 @@
+[
+  {
+    "content": "Top QTLs ranked 1-25 by LOD score\nLOD score range: 445.77 - 608.58\n\nQTL Details:\nGene: Tdpoz2 | LOD Score: 608.580979506093 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 94.340162 Mb | Confidence Interval: 93.431 - 94.492 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gsdma3 | LOD Score: 572.267230608641 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 98.628695 Mb | Confidence Interval: 98.483 - 98.629 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm10503 | LOD Score: 551.090364799134 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 30.772319 Mb | Confidence Interval: 30.772 - 30.772 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ppp1ccb | LOD Score: 542.42468577789 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 122.30679 Mb | Confidence Interval: 122.307 - 122.320 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm11425 | LOD Score: 520.434673679554 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 32.944427 Mb | Confidence Interval: 32.858 - 32.944 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Nutf2-ps2 | LOD Score: 508.42109255282 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 106.473941 Mb | Confidence Interval: 106.374 - 106.736 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm15501 | LOD Score: 506.296690198827 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 117.029715 Mb | Confidence Interval: 116.855 - 117.030 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ubb-ps | LOD Score: 505.241382756376 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 62.331101 Mb | Confidence Interval: 62.286 - 62.402 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm16410 | LOD Score: 503.060967683417 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 143.740307 Mb | Confidence Interval: 143.740 - 143.848 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Or2y13 | LOD Score: 502.419340218951 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 52.103708 Mb | Confidence Interval: 51.766 - 52.131 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Syndig1l | LOD Score: 500.72631197301 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 84.82645 Mb | Confidence Interval: 84.776 - 84.865 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm42933 | LOD Score: 483.191865874105 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 91.978874 Mb | Confidence Interval: 91.910 - 92.423 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm20775 | LOD Score: 482.973844969728 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 58.538919 Mb | Confidence Interval: 58.539 - 58.569 Mb | Type: trans-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm5597 | LOD Score: 480.153734353807 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 82.183053 Mb | Confidence Interval: 82.172 - 82.585 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps3a1 | LOD Score: 479.466532771403 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 86.119446 Mb | Confidence Interval: 85.941 - 86.119 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Llph-ps1 | LOD Score: 475.027542943977 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 120.054391 Mb | Confidence Interval: 120.054 - 120.054 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm3728 | LOD Score: 469.258566849868 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 19.981664 Mb | Confidence Interval: 19.766 - 20.257 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 464.362211351607 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 87.250767 Mb | Confidence Interval: 86.984 - 87.713 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm6218 | LOD Score: 462.293174309925 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 123.628226 Mb | Confidence Interval: 123.503 - 123.837 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Glo1 | LOD Score: 461.302511980452 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 30.772319 Mb | Confidence Interval: 30.705 - 30.788 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rpl34-ps1 | LOD Score: 457.889261675731 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 130.657356 Mb | Confidence Interval: 130.509 - 130.657 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ndufs5-ps | LOD Score: 451.016235588359 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 123.589167 Mb | Confidence Interval: 123.197 - 123.625 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm8730 | LOD Score: 446.920984567806 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.718805 Mb | Confidence Interval: 115.669 - 115.719 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rpl3-ps1 | LOD Score: 445.938510254578 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 79.945432 Mb | Confidence Interval: 79.945 - 79.948 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm14044 | LOD Score: 445.768441540328 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 109.185403 Mb | Confidence Interval: 109.039 - 109.197 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 608.6: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\nChromosome 11 (122 Mb): Rich in metabolic pathway genes\nChromosome 17 (95 Mb): Dense in protein-coding genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 1,
+      "rank_end": 25,
+      "qtl_count": 25,
+      "lod_range": [
+        445.768441540328,
+        608.580979506093
+      ],
+      "genes": [
+        "Tdpoz2",
+        "Gsdma3",
+        "Gm10503",
+        "Ppp1ccb",
+        "Gm11425",
+        "Nutf2-ps2",
+        "Gm15501",
+        "Ubb-ps",
+        "Gm16410",
+        "Or2y13",
+        "Syndig1l",
+        "Gm42933",
+        "Gm20775",
+        "Gm5597",
+        "Rps3a1",
+        "Llph-ps1",
+        "Gm3728",
+        NaN,
+        "Gm6218",
+        "Glo1",
+        "Rpl34-ps1",
+        "Ndufs5-ps",
+        "Gm8730",
+        "Rpl3-ps1",
+        "Gm14044"
+      ],
+      "chromosomes": [
+        "3",
+        "11",
+        "17",
+        "5",
+        "2",
+        "8",
+        "4",
+        "12",
+        "6",
+        "13",
+        "10",
+        "19",
+        "15",
+        "7"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_1_25",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 26-50 by LOD score\nLOD score range: 415.28 - 442.53\n\nQTL Details:\nGene: 4833420G17Rik | LOD Score: 442.530090391113 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 119.567148 Mb | Confidence Interval: 119.567 - 119.574 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rnf26rt | LOD Score: 442.481395224996 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 44.013814 Mb | Confidence Interval: 44.014 - 44.016 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm10110 | LOD Score: 441.917169059333 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 123.130935 Mb | Confidence Interval: 123.110 - 123.589 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm12187 | LOD Score: 441.09976863386 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 48.817788 Mb | Confidence Interval: 48.764 - 49.016 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm16332 | LOD Score: 437.761217447272 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 139.887642 Mb | Confidence Interval: 139.407 - 140.030 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ceacam2 | LOD Score: 437.598324549437 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 25.188187 Mb | Confidence Interval: 25.188 - 25.188 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Abhd1 | LOD Score: 436.104446684787 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 31.09138 Mb | Confidence Interval: 31.069 - 31.091 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm7292 | LOD Score: 435.79823444959 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 156.206229 Mb | Confidence Interval: 156.192 - 156.285 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm13767 | LOD Score: 434.410110434946 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 88.982778 Mb | Confidence Interval: 88.855 - 89.970 Mb | Type: cis-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm28076 | LOD Score: 432.811121297207 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 36.916006 Mb | Confidence Interval: 36.797 - 37.134 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rps3a2 | LOD Score: 431.86439190569 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 86.16533 Mb | Confidence Interval: 85.941 - 86.321 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 431.203223970887 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 85.349447 Mb | Confidence Interval: 85.349 - 86.022 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm2427 | LOD Score: 430.972676218127 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 43.473816 Mb | Confidence Interval: 42.897 - 43.490 Mb | Type: trans-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ugt3a1 | LOD Score: 430.50019410046 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 9.490588 Mb | Confidence Interval: 9.491 - 9.492 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Akr1c12 | LOD Score: 429.297034378279 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 4.477319 Mb | Confidence Interval: 4.227 - 4.477 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Trim12a | LOD Score: 428.386044237318 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 104.133719 Mb | Confidence Interval: 103.888 - 104.134 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 423.397284607065 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.06211 Mb | Confidence Interval: 45.062 - 45.090 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cfhr2 | LOD Score: 423.249023088919 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 139.385374 Mb | Confidence Interval: 139.385 - 139.941 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm49925 | LOD Score: 422.299471145684 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 140.593174 Mb | Confidence Interval: 140.593 - 140.593 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm45769 | LOD Score: 417.643387903455 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 133.087089 Mb | Confidence Interval: 133.087 - 133.179 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: H2bc13 | LOD Score: 417.290321332988 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 23.892824 Mb | Confidence Interval: 23.713 - 23.893 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Or2ak5 | LOD Score: 416.986026320265 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 24.591411 Mb | Confidence Interval: 24.591 - 24.591 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Pkd2 | LOD Score: 416.411491662898 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 104.669364 Mb | Confidence Interval: 104.669 - 104.669 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rps24-ps3 | LOD Score: 415.477772675686 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 24.15336 Mb | Confidence Interval: 24.153 - 24.550 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 415.277678499476 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 108.179142 Mb | Confidence Interval: 107.790 - 108.521 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 442.5: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 13 (120 Mb): Important for immune function\nChromosome 9 (124 Mb): Important for neural development\nChromosome 4 (156 Mb): Contains clustered gene families\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 26,
+      "rank_end": 50,
+      "qtl_count": 25,
+      "lod_range": [
+        415.277678499476,
+        442.530090391113
+      ],
+      "genes": [
+        "4833420G17Rik",
+        "Rnf26rt",
+        "Gm10110",
+        "Gm12187",
+        "Gm16332",
+        "Ceacam2",
+        "Abhd1",
+        "Gm7292",
+        "Gm13767",
+        "Gm28076",
+        "Rps3a2",
+        NaN,
+        "Gm2427",
+        "Ugt3a1",
+        "Akr1c12",
+        "Trim12a",
+        NaN,
+        "Cfhr2",
+        "Gm49925",
+        "Gm45769",
+        "H2bc13",
+        "Or2ak5",
+        "Pkd2",
+        "Rps24-ps3",
+        NaN
+      ],
+      "chromosomes": [
+        "13",
+        "9",
+        "4",
+        "11",
+        "1",
+        "7",
+        "5",
+        "2",
+        "3",
+        "6",
+        "15",
+        "14"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_26_50",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 51-75 by LOD score\nLOD score range: 395.74 - 415.19\n\nQTL Details:\nGene: Rps3a3 | LOD Score: 415.188522140591 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 86.119446 Mb | Confidence Interval: 85.941 - 86.119 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Syngr2 | LOD Score: 413.137212304906 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 117.697363 Mb | Confidence Interval: 117.685 - 117.777 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ahcyl | LOD Score: 409.943844500825 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 154.627585 Mb | Confidence Interval: 154.585 - 155.029 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5564 | LOD Score: 409.788771136162 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.879977 Mb | Confidence Interval: 89.863 - 90.560 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 408.35993964362 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 33.943192 Mb | Confidence Interval: 33.943 - 33.943 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Dtd2 | LOD Score: 408.251407984628 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 51.840164 Mb | Confidence Interval: 51.830 - 52.122 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Vnn3 | LOD Score: 408.14344471155 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 23.644929 Mb | Confidence Interval: 23.638 - 23.645 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rnf212 | LOD Score: 407.926352434338 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 109.717516 Mb | Confidence Interval: 108.933 - 109.718 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Alg1 | LOD Score: 405.645968399604 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 5.063488 Mb | Confidence Interval: 4.977 - 5.063 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 405.04891416491 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 55.493268 Mb | Confidence Interval: 55.462 - 55.824 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 404.88688362208 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 125.086417 Mb | Confidence Interval: 125.086 - 125.086 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cox5b-ps | LOD Score: 404.441142174904 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 36.629822 Mb | Confidence Interval: 36.619 - 36.753 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 1700028P15Rik | LOD Score: 403.622998729769 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 171.58763 Mb | Confidence Interval: 171.567 - 171.890 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: C1s2 | LOD Score: 403.14089494259 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 124.490971 Mb | Confidence Interval: 124.491 - 124.505 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tpm3-rs7 | LOD Score: 402.972826424742 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 90.055625 Mb | Confidence Interval: 89.890 - 90.056 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5436 | LOD Score: 400.046080131274 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 91.76335 Mb | Confidence Interval: 91.744 - 91.946 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Srsf3-ps | LOD Score: 399.743618337583 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 29.124798 Mb | Confidence Interval: 29.125 - 29.268 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps19-ps6 | LOD Score: 399.445635501838 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 24.607771 Mb | Confidence Interval: 24.577 - 24.608 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Eno1b | LOD Score: 399.365487835861 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 150.36683 Mb | Confidence Interval: 150.264 - 150.651 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Actr3-ps | LOD Score: 399.095574078765 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 125.41714 Mb | Confidence Interval: 125.354 - 125.628 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 398.496721303681 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 43.616735 Mb | Confidence Interval: 43.473 - 43.617 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm7666 | LOD Score: 396.965804998154 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 95.675289 Mb | Confidence Interval: 95.485 - 95.749 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm18736 | LOD Score: 396.766182191244 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 47.7372 Mb | Confidence Interval: 47.664 - 47.737 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps26-ps1 | LOD Score: 396.226827221782 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.65664 Mb | Confidence Interval: 128.657 - 128.703 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm15772 | LOD Score: 395.739636939077 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 68.792458 Mb | Confidence Interval: 68.783 - 68.806 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 415.2: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\nChromosome 11 (122 Mb): Rich in metabolic pathway genes\nChromosome 2 (182 Mb): Contains major histocompatibility complex (MHC)\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 51,
+      "rank_end": 75,
+      "qtl_count": 25,
+      "lod_range": [
+        395.739636939077,
+        415.188522140591
+      ],
+      "genes": [
+        "Rps3a3",
+        "Syngr2",
+        "Ahcyl",
+        "Gm5564",
+        NaN,
+        "Dtd2",
+        "Vnn3",
+        "Rnf212",
+        "Alg1",
+        NaN,
+        NaN,
+        "Cox5b-ps",
+        "1700028P15Rik",
+        "C1s2",
+        "Tpm3-rs7",
+        "Gm5436",
+        "Srsf3-ps",
+        "Rps19-ps6",
+        "Eno1b",
+        "Actr3-ps",
+        NaN,
+        "Gm7666",
+        "Gm18736",
+        "Rps26-ps1",
+        "Gm15772"
+      ],
+      "chromosomes": [
+        "3",
+        "11",
+        "2",
+        "9",
+        "17",
+        "12",
+        "10",
+        "5",
+        "16",
+        "6",
+        "1",
+        "7",
+        "4"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_51_75",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 76-100 by LOD score\nLOD score range: 382.87 - 395.67\n\nQTL Details:\nGene: Cfhr1 | LOD Score: 395.665475719074 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 139.887642 Mb | Confidence Interval: 139.385 - 140.013 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Nsa2-ps1 | LOD Score: 394.966650715915 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 97.218407 Mb | Confidence Interval: 97.218 - 97.548 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Vcp-rs | LOD Score: 394.756773210921 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 43.020194 Mb | Confidence Interval: 43.020 - 43.020 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm3226 | LOD Score: 394.454047226485 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 98.892049 Mb | Confidence Interval: 98.892 - 98.905 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ncoa4-ps | LOD Score: 394.217685216277 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 31.961592 Mb | Confidence Interval: 31.930 - 32.000 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rpl17-ps5 | LOD Score: 391.837216737234 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 75.080471 Mb | Confidence Interval: 75.055 - 75.176 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Mdm4-ps | LOD Score: 391.797330728775 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 132.958742 Mb | Confidence Interval: 132.811 - 132.959 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm11541 | LOD Score: 391.345053338281 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 94.591996 Mb | Confidence Interval: 94.592 - 94.601 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm9396 | LOD Score: 390.18554236958 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 32.820099 Mb | Confidence Interval: 32.820 - 32.944 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Fam114a2 | LOD Score: 389.631624428739 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 57.376866 Mb | Confidence Interval: 57.285 - 57.377 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5526 | LOD Score: 389.521788358303 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.306386 Mb | Confidence Interval: 128.306 - 128.306 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cfhr3 | LOD Score: 389.507648904074 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 139.483129 Mb | Confidence Interval: 139.407 - 139.941 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tes3-ps | LOD Score: 388.540245486836 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 35.920795 Mb | Confidence Interval: 35.832 - 35.923 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 388.133014703995 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 116.659604 Mb | Confidence Interval: 116.660 - 116.829 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Akr1c18 | LOD Score: 388.001505755886 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 4.226714 Mb | Confidence Interval: 4.227 - 4.477 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rpl14-ps1 | LOD Score: 387.901209287665 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 120.395004 Mb | Confidence Interval: 120.310 - 120.630 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 387.48703855006 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.70624 Mb | Confidence Interval: 128.671 - 128.714 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rpl15-ps6 | LOD Score: 387.388649585605 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 4.713603 Mb | Confidence Interval: 3.068 - 4.714 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 387.307641702334 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 126.758874 Mb | Confidence Interval: 126.725 - 126.759 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm7676 | LOD Score: 386.783990347987 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 140.531641 Mb | Confidence Interval: 140.532 - 140.532 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Mthfsl | LOD Score: 386.383115102465 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 89.108 - 89.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cyp2c23 | LOD Score: 384.976627279788 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 43.958101 Mb | Confidence Interval: 43.735 - 44.026 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tmt1a2 | LOD Score: 384.21543890835 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 100.130033 Mb | Confidence Interval: 100.125 - 100.162 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 384.161716169485 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 55.808262 Mb | Confidence Interval: 55.762 - 55.841 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm12191 | LOD Score: 382.869550981343 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 34.365585 Mb | Confidence Interval: 34.366 - 34.461 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 395.7: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 13 (120 Mb): Important for immune function\nChromosome 4 (156 Mb): Contains clustered gene families\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 76,
+      "rank_end": 100,
+      "qtl_count": 25,
+      "lod_range": [
+        382.869550981343,
+        395.665475719074
+      ],
+      "genes": [
+        "Cfhr1",
+        "Nsa2-ps1",
+        "Vcp-rs",
+        "Gm3226",
+        "Ncoa4-ps",
+        "Rpl17-ps5",
+        "Mdm4-ps",
+        "Gm11541",
+        "Gm9396",
+        "Fam114a2",
+        "Gm5526",
+        "Cfhr3",
+        "Tes3-ps",
+        NaN,
+        "Akr1c18",
+        "Rpl14-ps1",
+        NaN,
+        "Rpl15-ps6",
+        NaN,
+        "Gm7676",
+        "Mthfsl",
+        "Cyp2c23",
+        "Tmt1a2",
+        NaN,
+        "Gm12191"
+      ],
+      "chromosomes": [
+        "1",
+        "13",
+        "4",
+        "15",
+        "14",
+        "18",
+        "11",
+        "2",
+        "10",
+        "3",
+        "9",
+        "7",
+        "19",
+        "16"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_76_100",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 101-125 by LOD score\nLOD score range: 368.30 - 382.80\n\nQTL Details:\nGene: Trim5 | LOD Score: 382.80363994396 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 104.268059 Mb | Confidence Interval: 103.888 - 104.274 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm9625 | LOD Score: 380.909336420706 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.809271 Mb | Confidence Interval: 115.670 - 115.809 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm13394 | LOD Score: 380.638270406506 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 125.086417 Mb | Confidence Interval: 125.069 - 125.104 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: 4930555K19Rik | LOD Score: 380.537147942868 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 32.800628 Mb | Confidence Interval: 32.794 - 32.820 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 379.939783035404 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 179.650506 Mb | Confidence Interval: 179.279 - 179.651 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 378.841496282707 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 53.376184 Mb | Confidence Interval: 53.339 - 53.423 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Zfp33b | LOD Score: 378.134413197017 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 105.010602 Mb | Confidence Interval: 104.699 - 105.011 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rsph3b | LOD Score: 377.69527816479 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 7.13692 Mb | Confidence Interval: 7.137 - 7.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Amd2 | LOD Score: 377.486121575298 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 40.162923 Mb | Confidence Interval: 39.983 - 40.180 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 377.378176412111 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 31.216798 Mb | Confidence Interval: 31.217 - 31.323 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 377.265733795868 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 109.571787 Mb | Confidence Interval: 109.572 - 109.706 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tm7sf3 | LOD Score: 377.0457581587 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 146.444574 Mb | Confidence Interval: 146.432 - 146.540 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm50166 | LOD Score: 376.696700751709 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.357167 Mb | Confidence Interval: 115.203 - 115.546 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Psma5-ps | LOD Score: 376.228656555175 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 108.011707 Mb | Confidence Interval: 107.986 - 108.198 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm4811 | LOD Score: 376.194922828671 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 99.232073 Mb | Confidence Interval: 99.043 - 99.232 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cd59a | LOD Score: 374.916119017762 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 103.995282 Mb | Confidence Interval: 103.992 - 103.998 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm8894 | LOD Score: 373.215032707087 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.306386 Mb | Confidence Interval: 128.306 - 128.306 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm18562 | LOD Score: 372.999679036776 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 12.586064 Mb | Confidence Interval: 12.586 - 12.586 Mb | Type: cis-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps2-ps13 | LOD Score: 372.223559173789 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.952339 Mb | Confidence Interval: 24.587 - 24.952 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 371.20650785303 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.955272 Mb | Confidence Interval: 24.590 - 24.955 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 370.378661204563 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 83.865399 Mb | Confidence Interval: 83.865 - 83.865 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Mrps10 | LOD Score: 369.668263278282 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 47.7372 Mb | Confidence Interval: 47.664 - 47.737 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 369.053749823721 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 34.321404 Mb | Confidence Interval: 34.158 - 34.380 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm16348 | LOD Score: 368.783018947619 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 41.781372 Mb | Confidence Interval: 41.691 - 41.815 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Wfdc21 | LOD Score: 368.296663645094 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 83.609299 Mb | Confidence Interval: 83.547 - 83.640 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 382.8: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 7 (145 Mb): Rich in transcription factors\nChromosome 5 (151 Mb): Important for development and metabolism\nChromosome 6 (149 Mb): Contains immunoglobulin gene clusters\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 101,
+      "rank_end": 125,
+      "qtl_count": 25,
+      "lod_range": [
+        368.296663645094,
+        382.80363994396
+      ],
+      "genes": [
+        "Trim5",
+        "Gm9625",
+        "Gm13394",
+        "4930555K19Rik",
+        NaN,
+        NaN,
+        "Zfp33b",
+        "Rsph3b",
+        "Amd2",
+        NaN,
+        NaN,
+        "Tm7sf3",
+        "Gm50166",
+        "Psma5-ps",
+        "Gm4811",
+        "Cd59a",
+        "Gm8894",
+        "Gm18562",
+        "Rps2-ps13",
+        NaN,
+        NaN,
+        "Mrps10",
+        NaN,
+        "Gm16348",
+        "Wfdc21"
+      ],
+      "chromosomes": [
+        "7",
+        "5",
+        "6",
+        "2",
+        "1",
+        "17",
+        "10",
+        "15",
+        "3",
+        "11",
+        "13",
+        "8"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_101_125",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 126-150 by LOD score\nLOD score range: 352.74 - 367.91\n\nQTL Details:\nGene: nan | LOD Score: 367.912232861411 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 3.171556 Mb | Confidence Interval: 3.172 - 3.386 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm13123 | LOD Score: 365.333461304125 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.668615 Mb | Confidence Interval: 115.669 - 115.809 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Myom2 | LOD Score: 363.20953928544 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 15.169889 Mb | Confidence Interval: 15.147 - 15.282 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm37131 | LOD Score: 362.645628520017 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 65.722081 Mb | Confidence Interval: 65.590 - 65.722 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Taf9-ps | LOD Score: 361.978125325683 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 100.793443 Mb | Confidence Interval: 100.723 - 101.152 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Siah3 | LOD Score: 360.898052900516 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 75.809206 Mb | Confidence Interval: 75.775 - 75.856 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm31333 | LOD Score: 360.831935095246 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 28.81583 Mb | Confidence Interval: 28.807 - 29.382 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Emb | LOD Score: 360.618716839968 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 96.363177 Mb | Confidence Interval: 96.297 - 96.396 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rps2 | LOD Score: 359.707731762044 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.623796 Mb | Confidence Interval: 24.590 - 24.952 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm4705 | LOD Score: 358.731724363587 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 130.657356 Mb | Confidence Interval: 130.509 - 130.657 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 358.679463081843 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 63.405495 Mb | Confidence Interval: 63.355 - 63.607 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tmem128 | LOD Score: 358.58179063293 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 38.406412 Mb | Confidence Interval: 38.395 - 38.406 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Qpct | LOD Score: 358.5743841696 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 79.458726 Mb | Confidence Interval: 79.328 - 79.459 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm43158 | LOD Score: 358.289522786931 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 138.008158 Mb | Confidence Interval: 137.989 - 138.117 Mb | Type: trans-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Hmga1b | LOD Score: 358.184271920078 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 27.803933 Mb | Confidence Interval: 27.741 - 27.901 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Mzt1 | LOD Score: 358.121651331974 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 99.242536 Mb | Confidence Interval: 99.092 - 99.443 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cd1d2 | LOD Score: 357.630839058391 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 86.887719 Mb | Confidence Interval: 86.888 - 86.888 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rdh16f1 | LOD Score: 355.953148005916 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 127.559086 Mb | Confidence Interval: 127.559 - 127.599 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 355.660977188533 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 181.957026 Mb | Confidence Interval: 181.957 - 181.957 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rtn3 | LOD Score: 355.121320499302 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 7.518778 Mb | Confidence Interval: 7.325 - 7.555 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Vcpkmt | LOD Score: 353.68086988886 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 69.695506 Mb | Confidence Interval: 69.657 - 69.696 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Or5p58 | LOD Score: 353.667395053225 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 81.611411 Mb | Confidence Interval: 81.412 - 81.611 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Eif4a3l2 | LOD Score: 353.650836165324 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 119.171962 Mb | Confidence Interval: 118.870 - 119.251 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Stk38 | LOD Score: 353.564923649075 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 29.268336 Mb | Confidence Interval: 29.125 - 29.268 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Catspere2 | LOD Score: 352.74220504015 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 178.03232 Mb | Confidence Interval: 177.868 - 178.099 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 367.9: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 5 (151 Mb): Important for development and metabolism\nChromosome 8 (129 Mb): Contains many enzyme-coding genes\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 126,
+      "rank_end": 150,
+      "qtl_count": 25,
+      "lod_range": [
+        352.74220504015,
+        367.912232861411
+      ],
+      "genes": [
+        NaN,
+        "Gm13123",
+        "Myom2",
+        "Gm37131",
+        "Taf9-ps",
+        "Siah3",
+        "Gm31333",
+        "Emb",
+        "Rps2",
+        "Gm4705",
+        NaN,
+        "Tmem128",
+        "Qpct",
+        "Gm43158",
+        "Hmga1b",
+        "Mzt1",
+        "Cd1d2",
+        "Rdh16f1",
+        NaN,
+        "Rtn3",
+        "Vcpkmt",
+        "Or5p58",
+        "Eif4a3l2",
+        "Stk38",
+        "Catspere2"
+      ],
+      "chromosomes": [
+        "5",
+        "8",
+        "3",
+        "13",
+        "14",
+        "12",
+        "9",
+        "17",
+        "1",
+        "10",
+        "19",
+        "7",
+        "11"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_126_150",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 151-175 by LOD score\nLOD score range: 344.74 - 352.73\n\nQTL Details:\nGene: Cfhr4 | LOD Score: 352.732324975723 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 139.483129 Mb | Confidence Interval: 139.407 - 140.110 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: H2-T22 | LOD Score: 352.214477147736 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 36.339651 Mb | Confidence Interval: 36.275 - 36.340 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 352.003486174252 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 12.897339 Mb | Confidence Interval: 12.897 - 13.231 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: 9530068E07Rik | LOD Score: 351.233342806878 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 52.311926 Mb | Confidence Interval: 52.213 - 52.317 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 350.768838534098 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 90.037058 Mb | Confidence Interval: 90.037 - 90.044 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gpi-ps | LOD Score: 350.339383303975 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 33.903745 Mb | Confidence Interval: 31.057 - 33.983 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm16439 | LOD Score: 349.397216744986 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 138.602814 Mb | Confidence Interval: 138.581 - 138.607 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: H2-T23 | LOD Score: 349.217947500263 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 36.275108 Mb | Confidence Interval: 36.272 - 36.340 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ermardl2 | LOD Score: 348.778312679381 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 15.310227 Mb | Confidence Interval: 15.281 - 15.315 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cbx3-ps7 | LOD Score: 348.677319500099 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 51.39894 Mb | Confidence Interval: 51.377 - 51.414 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 348.626135334484 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 104.89907 Mb | Confidence Interval: 104.734 - 104.899 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm57048 | LOD Score: 347.806425853445 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 96.853266 Mb | Confidence Interval: 96.853 - 96.918 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cstb | LOD Score: 347.739484910661 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 78.255289 Mb | Confidence Interval: 78.255 - 78.255 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm46209 | LOD Score: 347.474922431165 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 75.080471 Mb | Confidence Interval: 75.055 - 75.176 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm14038 | LOD Score: 347.412013844682 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 10.383024 Mb | Confidence Interval: 10.383 - 10.610 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 347.374226027711 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 21.8651 Mb | Confidence Interval: 21.865 - 21.999 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Wdr87-ps | LOD Score: 346.512596989287 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 29.20311 Mb | Confidence Interval: 29.185 - 29.234 Mb | Type: cis-acting | Gene Type: transcribed_unitary_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm5835 | LOD Score: 345.491034460304 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 64.021186 Mb | Confidence Interval: 64.021 - 64.139 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: B4galnt1 | LOD Score: 345.484749074136 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 127.002246 Mb | Confidence Interval: 127.002 - 127.002 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 345.092405566888 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 91.042502 Mb | Confidence Interval: 90.702 - 91.049 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gstp3 | LOD Score: 345.041590733104 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 4.075502 Mb | Confidence Interval: 4.076 - 4.108 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm50252 | LOD Score: 344.944849075629 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 30.772319 Mb | Confidence Interval: 30.712 - 30.788 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 344.84817236833 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 67.113524 Mb | Confidence Interval: 67.105 - 67.114 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm47428 | LOD Score: 344.781838682199 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.112279 Mb | Confidence Interval: 45.090 - 45.112 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rpl15-ps2 | LOD Score: 344.740802842553 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 3.278196 Mb | Confidence Interval: 3.068 - 4.714 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 352.7: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 17 (95 Mb): Dense in protein-coding genes\nChromosome 11 (122 Mb): Rich in metabolic pathway genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 151,
+      "rank_end": 175,
+      "qtl_count": 25,
+      "lod_range": [
+        344.740802842553,
+        352.732324975723
+      ],
+      "genes": [
+        "Cfhr4",
+        "H2-T22",
+        NaN,
+        "9530068E07Rik",
+        NaN,
+        "Gpi-ps",
+        "Gm16439",
+        "H2-T23",
+        "Ermardl2",
+        "Cbx3-ps7",
+        NaN,
+        "Gm57048",
+        "Cstb",
+        "Gm46209",
+        "Gm14038",
+        NaN,
+        "Wdr87-ps",
+        "Gm5835",
+        "B4galnt1",
+        NaN,
+        "Gstp3",
+        "Gm50252",
+        NaN,
+        "Gm47428",
+        "Rpl15-ps2"
+      ],
+      "chromosomes": [
+        "1",
+        "17",
+        "11",
+        "9",
+        "7",
+        "6",
+        "3",
+        "10",
+        "18",
+        "2",
+        "19",
+        "13",
+        "14"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_151_175",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 176-200 by LOD score\nLOD score range: 336.82 - 344.46\n\nQTL Details:\nGene: Gm6206 | LOD Score: 344.463131416147 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 159.01641 Mb | Confidence Interval: 159.016 - 159.061 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ifi44l | LOD Score: 344.374411766584 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 151.374343 Mb | Confidence Interval: 151.324 - 151.399 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Car6 | LOD Score: 344.15153043134 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 150.695397 Mb | Confidence Interval: 150.264 - 150.695 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Iigp1c | LOD Score: 343.744401125625 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 59.799786 Mb | Confidence Interval: 59.800 - 60.184 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm6883 | LOD Score: 342.596838043025 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 121.510993 Mb | Confidence Interval: 121.386 - 121.511 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm29571 | LOD Score: 342.205303368431 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 25.420548 Mb | Confidence Interval: 25.236 - 25.449 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: H2-T5 | LOD Score: 342.149942609648 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 35.328995 Mb | Confidence Interval: 35.282 - 35.508 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Churc1 | LOD Score: 342.122405913685 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 76.733646 Mb | Confidence Interval: 76.593 - 76.993 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 342.054313883879 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 81.945938 Mb | Confidence Interval: 81.798 - 82.297 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Sfxn2 | LOD Score: 341.576079570483 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 46.546214 Mb | Confidence Interval: 46.546 - 46.546 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 341.440334406809 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 125.086417 Mb | Confidence Interval: 125.069 - 125.086 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm18342 | LOD Score: 341.159985984071 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 43.667092 Mb | Confidence Interval: 42.897 - 43.667 Mb | Type: trans-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rnps1 | LOD Score: 340.669128034807 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.623796 Mb | Confidence Interval: 24.587 - 24.952 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Mug2 | LOD Score: 339.428625488012 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 122.267911 Mb | Confidence Interval: 121.639 - 122.338 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Srp9 | LOD Score: 339.396209391181 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 181.957026 Mb | Confidence Interval: 181.957 - 181.957 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rps18-ps6 | LOD Score: 339.251544394744 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 34.16871 Mb | Confidence Interval: 34.140 - 34.321 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm4631 | LOD Score: 339.217363713615 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 174.773477 Mb | Confidence Interval: 174.773 - 174.799 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 338.84197435626 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 38.711053 Mb | Confidence Interval: 38.441 - 38.711 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cebpe | LOD Score: 338.746063458535 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 54.941099 Mb | Confidence Interval: 54.941 - 54.971 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cox7a2 | LOD Score: 338.61428819169 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 79.879705 Mb | Confidence Interval: 79.364 - 79.880 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 338.42459546357 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 74.985533 Mb | Confidence Interval: 74.970 - 74.986 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm20752 | LOD Score: 337.389289836259 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 39.095036 Mb | Confidence Interval: 39.057 - 39.095 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ftl1 | LOD Score: 337.173038174835 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.112279 Mb | Confidence Interval: 45.090 - 45.112 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm15544 | LOD Score: 337.043099249705 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 80.027481 Mb | Confidence Interval: 79.928 - 80.028 Mb | Type: cis-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Lmbrd2 | LOD Score: 336.822574614287 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 9.194029 Mb | Confidence Interval: 9.187 - 9.203 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 344.5: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\nChromosome 4 (156 Mb): Contains clustered gene families\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 176,
+      "rank_end": 200,
+      "qtl_count": 25,
+      "lod_range": [
+        336.822574614287,
+        344.463131416147
+      ],
+      "genes": [
+        "Gm6206",
+        "Ifi44l",
+        "Car6",
+        "Iigp1c",
+        "Gm6883",
+        "Gm29571",
+        "H2-T5",
+        "Churc1",
+        NaN,
+        "Sfxn2",
+        NaN,
+        "Gm18342",
+        "Rnps1",
+        "Mug2",
+        "Srp9",
+        "Rps18-ps6",
+        "Gm4631",
+        NaN,
+        "Cebpe",
+        "Cox7a2",
+        NaN,
+        "Gm20752",
+        "Ftl1",
+        "Gm15544",
+        "Lmbrd2"
+      ],
+      "chromosomes": [
+        "1",
+        "3",
+        "4",
+        "18",
+        "5",
+        "10",
+        "17",
+        "12",
+        "8",
+        "19",
+        "6",
+        "9",
+        "2",
+        "14",
+        "7",
+        "15"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_176_200",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 201-225 by LOD score\nLOD score range: 330.33 - 335.43\n\nQTL Details:\nGene: Ctse | LOD Score: 335.432381278341 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 131.702689 Mb | Confidence Interval: 131.521 - 131.703 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm2541 | LOD Score: 334.779501516653 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 29.945355 Mb | Confidence Interval: 29.921 - 30.057 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Msra | LOD Score: 334.652321556823 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 64.510616 Mb | Confidence Interval: 64.511 - 64.511 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cntnap5b | LOD Score: 334.580132879799 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 102.15332 Mb | Confidence Interval: 99.881 - 104.210 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ftl2-ps | LOD Score: 334.491297712577 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.148986 Mb | Confidence Interval: 45.144 - 45.213 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm7336 | LOD Score: 334.309489570457 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 125.069488 Mb | Confidence Interval: 125.069 - 125.069 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Lrit1 | LOD Score: 334.247639111137 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 36.706491 Mb | Confidence Interval: 36.624 - 36.706 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 334.179625778764 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 97.551489 Mb | Confidence Interval: 97.527 - 97.551 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 333.786329260505 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 19.938298 Mb | Confidence Interval: 19.878 - 20.022 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm5898 | LOD Score: 333.749658588611 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 126.200774 Mb | Confidence Interval: 126.136 - 126.202 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: H2-K2 | LOD Score: 333.623134961039 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 34.034128 Mb | Confidence Interval: 33.943 - 34.264 Mb | Type: cis-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rpl29 | LOD Score: 333.372037910247 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 106.298577 Mb | Confidence Interval: 105.976 - 106.299 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 333.33768016252 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 12.586064 Mb | Confidence Interval: 12.586 - 12.586 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Acp1 | LOD Score: 333.18961041643 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 30.896642 Mb | Confidence Interval: 30.897 - 30.897 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Afg1l | LOD Score: 333.184746482629 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 42.170834 Mb | Confidence Interval: 42.171 - 42.171 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cyp3a61-ps1 | LOD Score: 332.259164094667 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 138.361027 Mb | Confidence Interval: 138.168 - 138.548 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm5525 | LOD Score: 331.736340724914 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 8.957825 Mb | Confidence Interval: 8.958 - 8.958 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm13835 | LOD Score: 331.106106426213 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 71.029435 Mb | Confidence Interval: 71.029 - 71.029 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm50244 | LOD Score: 331.042283367524 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 30.60653 Mb | Confidence Interval: 30.277 - 30.712 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Gm56730 | LOD Score: 330.983124807773 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 82.212751 Mb | Confidence Interval: 82.200 - 82.213 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tma7 | LOD Score: 330.915162350469 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 109.211588 Mb | Confidence Interval: 108.920 - 109.216 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ube3b | LOD Score: 330.700973025458 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 114.538749 Mb | Confidence Interval: 114.486 - 114.575 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cln5 | LOD Score: 330.441975206802 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 103.207235 Mb | Confidence Interval: 103.156 - 103.336 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm9118 | LOD Score: 330.384107209906 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 32.974697 Mb | Confidence Interval: 32.975 - 33.537 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm56649 | LOD Score: 330.33316168108 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 6.423741 Mb | Confidence Interval: 5.575 - 6.424 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 335.4: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 5 (151 Mb): Important for development and metabolism\nChromosome 14 (125 Mb): Contains T-cell receptor genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 201,
+      "rank_end": 225,
+      "qtl_count": 25,
+      "lod_range": [
+        330.33316168108,
+        335.432381278341
+      ],
+      "genes": [
+        "Ctse",
+        "Gm2541",
+        "Msra",
+        "Cntnap5b",
+        "Ftl2-ps",
+        "Gm7336",
+        "Lrit1",
+        NaN,
+        NaN,
+        "Gm5898",
+        "H2-K2",
+        "Rpl29",
+        NaN,
+        "Acp1",
+        "Afg1l",
+        "Cyp3a61-ps1",
+        "Gm5525",
+        "Gm13835",
+        "Gm50244",
+        "Gm56730",
+        "Tma7",
+        "Ube3b",
+        "Cln5",
+        "Gm9118",
+        "Gm56649"
+      ],
+      "chromosomes": [
+        "1",
+        "5",
+        "14",
+        "7",
+        "6",
+        "3",
+        "4",
+        "17",
+        "9",
+        "13",
+        "12",
+        "10",
+        "19",
+        "15",
+        "11"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_201_225",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 226-250 by LOD score\nLOD score range: 321.92 - 330.32\n\nQTL Details:\nGene: Tagap1 | LOD Score: 330.323535530906 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 7.13692 Mb | Confidence Interval: 7.137 - 7.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm37833 | LOD Score: 329.88489823542 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 88.861 - 89.137 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Pm20d1 | LOD Score: 329.844248981809 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 131.702689 Mb | Confidence Interval: 131.638 - 131.703 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Snrnp25 | LOD Score: 328.900251890638 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 32.243777 Mb | Confidence Interval: 32.244 - 32.244 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm10086 | LOD Score: 328.553224354075 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 130.657356 Mb | Confidence Interval: 130.509 - 130.657 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 328.235173993641 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 28.70321 Mb | Confidence Interval: 28.699 - 28.807 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 327.894835978032 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 103.620586 Mb | Confidence Interval: 103.621 - 103.660 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm45322 | LOD Score: 327.849757821581 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 97.570796 Mb | Confidence Interval: 97.527 - 97.571 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm20684 | LOD Score: 327.75132422231 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 65.646107 Mb | Confidence Interval: 65.646 - 65.648 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rsph3a | LOD Score: 327.546908241635 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 7.421246 Mb | Confidence Interval: 7.421 - 7.421 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Albfm1 | LOD Score: 327.037016489391 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 90.71164 Mb | Confidence Interval: 90.616 - 90.831 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 326.690888869757 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 41.250225 Mb | Confidence Interval: 41.176 - 41.250 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: D7Ertd443e | LOD Score: 326.330202977573 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 134.305068 Mb | Confidence Interval: 134.109 - 134.322 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm37226 | LOD Score: 326.136601535823 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 88.861 - 89.137 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Gas5 | LOD Score: 325.888064226771 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 160.832459 Mb | Confidence Interval: 160.636 - 160.839 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rpl26 | LOD Score: 325.651195856074 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 68.805565 Mb | Confidence Interval: 68.806 - 68.824 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Guca1b | LOD Score: 325.458705869511 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 47.7372 Mb | Confidence Interval: 47.737 - 47.737 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Csnk2a1-ps3 | LOD Score: 325.028282595556 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 152.166604 Mb | Confidence Interval: 152.131 - 152.167 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Or6b9 | LOD Score: 324.816471106379 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 106.38109 Mb | Confidence Interval: 106.295 - 107.203 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rps15a-ps6 | LOD Score: 324.80549167526 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 117.785233 Mb | Confidence Interval: 117.553 - 117.837 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cpb2 | LOD Score: 324.237378898884 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 75.545286 Mb | Confidence Interval: 75.450 - 75.570 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm14410 | LOD Score: 324.069128309722 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 175.019342 Mb | Confidence Interval: 175.019 - 175.019 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 323.368410428789 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 93.955347 Mb | Confidence Interval: 93.610 - 94.088 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Abhd14a | LOD Score: 323.110882062104 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 105.97551 Mb | Confidence Interval: 105.976 - 106.299 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm14400 | LOD Score: 321.922913846424 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 174.773477 Mb | Confidence Interval: 174.773 - 174.773 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 330.3: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 17 (95 Mb): Dense in protein-coding genes\nChromosome 9 (124 Mb): Important for neural development\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 226,
+      "rank_end": 250,
+      "qtl_count": 25,
+      "lod_range": [
+        321.922913846424,
+        330.323535530906
+      ],
+      "genes": [
+        "Tagap1",
+        "Gm37833",
+        "Pm20d1",
+        "Snrnp25",
+        "Gm10086",
+        NaN,
+        NaN,
+        "Gm45322",
+        "Gm20684",
+        "Rsph3a",
+        "Albfm1",
+        NaN,
+        "D7Ertd443e",
+        "Gm37226",
+        "Gas5",
+        "Rpl26",
+        "Guca1b",
+        "Csnk2a1-ps3",
+        "Or6b9",
+        "Rps15a-ps6",
+        "Cpb2",
+        "Gm14410",
+        NaN,
+        "Abhd14a",
+        "Gm14400"
+      ],
+      "chromosomes": [
+        "17",
+        "9",
+        "1",
+        "11",
+        "3",
+        "12",
+        "7",
+        "5",
+        "8",
+        "2",
+        "14"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_226_250",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 251-275 by LOD score\nLOD score range: 314.78 - 321.71\n\nQTL Details:\nGene: Gm5455 | LOD Score: 321.711086026337 | P-value: 7.69230769230769e-05 | Location: Chromosome X, Position 164.780689 Mb | Confidence Interval: 163.701 - 164.968 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps15a-ps7 | LOD Score: 320.720292675325 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 117.861392 Mb | Confidence Interval: 117.468 - 117.864 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm5541 | LOD Score: 320.619473417545 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 94.492315 Mb | Confidence Interval: 93.418 - 94.595 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Tmeff1 | LOD Score: 320.120331211623 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 48.571561 Mb | Confidence Interval: 48.452 - 48.572 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Amd-ps3 | LOD Score: 319.55376912757 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 40.162923 Mb | Confidence Interval: 39.850 - 40.163 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 319.355852061671 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 8.158476 Mb | Confidence Interval: 8.158 - 8.158 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Arhgef10 | LOD Score: 319.267388615644 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 15.012472 Mb | Confidence Interval: 15.012 - 15.065 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tceanc2 | LOD Score: 319.107786897383 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 107.02253 Mb | Confidence Interval: 107.023 - 107.056 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm45315 | LOD Score: 319.061074019315 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 148.946371 Mb | Confidence Interval: 148.946 - 148.946 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm17830 | LOD Score: 318.995699674103 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 49.585606 Mb | Confidence Interval: 49.586 - 49.628 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Zfp949 | LOD Score: 318.869822802237 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 88.428279 Mb | Confidence Interval: 88.426 - 88.428 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm4815 | LOD Score: 318.451167894931 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 121.27515 Mb | Confidence Interval: 121.237 - 121.275 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm14292 | LOD Score: 318.134414736826 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 13.202634 Mb | Confidence Interval: 12.910 - 13.231 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm4963 | LOD Score: 318.064574386757 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 138.012535 Mb | Confidence Interval: 137.892 - 138.013 Mb | Type: cis-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Glo1-ps | LOD Score: 318.060007157943 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 30.684744 Mb | Confidence Interval: 30.277 - 30.712 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: AK157302 | LOD Score: 318.053818707971 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 59.903168 Mb | Confidence Interval: 59.845 - 59.955 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ccdc157 | LOD Score: 317.980732019208 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 4.23509 Mb | Confidence Interval: 4.101 - 4.235 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Bhmt1b | LOD Score: 317.106884709495 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 93.878534 Mb | Confidence Interval: 93.677 - 93.919 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 317.025877569622 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 22.221795 Mb | Confidence Interval: 22.131 - 22.222 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm7324 | LOD Score: 317.023186331694 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 79.32712 Mb | Confidence Interval: 79.038 - 79.327 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm6477 | LOD Score: 316.881281505763 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 32.974697 Mb | Confidence Interval: 32.975 - 33.537 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm5552 | LOD Score: 315.965747757388 | P-value: 7.69230769230769e-05 | Location: Chromosome X, Position 153.87777 Mb | Confidence Interval: 152.592 - 153.878 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm32687 | LOD Score: 315.955718931395 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 82.023569 Mb | Confidence Interval: 81.881 - 82.024 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Sugct | LOD Score: 315.147033281563 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 17.604056 Mb | Confidence Interval: 17.600 - 17.604 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: H2-T10 | LOD Score: 314.78174410129 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 36.339651 Mb | Confidence Interval: 36.340 - 36.340 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 321.7: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome X (171 Mb): X-linked inheritance, dosage compensation\nChromosome 7 (145 Mb): Rich in transcription factors\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 251,
+      "rank_end": 275,
+      "qtl_count": 25,
+      "lod_range": [
+        314.78174410129,
+        321.711086026337
+      ],
+      "genes": [
+        "Gm5455",
+        "Rps15a-ps7",
+        "Gm5541",
+        "Tmeff1",
+        "Amd-ps3",
+        NaN,
+        "Arhgef10",
+        "Tceanc2",
+        "Gm45315",
+        "Gm17830",
+        "Zfp949",
+        "Gm4815",
+        "Gm14292",
+        "Gm4963",
+        "Glo1-ps",
+        "AK157302",
+        "Ccdc157",
+        "Bhmt1b",
+        NaN,
+        "Gm7324",
+        "Gm6477",
+        "Gm5552",
+        "Gm32687",
+        "Sugct",
+        "H2-T10"
+      ],
+      "chromosomes": [
+        "X",
+        "7",
+        "3",
+        "4",
+        "10",
+        "8",
+        "5",
+        "17",
+        "9",
+        "13",
+        "11"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_251_275",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 276-300 by LOD score\nLOD score range: 308.41 - 314.31\n\nQTL Details:\nGene: Cyp2a21-ps | LOD Score: 314.314350754922 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 26.486465 Mb | Confidence Interval: 26.365 - 26.921 Mb | Type: cis-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Habp4 | LOD Score: 314.299465399565 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 64.77402 Mb | Confidence Interval: 64.278 - 64.826 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm10080 | LOD Score: 314.141219380051 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.306386 Mb | Confidence Interval: 128.306 - 128.306 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ctdsp2-ps | LOD Score: 313.91415759546 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 126.774249 Mb | Confidence Interval: 126.774 - 126.776 Mb | Type: cis-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm37335 | LOD Score: 313.686803486752 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 35.991744 Mb | Confidence Interval: 35.918 - 36.103 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Scarf1 | LOD Score: 313.351003936182 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 75.370065 Mb | Confidence Interval: 75.286 - 75.490 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 313.041964407987 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 54.464032 Mb | Confidence Interval: 54.464 - 54.604 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Fez2 | LOD Score: 312.59741628977 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 78.759509 Mb | Confidence Interval: 78.697 - 78.760 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cmc1 | LOD Score: 312.400231430296 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 117.968129 Mb | Confidence Interval: 117.945 - 117.968 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Carhsp1 | LOD Score: 312.329123154151 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 8.481785 Mb | Confidence Interval: 8.306 - 8.482 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Mzt2 | LOD Score: 312.033027337153 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 15.30618 Mb | Confidence Interval: 15.209 - 15.708 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 311.962660673447 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 59.022209 Mb | Confidence Interval: 58.767 - 59.022 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Prxl2a | LOD Score: 311.765729502316 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 40.72909 Mb | Confidence Interval: 40.729 - 40.753 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Prr13 | LOD Score: 311.553683087296 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 102.371811 Mb | Confidence Interval: 102.370 - 102.372 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Corin | LOD Score: 311.433860138648 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 72.681924 Mb | Confidence Interval: 72.663 - 72.686 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Akt2-ps | LOD Score: 311.340239207476 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 27.34232 Mb | Confidence Interval: 27.279 - 27.402 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: 1700030C10Rik | LOD Score: 310.677393452936 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 21.248681 Mb | Confidence Interval: 20.768 - 21.249 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: B020010K11Rik | LOD Score: 310.40136624092 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 98.892049 Mb | Confidence Interval: 98.802 - 98.905 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 310.354013554764 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 4.069497 Mb | Confidence Interval: 4.069 - 4.108 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Fam220-ps | LOD Score: 310.182638886125 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 143.740307 Mb | Confidence Interval: 143.529 - 143.848 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 310.03906999608 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 39.056876 Mb | Confidence Interval: 39.057 - 39.095 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cd209b | LOD Score: 309.122254614784 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 3.796965 Mb | Confidence Interval: 3.797 - 4.151 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Sae1 | LOD Score: 308.835156797932 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 16.095622 Mb | Confidence Interval: 16.096 - 16.133 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rnps1-ps | LOD Score: 308.522540429427 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.531256 Mb | Confidence Interval: 24.510 - 24.952 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Guk1 | LOD Score: 308.407098845227 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 59.111235 Mb | Confidence Interval: 59.053 - 59.128 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 314.3: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 7 (145 Mb): Rich in transcription factors\nChromosome 13 (120 Mb): Important for immune function\nChromosome 10 (130 Mb): Contains protocadherin gene clusters\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 276,
+      "rank_end": 300,
+      "qtl_count": 25,
+      "lod_range": [
+        308.407098845227,
+        314.314350754922
+      ],
+      "genes": [
+        "Cyp2a21-ps",
+        "Habp4",
+        "Gm10080",
+        "Ctdsp2-ps",
+        "Gm37335",
+        "Scarf1",
+        NaN,
+        "Fez2",
+        "Cmc1",
+        "Carhsp1",
+        "Mzt2",
+        NaN,
+        "Prxl2a",
+        "Prr13",
+        "Corin",
+        "Akt2-ps",
+        "1700030C10Rik",
+        "B020010K11Rik",
+        NaN,
+        "Fam220-ps",
+        NaN,
+        "Cd209b",
+        "Sae1",
+        "Rnps1-ps",
+        "Guk1"
+      ],
+      "chromosomes": [
+        "7",
+        "13",
+        "10",
+        "1",
+        "11",
+        "12",
+        "17",
+        "9",
+        "16",
+        "14",
+        "15",
+        "5",
+        "19",
+        "8"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_276_300",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 301-325 by LOD score\nLOD score range: 301.34 - 307.66\n\nQTL Details:\nGene: Igsf23 | LOD Score: 307.664724989506 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 19.776565 Mb | Confidence Interval: 19.777 - 19.777 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Mlh1 | LOD Score: 307.228333901397 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 111.033285 Mb | Confidence Interval: 111.007 - 111.076 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 307.186240246938 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 128.547249 Mb | Confidence Interval: 128.524 - 128.547 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Inhca | LOD Score: 307.104218236288 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 103.140523 Mb | Confidence Interval: 103.124 - 103.141 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Lrit2 | LOD Score: 306.679923850375 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 36.778371 Mb | Confidence Interval: 36.757 - 37.045 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 6030458C11Rik | LOD Score: 306.045858896334 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 12.708287 Mb | Confidence Interval: 12.688 - 12.813 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gjb4 | LOD Score: 305.92066749023 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 126.99736 Mb | Confidence Interval: 126.900 - 127.054 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cox7a2l | LOD Score: 305.734242288146 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 83.818821 Mb | Confidence Interval: 83.819 - 83.819 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Eef1a1-ps1 | LOD Score: 305.575688887592 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 78.318637 Mb | Confidence Interval: 78.319 - 78.534 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: 0610005C13Rik | LOD Score: 305.157067309999 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.201134 Mb | Confidence Interval: 45.181 - 45.380 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ftl1-ps2 | LOD Score: 304.425649828686 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 45.225096 Mb | Confidence Interval: 45.144 - 45.225 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Fbxo44 | LOD Score: 304.332675866973 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 148.212224 Mb | Confidence Interval: 148.184 - 148.212 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5540 | LOD Score: 304.20892142155 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 94.499357 Mb | Confidence Interval: 94.355 - 94.525 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: BC023719 | LOD Score: 304.096558438003 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 36.339651 Mb | Confidence Interval: 36.340 - 36.340 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Havcr1 | LOD Score: 304.06564961991 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 46.63245 Mb | Confidence Interval: 46.580 - 46.642 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ap2m1-ps | LOD Score: 304.032082470206 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 20.425018 Mb | Confidence Interval: 20.362 - 20.498 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Amn | LOD Score: 304.017910095961 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 111.336648 Mb | Confidence Interval: 111.192 - 111.337 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5492 | LOD Score: 303.363917235965 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 74.462633 Mb | Confidence Interval: 74.020 - 74.463 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Amd1 | LOD Score: 302.995774743428 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 40.118909 Mb | Confidence Interval: 39.861 - 40.163 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rps2-ps6 | LOD Score: 302.620852119424 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.952339 Mb | Confidence Interval: 24.590 - 24.952 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Slc12a7 | LOD Score: 302.496630154191 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 73.956291 Mb | Confidence Interval: 73.756 - 73.956 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm7096 | LOD Score: 302.236445948567 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 8.503341 Mb | Confidence Interval: 7.745 - 8.503 Mb | Type: cis-acting | Gene Type: unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Qpctl | LOD Score: 301.978977665853 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 18.851934 Mb | Confidence Interval: 18.846 - 18.852 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 4930545H06Rik | LOD Score: 301.509762466048 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 68.224956 Mb | Confidence Interval: 68.123 - 68.360 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm13456 | LOD Score: 301.33615896472 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 78.318637 Mb | Confidence Interval: 78.319 - 78.650 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 307.7: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 7 (145 Mb): Rich in transcription factors\nChromosome 9 (124 Mb): Important for neural development\nChromosome 6 (149 Mb): Contains immunoglobulin gene clusters\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 301,
+      "rank_end": 325,
+      "qtl_count": 25,
+      "lod_range": [
+        301.33615896472,
+        307.664724989506
+      ],
+      "genes": [
+        "Igsf23",
+        "Mlh1",
+        NaN,
+        "Inhca",
+        "Lrit2",
+        "6030458C11Rik",
+        "Gjb4",
+        "Cox7a2l",
+        "Eef1a1-ps1",
+        "0610005C13Rik",
+        "Ftl1-ps2",
+        "Fbxo44",
+        "Gm5540",
+        "BC023719",
+        "Havcr1",
+        "Ap2m1-ps",
+        "Amn",
+        "Gm5492",
+        "Amd1",
+        "Rps2-ps6",
+        "Slc12a7",
+        "Gm7096",
+        "Qpctl",
+        "4930545H06Rik",
+        "Gm13456"
+      ],
+      "chromosomes": [
+        "7",
+        "9",
+        "6",
+        "14",
+        "15",
+        "4",
+        "17",
+        "11",
+        "16",
+        "12",
+        "1",
+        "10",
+        "13",
+        "19"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_301_325",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 326-350 by LOD score\nLOD score range: 297.83 - 300.92\n\nQTL Details:\nGene: Catspere1 | LOD Score: 300.920747476555 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 177.715703 Mb | Confidence Interval: 177.716 - 177.716 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ubiad1 | LOD Score: 300.740014300551 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 148.577052 Mb | Confidence Interval: 148.364 - 148.582 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm6733 | LOD Score: 300.693088865748 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 35.133141 Mb | Confidence Interval: 35.068 - 35.201 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Clec2h | LOD Score: 300.508342535878 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 128.524239 Mb | Confidence Interval: 128.524 - 128.547 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5468 | LOD Score: 300.377617473814 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 25.437548 Mb | Confidence Interval: 25.425 - 25.440 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Isoc2b | LOD Score: 300.374538762748 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 4.878531 Mb | Confidence Interval: 4.879 - 4.879 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 300.212880225323 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 75.510875 Mb | Confidence Interval: 75.511 - 75.525 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm9349 | LOD Score: 300.097687755737 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 29.483637 Mb | Confidence Interval: 29.447 - 29.531 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: A830021M18Rik | LOD Score: 299.910614568478 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 36.78393 Mb | Confidence Interval: 36.507 - 36.947 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Dhx40 | LOD Score: 299.656676434728 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 86.893421 Mb | Confidence Interval: 86.893 - 86.893 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Serpina1d | LOD Score: 299.559932377451 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 103.874915 Mb | Confidence Interval: 103.660 - 103.875 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm6740 | LOD Score: 299.307950577928 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 67.130831 Mb | Confidence Interval: 67.016 - 67.232 Mb | Type: trans-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Scp2-ps2 | LOD Score: 299.176782142508 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 107.789856 Mb | Confidence Interval: 107.790 - 108.264 Mb | Type: trans-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 299.125613027977 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 22.226282 Mb | Confidence Interval: 19.711 - 22.226 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tubg2 | LOD Score: 298.970232922882 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 101.05486 Mb | Confidence Interval: 101.055 - 101.055 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 298.823331070294 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 97.532365 Mb | Confidence Interval: 97.532 - 97.707 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Srd5a2 | LOD Score: 298.718813777411 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 74.446609 Mb | Confidence Interval: 74.394 - 74.627 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 298.603846299781 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 127.9228 Mb | Confidence Interval: 127.693 - 127.948 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: 1500015A07Rik | LOD Score: 298.406327087782 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 61.877714 Mb | Confidence Interval: 61.872 - 61.887 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Bhmt-ps1 | LOD Score: 298.200103006476 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 93.80084 Mb | Confidence Interval: 93.677 - 93.919 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cyp2j6 | LOD Score: 298.1573857826 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 96.480399 Mb | Confidence Interval: 96.480 - 96.670 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 4930579C12Rik | LOD Score: 297.983257830522 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 89.108 - 89.137 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm8546 | LOD Score: 297.885015897562 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 40.37976 Mb | Confidence Interval: 40.255 - 40.385 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: B630019A10Rik | LOD Score: 297.865291613225 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 23.044251 Mb | Confidence Interval: 23.044 - 23.044 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: H2-T11-ps | LOD Score: 297.834897340695 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 36.339651 Mb | Confidence Interval: 36.340 - 36.340 Mb | Type: cis-acting | Gene Type: transcribed_unprocessed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 300.9: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 4 (156 Mb): Contains clustered gene families\nChromosome 9 (124 Mb): Important for neural development\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 326,
+      "rank_end": 350,
+      "qtl_count": 25,
+      "lod_range": [
+        297.834897340695,
+        300.920747476555
+      ],
+      "genes": [
+        "Catspere1",
+        "Ubiad1",
+        "Gm6733",
+        "Clec2h",
+        "Gm5468",
+        "Isoc2b",
+        NaN,
+        "Gm9349",
+        "A830021M18Rik",
+        "Dhx40",
+        "Serpina1d",
+        "Gm6740",
+        "Scp2-ps2",
+        NaN,
+        "Tubg2",
+        NaN,
+        "Srd5a2",
+        NaN,
+        "1500015A07Rik",
+        "Bhmt-ps1",
+        "Cyp2j6",
+        "4930579C12Rik",
+        "Gm8546",
+        "B630019A10Rik",
+        "H2-T11-ps"
+      ],
+      "chromosomes": [
+        "1",
+        "4",
+        "9",
+        "6",
+        "15",
+        "7",
+        "2",
+        "11",
+        "12",
+        "10",
+        "8",
+        "17",
+        "18",
+        "13",
+        "16"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_326_350",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 351-375 by LOD score\nLOD score range: 292.11 - 297.48\n\nQTL Details:\nGene: Mppe1 | LOD Score: 297.478378713505 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 67.377842 Mb | Confidence Interval: 67.318 - 67.443 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Atp6v0c-ps2 | LOD Score: 297.362277608562 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.308992 Mb | Confidence Interval: 24.284 - 24.362 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps18-ps5 | LOD Score: 297.354957706807 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 34.16871 Mb | Confidence Interval: 34.140 - 34.380 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Lncbate1 | LOD Score: 297.081515724202 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 109.32398 Mb | Confidence Interval: 109.324 - 109.336 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ak3l2-ps | LOD Score: 296.5857892302 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 101.36752 Mb | Confidence Interval: 101.313 - 101.409 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Smim36 | LOD Score: 296.433865901382 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 90.126672 Mb | Confidence Interval: 90.109 - 90.159 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5831 | LOD Score: 296.061714097704 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 42.945169 Mb | Confidence Interval: 42.897 - 43.426 Mb | Type: cis-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: F830016B08Rik | LOD Score: 295.371654703903 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 59.690611 Mb | Confidence Interval: 59.420 - 60.031 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Dach2 | LOD Score: 295.154645607913 | P-value: 7.69230769230769e-05 | Location: Chromosome X, Position 111.815657 Mb | Confidence Interval: 111.816 - 112.291 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Atp5f1e | LOD Score: 295.024459056339 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 174.270905 Mb | Confidence Interval: 174.259 - 174.271 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Nudt19 | LOD Score: 294.98431653111 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 35.280333 Mb | Confidence Interval: 35.280 - 35.340 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Naxd | LOD Score: 294.890425278108 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 11.59306 Mb | Confidence Interval: 11.465 - 11.593 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 294.879341701793 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 23.075577 Mb | Confidence Interval: 22.942 - 23.079 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Adm2 | LOD Score: 294.540742056101 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 89.158752 Mb | Confidence Interval: 89.159 - 89.281 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm38383 | LOD Score: 294.342493601391 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 141.974985 Mb | Confidence Interval: 141.669 - 142.212 Mb | Type: trans-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Gm7298 | LOD Score: 294.047824951263 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 122.098192 Mb | Confidence Interval: 121.639 - 122.101 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ldlrad3 | LOD Score: 293.976643134262 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 101.848323 Mb | Confidence Interval: 101.848 - 101.933 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Abca3 | LOD Score: 293.961314831988 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.897705 Mb | Confidence Interval: 24.531 - 24.952 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm4366 | LOD Score: 293.026668803029 | P-value: 7.69230769230769e-05 | Location: Chromosome 19, Position 8.930925 Mb | Confidence Interval: 8.931 - 8.931 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ttc4 | LOD Score: 292.922797399194 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 106.527873 Mb | Confidence Interval: 106.454 - 106.571 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm14026 | LOD Score: 292.593721021587 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 108.121722 Mb | Confidence Interval: 108.054 - 108.122 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cyp2a12 | LOD Score: 292.410465830054 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 26.412685 Mb | Confidence Interval: 26.365 - 26.513 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Grm8 | LOD Score: 292.409123511271 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 27.90138 Mb | Confidence Interval: 27.730 - 27.901 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm11945 | LOD Score: 292.315788464559 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 37.793438 Mb | Confidence Interval: 37.746 - 38.197 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Ntan1 | LOD Score: 292.113500338209 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 13.73373 Mb | Confidence Interval: 13.653 - 13.779 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 297.5: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 18 (90 Mb): Contains important developmental genes\nChromosome 17 (95 Mb): Dense in protein-coding genes\nChromosome 8 (129 Mb): Contains many enzyme-coding genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 351,
+      "rank_end": 375,
+      "qtl_count": 25,
+      "lod_range": [
+        292.113500338209,
+        297.478378713505
+      ],
+      "genes": [
+        "Mppe1",
+        "Atp6v0c-ps2",
+        "Rps18-ps5",
+        "Lncbate1",
+        "Ak3l2-ps",
+        "Smim36",
+        "Gm5831",
+        "F830016B08Rik",
+        "Dach2",
+        "Atp5f1e",
+        "Nudt19",
+        "Naxd",
+        NaN,
+        "Adm2",
+        "Gm38383",
+        "Gm7298",
+        "Ldlrad3",
+        "Abca3",
+        "Gm4366",
+        "Ttc4",
+        "Gm14026",
+        "Cyp2a12",
+        "Grm8",
+        "Gm11945",
+        "Ntan1"
+      ],
+      "chromosomes": [
+        "18",
+        "17",
+        "8",
+        "4",
+        "11",
+        "9",
+        "X",
+        "2",
+        "7",
+        "15",
+        "6",
+        "19",
+        "12",
+        "1",
+        "16"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_351_375",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 376-400 by LOD score\nLOD score range: 286.82 - 291.98\n\nQTL Details:\nGene: Phb1 | LOD Score: 291.975688480653 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 95.749394 Mb | Confidence Interval: 95.243 - 95.749 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 291.974709412189 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 24.557882 Mb | Confidence Interval: 24.554 - 24.955 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ocel1 | LOD Score: 291.771054165806 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 71.346073 Mb | Confidence Interval: 71.344 - 71.816 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gpd1l | LOD Score: 291.62302039366 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 114.792281 Mb | Confidence Interval: 114.758 - 114.809 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Akr1c19 | LOD Score: 291.177770452428 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 4.282981 Mb | Confidence Interval: 4.251 - 4.477 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Platr22 | LOD Score: 290.843661314451 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 44.34533 Mb | Confidence Interval: 44.308 - 44.499 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm12966 | LOD Score: 290.61813315604 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 81.019379 Mb | Confidence Interval: 80.823 - 81.061 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Pop5 | LOD Score: 290.33501570006 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.361221 Mb | Confidence Interval: 115.196 - 115.497 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5131 | LOD Score: 290.266452548122 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 153.658661 Mb | Confidence Interval: 153.628 - 153.675 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 290.185776160069 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 133.678236 Mb | Confidence Interval: 133.678 - 133.985 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 290.182341759627 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 86.551036 Mb | Confidence Interval: 86.551 - 86.558 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rnf225 | LOD Score: 289.976617848261 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 12.343137 Mb | Confidence Interval: 11.885 - 12.448 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 289.937796044644 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 150.68962 Mb | Confidence Interval: 150.264 - 150.695 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: A530088E08Rik | LOD Score: 289.320180751902 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 32.62923 Mb | Confidence Interval: 32.558 - 32.841 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm56829 | LOD Score: 289.049224302532 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 22.247802 Mb | Confidence Interval: 19.711 - 22.248 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Zwint | LOD Score: 288.728803377259 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 71.812698 Mb | Confidence Interval: 71.813 - 72.807 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Eif3h | LOD Score: 288.471034299409 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 51.665501 Mb | Confidence Interval: 51.666 - 51.676 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Colgalt2 | LOD Score: 288.001924922371 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 152.226866 Mb | Confidence Interval: 152.154 - 152.308 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tmem123 | LOD Score: 287.837842998786 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 7.928929 Mb | Confidence Interval: 7.929 - 7.999 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 287.691436488645 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 12.868364 Mb | Confidence Interval: 12.717 - 12.886 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm9752 | LOD Score: 287.495705789664 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 119.57408 Mb | Confidence Interval: 119.567 - 119.574 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm47040 | LOD Score: 287.36309354807 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 114.309349 Mb | Confidence Interval: 114.255 - 114.673 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Il11ra2 | LOD Score: 287.264249566452 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 41.760912 Mb | Confidence Interval: 41.742 - 41.761 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm16573 | LOD Score: 287.223215467482 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 56.823076 Mb | Confidence Interval: 56.772 - 56.867 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: 2610507I01Rik | LOD Score: 286.815172350675 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 59.053009 Mb | Confidence Interval: 59.053 - 59.053 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 292.0: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 11 (122 Mb): Rich in metabolic pathway genes\nChromosome 17 (95 Mb): Dense in protein-coding genes\nChromosome 8 (129 Mb): Contains many enzyme-coding genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 376,
+      "rank_end": 400,
+      "qtl_count": 25,
+      "lod_range": [
+        286.815172350675,
+        291.975688480653
+      ],
+      "genes": [
+        "Phb1",
+        NaN,
+        "Ocel1",
+        "Gpd1l",
+        "Akr1c19",
+        "Platr22",
+        "Gm12966",
+        "Pop5",
+        "Gm5131",
+        NaN,
+        NaN,
+        "Rnf225",
+        NaN,
+        "A530088E08Rik",
+        "Gm56829",
+        "Zwint",
+        "Eif3h",
+        "Colgalt2",
+        "Tmem123",
+        NaN,
+        "Gm9752",
+        "Gm47040",
+        "Il11ra2",
+        "Gm16573",
+        "2610507I01Rik"
+      ],
+      "chromosomes": [
+        "11",
+        "17",
+        "8",
+        "9",
+        "13",
+        "12",
+        "5",
+        "3",
+        "4",
+        "1",
+        "7",
+        "10",
+        "15",
+        "2",
+        "14"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_376_400",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 401-425 by LOD score\nLOD score range: 282.11 - 286.57\n\nQTL Details:\nGene: Atp6v1d | LOD Score: 286.571135994293 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 78.9054 Mb | Confidence Interval: 78.464 - 78.974 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5088 | LOD Score: 286.471979409947 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 123.589167 Mb | Confidence Interval: 123.197 - 123.625 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Trim43b | LOD Score: 286.449150613349 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 88.861 - 89.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cryzl2 | LOD Score: 286.098943818746 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 157.238544 Mb | Confidence Interval: 156.979 - 157.295 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 286.075531817923 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 35.062031 Mb | Confidence Interval: 34.868 - 35.183 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Slc38a11 | LOD Score: 285.31708796339 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 65.225708 Mb | Confidence Interval: 65.176 - 65.245 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Pag1 | LOD Score: 285.288007629431 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 9.7928 Mb | Confidence Interval: 9.793 - 10.049 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm48795 | LOD Score: 284.992819408236 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 86.490614 Mb | Confidence Interval: 86.351 - 86.509 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: H2-Q10 | LOD Score: 284.884812765571 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 35.546899 Mb | Confidence Interval: 35.547 - 35.547 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Cibar1 | LOD Score: 284.582891113167 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 12.003304 Mb | Confidence Interval: 11.957 - 12.096 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rbpj | LOD Score: 284.517688250158 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 53.869224 Mb | Confidence Interval: 53.819 - 53.869 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Hspe1-rs1 | LOD Score: 284.407719935609 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 55.01773 Mb | Confidence Interval: 54.985 - 55.130 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Josd1-ps | LOD Score: 284.179107169815 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 79.39625 Mb | Confidence Interval: 79.396 - 79.652 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm44777 | LOD Score: 283.298788584278 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 115.934874 Mb | Confidence Interval: 115.891 - 116.044 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm57061 | LOD Score: 283.139854112011 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 107.536963 Mb | Confidence Interval: 107.537 - 107.537 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Slc13a2 | LOD Score: 283.12865884953 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 78.388567 Mb | Confidence Interval: 78.213 - 78.389 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Fam216a | LOD Score: 283.041966532447 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 122.392551 Mb | Confidence Interval: 122.377 - 122.570 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gpn3 | LOD Score: 283.039928825271 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 122.505938 Mb | Confidence Interval: 122.436 - 122.598 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Smo | LOD Score: 282.977812637576 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 29.809698 Mb | Confidence Interval: 29.810 - 29.882 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Snap47 | LOD Score: 282.790342937403 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 59.278775 Mb | Confidence Interval: 59.235 - 59.385 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Capza1 | LOD Score: 282.670131351583 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 104.89907 Mb | Confidence Interval: 104.695 - 104.899 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm15318 | LOD Score: 282.615417903368 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 31.285246 Mb | Confidence Interval: 31.285 - 31.362 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Trim43a | LOD Score: 282.304473801251 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.108148 Mb | Confidence Interval: 88.861 - 89.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tmem59 | LOD Score: 282.206398341792 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 107.056458 Mb | Confidence Interval: 107.023 - 107.056 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 2210408F21Rik | LOD Score: 282.108126899645 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 31.332967 Mb | Confidence Interval: 31.253 - 31.371 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 286.6: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 12 (120 Mb): Contains many regulatory genes\nChromosome 4 (156 Mb): Contains clustered gene families\nChromosome 9 (124 Mb): Important for neural development\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 401,
+      "rank_end": 425,
+      "qtl_count": 25,
+      "lod_range": [
+        282.108126899645,
+        286.571135994293
+      ],
+      "genes": [
+        "Atp6v1d",
+        "Gm5088",
+        "Trim43b",
+        "Cryzl2",
+        NaN,
+        "Slc38a11",
+        "Pag1",
+        "Gm48795",
+        "H2-Q10",
+        "Cibar1",
+        "Rbpj",
+        "Hspe1-rs1",
+        "Josd1-ps",
+        "Gm44777",
+        "Gm57061",
+        "Slc13a2",
+        "Fam216a",
+        "Gpn3",
+        "Smo",
+        "Snap47",
+        "Capza1",
+        "Gm15318",
+        "Trim43a",
+        "Tmem59",
+        "2210408F21Rik"
+      ],
+      "chromosomes": [
+        "12",
+        "4",
+        "9",
+        "1",
+        "17",
+        "2",
+        "3",
+        "5",
+        "15",
+        "7",
+        "11",
+        "6"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_401_425",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 426-450 by LOD score\nLOD score range: 278.44 - 282.05\n\nQTL Details:\nGene: Psen2 | LOD Score: 282.047960143664 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 180.064141 Mb | Confidence Interval: 180.012 - 180.064 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 281.246187657475 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 92.846169 Mb | Confidence Interval: 92.636 - 92.860 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 281.122375314446 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 98.904739 Mb | Confidence Interval: 98.892 - 98.905 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gstm7 | LOD Score: 281.032513400649 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 107.612923 Mb | Confidence Interval: 107.594 - 107.859 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Nvl | LOD Score: 280.908998633488 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 180.978122 Mb | Confidence Interval: 180.914 - 181.032 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm56807 | LOD Score: 280.834343145368 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 57.275261 Mb | Confidence Interval: 57.221 - 57.341 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Larp7-ps | LOD Score: 280.736421560589 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 127.505545 Mb | Confidence Interval: 127.275 - 127.515 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Dusp23 | LOD Score: 280.70777561715 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 172.534503 Mb | Confidence Interval: 172.535 - 172.535 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 280.69459845869 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 85.358755 Mb | Confidence Interval: 84.772 - 85.359 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Nrbf2 | LOD Score: 280.682213090539 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 67.231656 Mb | Confidence Interval: 67.016 - 67.232 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Adra1d | LOD Score: 280.605553750696 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 131.367493 Mb | Confidence Interval: 131.338 - 131.530 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Asic5 | LOD Score: 280.128230366797 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 81.957885 Mb | Confidence Interval: 81.941 - 81.958 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Hamp2 | LOD Score: 280.01450214791 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 30.451154 Mb | Confidence Interval: 30.412 - 30.653 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Prxl2b | LOD Score: 279.926441746105 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 154.999467 Mb | Confidence Interval: 154.999 - 154.999 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 279.904436588396 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 97.570796 Mb | Confidence Interval: 97.527 - 97.571 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Ceacam1 | LOD Score: 279.733912099116 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 25.188187 Mb | Confidence Interval: 25.188 - 25.188 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Eif3j2 | LOD Score: 279.7157815596 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 121.917489 Mb | Confidence Interval: 121.798 - 121.917 Mb | Type: trans-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Tc2n | LOD Score: 279.67354445522 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 101.707448 Mb | Confidence Interval: 101.707 - 101.707 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: F12 | LOD Score: 279.598889386927 | P-value: 7.69230769230769e-05 | Location: Chromosome 13, Position 55.379562 Mb | Confidence Interval: 55.076 - 55.546 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Serpina11 | LOD Score: 279.588018419971 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 103.620586 Mb | Confidence Interval: 103.621 - 103.660 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Myom3 | LOD Score: 279.497400751548 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 135.456843 Mb | Confidence Interval: 135.457 - 135.530 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm40770 | LOD Score: 279.172467636612 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 117.204435 Mb | Confidence Interval: 117.202 - 117.204 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 279.070843008007 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 122.174186 Mb | Confidence Interval: 121.639 - 122.397 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Lamtor5 | LOD Score: 278.821438576961 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 107.17524 Mb | Confidence Interval: 107.175 - 107.301 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Pcna-ps2 | LOD Score: 278.441819995467 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 132.040062 Mb | Confidence Interval: 132.001 - 132.101 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 282.0: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\nChromosome 13 (120 Mb): Important for immune function\nChromosome 15 (104 Mb): Rich in ribosomal protein genes\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 426,
+      "rank_end": 450,
+      "qtl_count": 25,
+      "lod_range": [
+        278.441819995467,
+        282.047960143664
+      ],
+      "genes": [
+        "Psen2",
+        NaN,
+        NaN,
+        "Gstm7",
+        "Nvl",
+        "Gm56807",
+        "Larp7-ps",
+        "Dusp23",
+        NaN,
+        "Nrbf2",
+        "Adra1d",
+        "Asic5",
+        "Hamp2",
+        "Prxl2b",
+        NaN,
+        "Ceacam1",
+        "Eif3j2",
+        "Tc2n",
+        "F12",
+        "Serpina11",
+        "Myom3",
+        "Gm40770",
+        NaN,
+        "Lamtor5",
+        "Pcna-ps2"
+      ],
+      "chromosomes": [
+        "1",
+        "13",
+        "15",
+        "3",
+        "18",
+        "10",
+        "2",
+        "7",
+        "4",
+        "12",
+        "6"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_426_450",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 451-475 by LOD score\nLOD score range: 274.82 - 278.38\n\nQTL Details:\nGene: Ctsk | LOD Score: 278.38259325421 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 95.419345 Mb | Confidence Interval: 95.238 - 95.457 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Rbpj-ps3 | LOD Score: 278.366629953003 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 53.818507 Mb | Confidence Interval: 53.819 - 53.869 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm6394 | LOD Score: 278.065181019199 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 44.761673 Mb | Confidence Interval: 44.762 - 44.762 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Snhg6 | LOD Score: 277.927343444127 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 9.914213 Mb | Confidence Interval: 9.914 - 9.914 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Krt8-ps | LOD Score: 277.736249399467 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 101.974135 Mb | Confidence Interval: 101.852 - 101.989 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm2396 | LOD Score: 277.715674054827 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 89.108 - 89.137 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 277.557446279417 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 140.531641 Mb | Confidence Interval: 140.532 - 140.532 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Capn3 | LOD Score: 277.326668854214 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 120.256173 Mb | Confidence Interval: 119.926 - 120.316 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Or5m3b | LOD Score: 277.165583569374 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 85.691023 Mb | Confidence Interval: 85.414 - 85.813 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Ces1b | LOD Score: 277.108553326875 | P-value: 7.69230769230769e-05 | Location: Chromosome 8, Position 93.7422 Mb | Confidence Interval: 93.739 - 93.902 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: 9430037G07Rik | LOD Score: 276.846902517725 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 89.108 - 89.137 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Cnot11 | LOD Score: 276.254911231461 | P-value: 7.69230769230769e-05 | Location: Chromosome 1, Position 39.578055 Mb | Confidence Interval: 39.525 - 39.607 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Atpsckmt | LOD Score: 276.196460773606 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 31.475999 Mb | Confidence Interval: 31.425 - 31.790 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm5866 | LOD Score: 275.93481590545 | P-value: 7.69230769230769e-05 | Location: Chromosome 18, Position 36.520105 Mb | Confidence Interval: 36.520 - 36.856 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Il11ra3 | LOD Score: 275.884478641938 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 41.706113 Mb | Confidence Interval: 41.706 - 41.761 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm31235 | LOD Score: 275.655597006699 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 74.626754 Mb | Confidence Interval: 74.394 - 74.668 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm8210 | LOD Score: 275.588249816335 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 106.298577 Mb | Confidence Interval: 105.976 - 106.299 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Hp1bp3 | LOD Score: 275.529621279758 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 137.941863 Mb | Confidence Interval: 137.942 - 138.012 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm37993 | LOD Score: 275.435007831279 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.136897 Mb | Confidence Interval: 89.108 - 89.137 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Rpsa-ps2 | LOD Score: 275.090672446611 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 119.951468 Mb | Confidence Interval: 119.951 - 120.078 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Nagk | LOD Score: 275.067257307158 | P-value: 7.69230769230769e-05 | Location: Chromosome 6, Position 83.640663 Mb | Confidence Interval: 83.641 - 83.796 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm43429 | LOD Score: 275.045770560842 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 135.730872 Mb | Confidence Interval: 135.678 - 135.731 Mb | Type: cis-acting | Gene Type: TEC | Q-value (FDR): 0.0001122218180753\nGene: Rbm3-ps | LOD Score: 275.027849871967 | P-value: 7.69230769230769e-05 | Location: Chromosome X, Position 8.035148 Mb | Confidence Interval: 7.882 - 8.041 Mb | Type: trans-acting | Gene Type: transcribed_processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Pccb | LOD Score: 274.835063516573 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 100.860912 Mb | Confidence Interval: 100.826 - 100.881 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Hadhb-ps | LOD Score: 274.816782404758 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 30.390997 Mb | Confidence Interval: 30.266 - 30.391 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 278.4: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\nChromosome 5 (151 Mb): Important for development and metabolism\nChromosome 7 (145 Mb): Rich in transcription factors\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 451,
+      "rank_end": 475,
+      "qtl_count": 25,
+      "lod_range": [
+        274.816782404758,
+        278.38259325421
+      ],
+      "genes": [
+        "Ctsk",
+        "Rbpj-ps3",
+        "Gm6394",
+        "Snhg6",
+        "Krt8-ps",
+        "Gm2396",
+        NaN,
+        "Capn3",
+        "Or5m3b",
+        "Ces1b",
+        "9430037G07Rik",
+        "Cnot11",
+        "Atpsckmt",
+        "Gm5866",
+        "Il11ra3",
+        "Gm31235",
+        "Gm8210",
+        "Hp1bp3",
+        "Gm37993",
+        "Rpsa-ps2",
+        "Nagk",
+        "Gm43429",
+        "Rbm3-ps",
+        "Pccb",
+        "Hadhb-ps"
+      ],
+      "chromosomes": [
+        "3",
+        "5",
+        "7",
+        "1",
+        "15",
+        "9",
+        "2",
+        "8",
+        "18",
+        "4",
+        "17",
+        "6",
+        "X"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_451_475",
+    "type": "top_qtls"
+  },
+  {
+    "content": "Top QTLs ranked 476-500 by LOD score\nLOD score range: 271.10 - 274.73\n\nQTL Details:\nGene: Ss18l2 | LOD Score: 274.730656422143 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 121.551333 Mb | Confidence Interval: 121.551 - 121.551 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: H2af-ps2 | LOD Score: 274.571378071593 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 96.182803 Mb | Confidence Interval: 95.855 - 96.183 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Hnf1aos1 | LOD Score: 274.537631772965 | P-value: 7.69230769230769e-05 | Location: Chromosome 5, Position 115.004188 Mb | Confidence Interval: 114.934 - 115.077 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm18762 | LOD Score: 274.493174165421 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 88.731519 Mb | Confidence Interval: 88.663 - 88.732 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 274.429378373552 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 32.820099 Mb | Confidence Interval: 32.820 - 32.944 Mb | Type: trans-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Eef2-ps2 | LOD Score: 274.351009647326 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 81.495552 Mb | Confidence Interval: 80.840 - 81.496 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm57127 | LOD Score: 273.92137470956 | P-value: 7.69230769230769e-05 | Location: Chromosome 4, Position 117.700609 Mb | Confidence Interval: 117.426 - 117.852 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 273.873478336547 | P-value: 7.69230769230769e-05 | Location: Chromosome X, Position 72.397023 Mb | Confidence Interval: 72.088 - 72.397 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: AA465934 | LOD Score: 273.716164595402 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 83.106374 Mb | Confidence Interval: 82.951 - 83.106 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Tagap | LOD Score: 273.454664122053 | P-value: 7.69230769230769e-05 | Location: Chromosome 17, Position 7.13692 Mb | Confidence Interval: 7.137 - 7.137 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Adamts20 | LOD Score: 273.297053140808 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 94.629763 Mb | Confidence Interval: 94.315 - 94.663 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: S100a13 | LOD Score: 272.957995407139 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 90.348542 Mb | Confidence Interval: 90.349 - 90.428 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm57587 | LOD Score: 272.649706571822 | P-value: 7.69230769230769e-05 | Location: Chromosome 12, Position 21.276452 Mb | Confidence Interval: 20.768 - 21.649 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Rtf2 | LOD Score: 272.531590374668 | P-value: 7.69230769230769e-05 | Location: Chromosome 2, Position 172.298745 Mb | Confidence Interval: 172.276 - 172.303 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Gm7511 | LOD Score: 272.510268598065 | P-value: 7.69230769230769e-05 | Location: Chromosome 16, Position 20.556183 Mb | Confidence Interval: 20.556 - 20.608 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: 9030407P20Rik | LOD Score: 272.336607060158 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 120.254676 Mb | Confidence Interval: 120.255 - 120.307 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm14150 | LOD Score: 272.310085113452 | P-value: 7.69230769230769e-05 | Location: Chromosome 15, Position 98.904739 Mb | Confidence Interval: 98.802 - 98.958 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Cisd2 | LOD Score: 272.186587955322 | P-value: 7.69230769230769e-05 | Location: Chromosome 3, Position 135.223735 Mb | Confidence Interval: 134.966 - 135.224 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: Uros | LOD Score: 272.070327539292 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 133.377726 Mb | Confidence Interval: 133.252 - 133.391 Mb | Type: cis-acting | Gene Type: protein_coding | Q-value (FDR): 0.0001122218180753\nGene: nan | LOD Score: 271.846590582606 | P-value: 7.69230769230769e-05 | Location: Chromosome 14, Position 70.003676 Mb | Confidence Interval: 69.986 - 70.004 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\nGene: Gm10259 | LOD Score: 271.816859310031 | P-value: 7.69230769230769e-05 | Location: Chromosome 11, Position 106.791551 Mb | Confidence Interval: 106.792 - 106.900 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Rps11-ps1 | LOD Score: 271.791540176162 | P-value: 7.69230769230769e-05 | Location: Chromosome 7, Position 44.746998 Mb | Confidence Interval: 44.747 - 44.747 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm6563 | LOD Score: 271.762120287802 | P-value: 7.69230769230769e-05 | Location: Chromosome 10, Position 128.525599 Mb | Confidence Interval: 128.517 - 128.724 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: Gm8355 | LOD Score: 271.299693336488 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 40.798704 Mb | Confidence Interval: 40.721 - 40.858 Mb | Type: trans-acting | Gene Type: processed_pseudogene | Q-value (FDR): 0.0001122218180753\nGene: 9330159M07Rik | LOD Score: 271.100417410115 | P-value: 7.69230769230769e-05 | Location: Chromosome 9, Position 89.108148 Mb | Confidence Interval: 88.861 - 89.108 Mb | Type: cis-acting | Gene Type: lncRNA | Q-value (FDR): 0.0001122218180753\n=== BIOLOGICAL CONTEXT ===\n\n\ud83d\udcca SIGNIFICANCE INTERPRETATION:\nLOD 274.7: Extremely strong genetic association, very high confidence\n\n\ud83e\uddec CHROMOSOME CONTEXT:\nChromosome 9 (124 Mb): Important for neural development\nChromosome 3 (160 Mb): Rich in olfactory receptor genes\nChromosome 5 (151 Mb): Important for development and metabolism\n\n\ud83e\udec0 LIVER RELEVANCE:\nThese QTLs may affect liver metabolism, detoxification, or gene regulation.\nGenetic variants in liver genes can influence drug response and disease risk.",
+    "metadata": {
+      "rank_start": 476,
+      "rank_end": 500,
+      "qtl_count": 25,
+      "lod_range": [
+        271.100417410115,
+        274.730656422143
+      ],
+      "genes": [
+        "Ss18l2",
+        "H2af-ps2",
+        "Hnf1aos1",
+        "Gm18762",
+        NaN,
+        "Eef2-ps2",
+        "Gm57127",
+        NaN,
+        "AA465934",
+        "Tagap",
+        "Adamts20",
+        "S100a13",
+        "Gm57587",
+        "Rtf2",
+        "Gm7511",
+        "9030407P20Rik",
+        "Gm14150",
+        "Cisd2",
+        "Uros",
+        NaN,
+        "Gm10259",
+        "Rps11-ps1",
+        "Gm6563",
+        "Gm8355",
+        "9330159M07Rik"
+      ],
+      "chromosomes": [
+        "9",
+        "3",
+        "5",
+        "15",
+        "2",
+        "10",
+        "4",
+        "X",
+        "11",
+        "17",
+        "12",
+        "16",
+        "7",
+        "14"
+      ],
+      "topics": [
+        "biological_context",
+        "interpretation"
+      ],
+      "enhanced_with_knowledge": true
+    },
+    "id": "top_qtls_476_500",
+    "type": "top_qtls"
+  },
+  {
+    "content": "\n            QTL (QUANTITATIVE TRAIT LOCI) FUNDAMENTALS:\n            \n            LOD 50.0: Strong genetic association, high confidence\n\nQTL INTERPRETATION GUIDE:\n- LOD > 100: Extremely strong genetic effect\n- LOD 50-100: Very strong genetic association\n- LOD 10-50: Strong genetic association\n- LOD 3-10: Significant genetic linkage\n- LOD < 3: Suggestive, needs validation  # Example with high LOD\n            \n            CIS vs TRANS REGULATION:\n            - Cis-acting: Local regulation - QTL affects nearby gene expression, typically within 10Mb\n            - Trans-acting: Distant regulation - QTL affects gene expression on different chromosome or distant location\n            \n            STATISTICAL INTERPRETATION:\n            - LOD scores measure evidence for genetic linkage\n            - Higher LOD = stronger evidence for QTL at that location\n            - P-values measure statistical significance\n            - Q-values control for multiple testing (FDR)\n            ",
+    "metadata": {
+      "type": "qtl_fundamentals",
+      "topics": [
+        "lod_scores",
+        "cis_trans",
+        "statistics"
+      ]
+    },
+    "id": "knowledge_qtl_basics",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n        LIVER BIOLOGY CONTEXT:\n        The liver is the body's largest internal organ and performs over 500 functions:\n        \n        \ud83e\uddec GENETIC REGULATION:\n        - Highly expressed genes include albumin, transferrin, and cytochrome P450s\n        - Many genes show circadian expression patterns\n        - Sex differences in gene expression are common\n        \n        \ud83d\udd2c METABOLIC FUNCTIONS:\n        - Glucose homeostasis and glycogen storage\n        - Lipid synthesis and cholesterol metabolism  \n        - Protein synthesis and amino acid metabolism\n        - Bile acid production and fat digestion\n        \n        \ud83d\udee1\ufe0f DETOXIFICATION:\n        - Phase I and Phase II drug metabolism\n        - Cytochrome P450 enzyme family\n        - Glutathione conjugation pathways\n        - Alcohol and toxin processing\n        \n        \ud83e\ude7a DISEASE RELEVANCE:\n        - Genetic variants affect drug response\n        - Key organ in metabolic diseases\n        - Central to cardiovascular risk factors\n        - Target for therapeutic interventions\n        ",
+    "metadata": {
+      "type": "liver_biology",
+      "topics": [
+        "metabolism",
+        "detoxification",
+        "disease"
+      ]
+    },
+    "id": "knowledge_liver_biology",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 1 CHARACTERISTICS:\n                \n                Size: 195 Mb\n                Features: Largest autosome, contains many metabolic genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 1:\n                - QTLs on this chromosome may affect largest autosome, contains many metabolic genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "1",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_1",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 2 CHARACTERISTICS:\n                \n                Size: 182 Mb\n                Features: Contains major histocompatibility complex (MHC)\n                \n                QTL INTERPRETATION FOR CHROMOSOME 2:\n                - QTLs on this chromosome may affect contains major histocompatibility complex (mhc)\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "2",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_2",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 3 CHARACTERISTICS:\n                \n                Size: 160 Mb\n                Features: Rich in olfactory receptor genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 3:\n                - QTLs on this chromosome may affect rich in olfactory receptor genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "3",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_3",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 4 CHARACTERISTICS:\n                \n                Size: 156 Mb\n                Features: Contains clustered gene families\n                \n                QTL INTERPRETATION FOR CHROMOSOME 4:\n                - QTLs on this chromosome may affect contains clustered gene families\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "4",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_4",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 5 CHARACTERISTICS:\n                \n                Size: 151 Mb\n                Features: Important for development and metabolism\n                \n                QTL INTERPRETATION FOR CHROMOSOME 5:\n                - QTLs on this chromosome may affect important for development and metabolism\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "5",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_5",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 6 CHARACTERISTICS:\n                \n                Size: 149 Mb\n                Features: Contains immunoglobulin gene clusters\n                \n                QTL INTERPRETATION FOR CHROMOSOME 6:\n                - QTLs on this chromosome may affect contains immunoglobulin gene clusters\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "6",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_6",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 7 CHARACTERISTICS:\n                \n                Size: 145 Mb\n                Features: Rich in transcription factors\n                \n                QTL INTERPRETATION FOR CHROMOSOME 7:\n                - QTLs on this chromosome may affect rich in transcription factors\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "7",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_7",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 8 CHARACTERISTICS:\n                \n                Size: 129 Mb\n                Features: Contains many enzyme-coding genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 8:\n                - QTLs on this chromosome may affect contains many enzyme-coding genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "8",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_8",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 9 CHARACTERISTICS:\n                \n                Size: 124 Mb\n                Features: Important for neural development\n                \n                QTL INTERPRETATION FOR CHROMOSOME 9:\n                - QTLs on this chromosome may affect important for neural development\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "9",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_9",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 10 CHARACTERISTICS:\n                \n                Size: 130 Mb\n                Features: Contains protocadherin gene clusters\n                \n                QTL INTERPRETATION FOR CHROMOSOME 10:\n                - QTLs on this chromosome may affect contains protocadherin gene clusters\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "10",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_10",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 11 CHARACTERISTICS:\n                \n                Size: 122 Mb\n                Features: Rich in metabolic pathway genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 11:\n                - QTLs on this chromosome may affect rich in metabolic pathway genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "11",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_11",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 12 CHARACTERISTICS:\n                \n                Size: 120 Mb\n                Features: Contains many regulatory genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 12:\n                - QTLs on this chromosome may affect contains many regulatory genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "12",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_12",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 13 CHARACTERISTICS:\n                \n                Size: 120 Mb\n                Features: Important for immune function\n                \n                QTL INTERPRETATION FOR CHROMOSOME 13:\n                - QTLs on this chromosome may affect important for immune function\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "13",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_13",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 14 CHARACTERISTICS:\n                \n                Size: 125 Mb\n                Features: Contains T-cell receptor genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 14:\n                - QTLs on this chromosome may affect contains t-cell receptor genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "14",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_14",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 15 CHARACTERISTICS:\n                \n                Size: 104 Mb\n                Features: Rich in ribosomal protein genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 15:\n                - QTLs on this chromosome may affect rich in ribosomal protein genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "15",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_15",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 16 CHARACTERISTICS:\n                \n                Size: 98 Mb\n                Features: Contains many housekeeping genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 16:\n                - QTLs on this chromosome may affect contains many housekeeping genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "16",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_16",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 17 CHARACTERISTICS:\n                \n                Size: 95 Mb\n                Features: Dense in protein-coding genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 17:\n                - QTLs on this chromosome may affect dense in protein-coding genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "17",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_17",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 18 CHARACTERISTICS:\n                \n                Size: 90 Mb\n                Features: Contains important developmental genes\n                \n                QTL INTERPRETATION FOR CHROMOSOME 18:\n                - QTLs on this chromosome may affect contains important developmental genes\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "18",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_18",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME 19 CHARACTERISTICS:\n                \n                Size: 61 Mb\n                Features: Highest gene density, many zinc finger proteins\n                \n                QTL INTERPRETATION FOR CHROMOSOME 19:\n                - QTLs on this chromosome may affect highest gene density, many zinc finger proteins\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "19",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_19",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n                CHROMOSOME X CHARACTERISTICS:\n                \n                Size: 171 Mb\n                Features: X-linked inheritance, dosage compensation\n                \n                QTL INTERPRETATION FOR CHROMOSOME X:\n                - QTLs on this chromosome may affect x-linked inheritance, dosage compensation\n                - Physical size influences mapping resolution\n                - Gene density affects cis vs trans classification\n                ",
+    "metadata": {
+      "type": "chromosome_info",
+      "chromosome": "X",
+      "topics": [
+        "genomics",
+        "mapping"
+      ]
+    },
+    "id": "knowledge_chromosome_X",
+    "type": "knowledge_base"
+  },
+  {
+    "content": "\n            OVERALL DATASET SUMMARY:\n            \n            \ud83d\udcca STATISTICAL OVERVIEW:\n            - Total QTLs analyzed: 500\n            - LOD score range: 271.10 to 608.58\n            - Average LOD score: 336.43\n            - Cis-acting QTLs: 303 (60.6%)\n            - Trans-acting QTLs: 197 (39.4%)\n            \n            \ud83e\uddec TOP FINDINGS:\n            LOD 608.6: Extremely strong genetic association, very high confidence\n            \n            \ud83d\udd2c BIOLOGICAL SIGNIFICANCE:\n            This dataset represents liver gene expression QTLs from Diversity Outbred mice.\n            High LOD scores (>100) indicate extremely strong genetic associations.\n            Cis-acting QTLs suggest local genetic regulation.\n            Trans-acting QTLs indicate distant regulatory effects.\n            \n            \ud83d\udca1 RESEARCH IMPLICATIONS:\n            - Strong genetic control of liver gene expression\n            - Potential therapeutic targets for metabolic diseases\n            - Insights into genetic architecture of complex traits\n            - Relevance to human disease genetics\n            ",
+    "metadata": {
+      "type": "overall_summary",
+      "total_qtls": 500,
+      "lod_range": [
+        271.100417410115,
+        608.580979506093
+      ],
+      "avg_lod": 336.43329712846685,
+      "cis_count": 303,
+      "trans_count": 197,
+      "topics": [
+        "overview",
+        "statistics",
+        "significance"
+      ]
+    },
+    "id": "summary_overall_dataset",
+    "type": "dataset_summary"
+  },
+  {
+    "content": "CHROMOSOME-WISE QTL DISTRIBUTION:\n\n\ud83d\udccd QTLs PER CHROMOSOME:\n- Chromosome 17 (95 Mb): Dense in protein-coding genes\n  QTLs: 49, Max LOD: 551.1\n- Chromosome 7 (145 Mb): Rich in transcription factors\n  QTLs: 44, Max LOD: 445.8\n- Chromosome 9 (124 Mb): Important for neural development\n  QTLs: 42, Max LOD: 442.5\n- Chromosome 3 (160 Mb): Rich in olfactory receptor genes\n  QTLs: 35, Max LOD: 608.6\n- Chromosome 11 (122 Mb): Rich in metabolic pathway genes\n  QTLs: 34, Max LOD: 572.3\n- Chromosome 1 (195 Mb): Largest autosome, contains many metabolic genes\n  QTLs: 34, Max LOD: 437.8\n- Chromosome 4 (156 Mb): Contains clustered gene families\n  QTLs: 29, Max LOD: 506.3\n- Chromosome 10 (130 Mb): Contains protocadherin gene clusters\n  QTLs: 29, Max LOD: 480.2\n- Chromosome 5 (151 Mb): Important for development and metabolism\n  QTLs: 28, Max LOD: 542.4\n- Chromosome 2 (182 Mb): Contains major histocompatibility complex (MHC)\n  QTLs: 25, Max LOD: 520.4\n\n\ud83e\uddec BIOLOGICAL INSIGHTS:\n- Chromosome distribution reflects genetic architecture\n- High QTL density may indicate regulatory hotspots\n- Chromosome-specific features affect gene regulation\n- Physical chromosome size influences mapping resolution",
+    "metadata": {
+      "type": "chromosome_summary",
+      "chromosome_counts": {
+        "3": 35,
+        "11": 34,
+        "17": 49,
+        "5": 28,
+        "2": 25,
+        "8": 16,
+        "4": 29,
+        "12": 19,
+        "6": 22,
+        "13": 22,
+        "10": 29,
+        "19": 10,
+        "15": 22,
+        "7": 44,
+        "9": 42,
+        "1": 34,
+        "14": 17,
+        "16": 9,
+        "18": 9,
+        "X": 5
+      },
+      "chromosome_max_lods": {
+        "3": 608.580979506093,
+        "11": 572.267230608641,
+        "17": 551.090364799134,
+        "5": 542.42468577789,
+        "2": 520.434673679554,
+        "8": 508.42109255282,
+        "4": 506.296690198827,
+        "12": 500.72631197301,
+        "6": 483.191865874105,
+        "13": 482.973844969728,
+        "10": 480.153734353807,
+        "19": 469.258566849868,
+        "15": 445.938510254578,
+        "7": 445.768441540328,
+        "9": 442.481395224996,
+        "1": 437.761217447272,
+        "14": 415.477772675686,
+        "16": 405.645968399604,
+        "18": 391.837216737234,
+        "X": 321.711086026337
+      },
+      "topics": [
+        "chromosomes",
+        "distribution",
+        "genomics"
+      ]
+    },
+    "id": "summary_chromosome_distribution",
+    "type": "chromosome_summary"
+  },
+  {
+    "content": "\n            METHODOLOGY AND INTERPRETATION GUIDE:\n            \n            \ud83d\udd2c EXPERIMENTAL DESIGN:\n            - Diversity Outbred (DO) mouse population\n            - Liver gene expression measurements\n            - QTL mapping using genetic markers\n            - Statistical analysis with LOD score calculation\n            \n            \ud83d\udcc8 STATISTICAL METHODS:\n            - QTL mapping: Identifies genomic regions affecting gene expression\n            - LOD scores: Logarithm of odds, measures evidence for linkage\n            - P-values: Statistical significance testing\n            - Q-values: False discovery rate correction for multiple testing\n            \n            \ud83c\udfaf INTERPRETATION GUIDELINES:\n            - LOD > 3: Significant evidence for QTL (standard threshold)\n            - LOD > 10: Strong evidence for QTL\n            - LOD > 50: Very strong evidence for QTL\n            - LOD > 100: Extremely strong evidence for QTL\n            \n            \ud83d\udd17 CIS vs TRANS:\n            - Cis-QTLs: QTL location is near the gene it affects (< 10 Mb)\n            - Trans-QTLs: QTL location is distant from the affected gene\n            - Cis-QTLs suggest local genetic variants affect gene expression\n            - Trans-QTLs suggest distant regulatory elements or networks\n            \n            \ud83e\uddec BIOLOGICAL RELEVANCE:\n            - Liver is central to metabolism and detoxification\n            - Genetic variants affect drug response and disease risk\n            - QTLs identify candidate genes for therapeutic targeting\n            - Results applicable to human genetics and medicine\n            ",
+    "metadata": {
+      "type": "methodology",
+      "topics": [
+        "methods",
+        "interpretation",
+        "statistics",
+        "biology"
+      ]
+    },
+    "id": "summary_methodology",
+    "type": "methodology_summary"
+  }
+]

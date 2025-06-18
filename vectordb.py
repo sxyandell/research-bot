@@ -45,8 +45,8 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             
         return embeddings
 
-def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
-    """Load QTL chunks from JSON file"""
+def load_qtl_chunks(file_path='enhanced_vectordb_chunks.json'):
+    """Load enhanced QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)
     return [chunk['content'] for chunk in chunks]  # Extract just the content for embedding

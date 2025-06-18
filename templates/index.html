@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 Genetic QTL Research Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+</head>
+<body>
+    <div class="background-animation">
+        <div class="dna-strand strand-1"></div>
+        <div class="dna-strand strand-2"></div>
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="dna-icon">🧬</div>
+                    <div class="title-group">
+                        <h1>Genetic QTL Research Assistant</h1>
+                        <p class="subtitle">AI-Powered Quantitative Trait Loci Analysis</p>
+                    </div>
+                </div>
+                <div class="stats-panel" id="statsPanel">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalQTLs">---</span>
+                        <span class="stat-label">QTLs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalGenes">---</span>
+                        <span class="stat-label">Genes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalChromosomes">---</span>
+                        <span class="stat-label">Chromosomes</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message welcome-message">
+                        <div class="message-avatar">🧬</div>
+                        <div class="message-content">
+                            <div class="message-text">
+                                <h3>Welcome to the Genetic QTL Research Assistant! 🔬</h3>
+                                <p>I'm here to help you analyze quantitative trait loci (QTL) data from liver tissue research. I can:</p>
+                                <ul>
+                                    <li>🧮 <strong>Calculate statistics</strong> (averages, counts, ranges)</li>
+                                    <li>🔍 <strong>Find specific QTLs</strong> by gene or chromosome</li>
+                                    <li>📊 <strong>Compare cis vs trans regulation</strong></li>
+                                    <li>🧬 <strong>Provide biological interpretation</strong></li>
+                                    <li>📈 <strong>Explain LOD scores and significance</strong></li>
+                                </ul>
+                                <p><strong>Try asking:</strong> "What's the average LOD score?" or "How many QTLs are on chromosome 11?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="messageInput" placeholder="Ask about QTLs, genes, chromosomes, or statistics..." autocomplete="off">
+                        <button id="sendButton" class="send-button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span>AI is analyzing...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="info-panel">
+                    <h3>🔬 Research Focus</h3>
+                    <p>Liver tissue QTL analysis from DO1200 mouse population</p>
+                    
+                    <h3>📊 Data Overview</h3>
+                    <div class="data-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Analysis Type:</span>
+                            <span class="metric-value">Additive Effects</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Tissue:</span>
+                            <span class="metric-value">Liver</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Population:</span>
+                            <span class="metric-value">DO1200 Mice</span>
+                        </div>
+                    </div>
+
+                    <h3>🧬 Sample Queries</h3>
+                    <div class="sample-queries">
+                        <button class="query-button" onclick="sendSampleQuery('What is the average LOD score?')">
+                            Average LOD Score
+                        </button>
+                        <button class="query-button" onclick="sendSampleQuery('How many cis-acting vs trans-acting QTLs?')">
+                            Cis vs Trans QTLs
+                        </button>
+                        <button class="query-button" onclick="sendSampleQuery('Which gene has the highest LOD score?')">
+                            Highest LOD Score
+                        </button>
+                        <button class="query-button" onclick="sendSampleQuery('Tell me about chromosome 11 QTLs')">
+                            Chromosome Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html> 

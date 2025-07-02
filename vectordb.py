@@ -49,7 +49,7 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
         """Return the name of the embedding function."""
         return "google_embedding_function"
 
-def load_qtl_chunks(file_path='qtl_chunks_10_rows.json'):
+def load_qtl_chunks(file_path='qtl_chunks_top_qtls_only.json'):
     """Load QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)

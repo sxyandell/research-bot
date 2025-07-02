@@ -364,29 +364,6 @@ class QTLDataChunker:
 # Example usage
 if __name__ == "__main__":
     # Initialize chunker
-<<<<<<< HEAD
-    chunker = QTLDataChunker("Z:/General/main_directory/annotated_peak_summaries/DO1200_liver_genes_all_mice_additive_peaks.csv")
-    
-    # Run row-based chunking
-    print("\n=== Row-based chunking ===")
-    row_chunks = chunker.chunk_by_row()
-    print(f"Created {len(row_chunks)} chunks from individual QTL rows")
-    
-    # Show some stats about the chunks
-    if row_chunks:
-        total_qtls = len(row_chunks)
-        lod_scores = [chunk['metadata']['qtl_lod'] for chunk in row_chunks]
-        print(f"Total QTLs included: {total_qtls}")
-        print(f"LOD score range: {min(lod_scores):.2f} - {max(lod_scores):.2f}")
-        
-        # Show first chunk as example
-        print(f"\nExample chunk content (first 500 chars):")
-        print(row_chunks[0]['content'][:500] + "...")
-    
-    # Save the chunks
-    chunker.save_chunks(row_chunks, "qtl_chunks_row.json")
-    print(f"\n✅ Saved chunks to qtl_chunks_row.json")
-=======
     chunker = QTLDataChunker("/data/dev/miniViewer_3.0/DO1200_liver_genes_all_mice_additive_peaks.csv")
     
     # Run only top QTLs chunking
@@ -408,4 +385,3 @@ if __name__ == "__main__":
     # Save the chunks
     chunker.save_chunks(top_qtls_chunks, "qtl_chunks_top_qtls_only.json")
     print(f"\n✅ Saved chunks to qtl_chunks_top_qtls_only.json")
->>>>>>> origin/feature/experimental-bot-changes

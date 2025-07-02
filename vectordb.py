@@ -44,9 +44,13 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             embeddings.append(result['embedding'])
             
         return embeddings
+    
+    def name(self) -> str:
+        """Return the name of the embedding function."""
+        return "google_embedding_function"
 
-def load_qtl_chunks(file_path='enhanced_vectordb_chunks.json'):
-    """Load enhanced QTL chunks from JSON file"""
+def load_qtl_chunks(file_path='qtl_chunks_top_qtls_only.json'):
+    """Load QTL chunks from JSON file"""
     with open(file_path, 'r') as f:
         chunks = json.load(f)
     return [chunk['content'] for chunk in chunks]  # Extract just the content for embedding

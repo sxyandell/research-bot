@@ -18,7 +18,7 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             result = genai.embed_content(
                 model="embedding-001",
                 content=text,
-                task_type="RETRIEVAL_QUERY"
+                task_type="SEMANTIC_SIMILARITY"
             )
             embeddings.append(result['embedding'])
             

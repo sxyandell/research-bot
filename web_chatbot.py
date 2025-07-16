@@ -13,7 +13,17 @@ import uuid
 # Load environment variables
 load_dotenv('config.env')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
+
+# Add OpenAI import for backup
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+    if OPENAI_API_KEY and OPENAI_API_KEY != 'your_openai_api_key_here':
+        openai.api_key = OPENAI_API_KEY
+except ImportError:
+    OPENAI_AVAILABLE = False
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -27,19 +37,34 @@ class GoogleEmbeddingFunction(EmbeddingFunction):
             input = [input]
         embeddings = []
         for text in input:
-            result = genai.embed_content(
-                model='embedding-001',
-                content=text,
-                task_type="RETRIEVAL_QUERY"
-            )
-            embeddings.append(result['embedding'])
+            try:
+                result = genai.embed_content(
+                    model='embedding-001',
+                    content=text,
+                    task_type="RETRIEVAL_QUERY"
+                )
+                embeddings.append(result['embedding'])
+            except Exception as e:
+                print(f"Embedding error: {e}")
+                # Return a dummy embedding if needed
+                embeddings.append([0.0] * 768)  # Standard embedding size
         return embeddings
 
 class GeneticQTLChatbot:
     def __init__(self):
-        # Load QTL data for computational queries
-        with open('enhanced_rag_chunks.json', 'r') as f:
-            self.rag_data = json.load(f)
+        # Load QTL data for computational queries - use the latest enhanced file
+        try:
+            with open('qtl_chunks_top_qtls_only.json', 'r') as f:
+                self.rag_data = json.load(f)
+                print("✅ Loaded qtl_chunks_top_qtls_only.json")
+        except FileNotFoundError:
+            try:
+                with open('enhanced_rag_chunks.json', 'r') as f:
+                    self.rag_data = json.load(f)
+                    print("✅ Loaded enhanced_rag_chunks.json as backup")
+            except FileNotFoundError:
+                print("❌ No enhanced QTL data found")
+                self.rag_data = []
         
         # Initialize ChromaDB for semantic search
         self.chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -53,8 +78,14 @@ class GeneticQTLChatbot:
             print("❌ ChromaDB collection not found. Please run vectordb.py first.")
             self.collection = None
         
-        # Initialize Gemini model
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        # Initialize Gemini 2.0 Flash model with error handling
+        self.model = genai.GenerativeModel('models/gemini-2.0-flash-exp')
+        self.openai_client = None
+        
+        # Setup OpenAI backup if available
+        if OPENAI_AVAILABLE and OPENAI_API_KEY and OPENAI_API_KEY != 'your_openai_api_key_here':
+            self.openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
+            print("✅ OpenAI backup configured")
         
         # Precompute QTL statistics for fast computation
         self.qtl_stats = self._precompute_stats()
@@ -62,15 +93,38 @@ class GeneticQTLChatbot:
     def _precompute_stats(self):
         """Precompute statistics from QTL data for fast retrieval"""
         all_qtls = []
-        for chunk in self.rag_data['enhanced_chunks']:
-            if 'raw_data' in chunk and chunk['raw_data']:
-                if isinstance(chunk['raw_data'], list):
-                    all_qtls.extend(chunk['raw_data'])
-                else:
-                    all_qtls.append(chunk['raw_data'])
+        
+        # Handle different data structures
+        if isinstance(self.rag_data, list):
+            # New format: list of chunks
+            for chunk in self.rag_data:
+                if 'raw_data' in chunk and chunk['raw_data']:
+                    if isinstance(chunk['raw_data'], list):
+                        all_qtls.extend(chunk['raw_data'])
+                    else:
+                        all_qtls.append(chunk['raw_data'])
+        elif isinstance(self.rag_data, dict) and 'enhanced_chunks' in self.rag_data:
+            # Old format: dict with enhanced_chunks key
+            for chunk in self.rag_data['enhanced_chunks']:
+                if 'raw_data' in chunk and chunk['raw_data']:
+                    if isinstance(chunk['raw_data'], list):
+                        all_qtls.extend(chunk['raw_data'])
+                    else:
+                        all_qtls.append(chunk['raw_data'])
         
         if not all_qtls:
-            return {}
+            return {
+                'total_qtls': 0,
+                'lod_scores': [],
+                'avg_lod': 0,
+                'max_lod': 0,
+                'min_lod': 0,
+                'chromosomes': [],
+                'genes': [],
+                'cis_count': 0,
+                'trans_count': 0,
+                'all_qtls': []
+            }
         
         lod_scores = [q.get('qtl_lod', 0) for q in all_qtls if q.get('qtl_lod')]
         chromosomes = [q.get('qtl_chr') for q in all_qtls if q.get('qtl_chr')]
@@ -210,15 +264,38 @@ class GeneticQTLChatbot:
             "\n**RELEVANT QTL DATA:**",
             rag_context,
             "\nProvide a comprehensive answer that combines the computational results (if any) with biological interpretation.",
-            "Use emojis and formatting to make the response engaging and clear.",
+            "Use markdown formatting and emojis to make the response engaging and clear.",
             "Focus on the biological significance and research implications."
         ])
         
+        # Try Gemini 2.0 Flash first
         try:
             response = self.model.generate_content("\n".join(prompt_parts))
             return response.text
         except Exception as e:
-            return f"Error generating response: {str(e)}"
+            print(f"Gemini error: {e}")
+            
+            # Try OpenAI as backup
+            if self.openai_client:
+                try:
+                    response = self.openai_client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "system", "content": "You are a genetics research assistant specializing in QTL analysis."},
+                            {"role": "user", "content": "\n".join(prompt_parts)}
+                        ],
+                        max_tokens=1500,
+                        temperature=0.7
+                    )
+                    return response.choices[0].message.content
+                except Exception as openai_error:
+                    print(f"OpenAI error: {openai_error}")
+            
+            # If both APIs fail, provide a fallback response
+            if computational_result:
+                return f"🤖 **Direct Analysis Results:**\n\n{computational_result}\n\n⚠️ *Note: Advanced AI interpretation is temporarily unavailable due to API quotas. The computational results above provide accurate data from your QTL database.*"
+            else:
+                return f"📊 **QTL Data Context:**\n\n{rag_context}\n\n⚠️ *Note: AI interpretation is temporarily unavailable due to API quotas. Please review the relevant QTL data above or try computational queries like 'highest lod score' or 'how many QTLs'.*"
 
 # Initialize chatbot
 chatbot = GeneticQTLChatbot()

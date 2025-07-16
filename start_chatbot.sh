@@ -11,9 +11,10 @@ if [ ! -f "config.env" ]; then
     exit 1
 fi
 
-if [ ! -f "enhanced_rag_chunks.json" ]; then
-    echo "❌ Error: enhanced_rag_chunks.json not found!"
+if [ ! -f "qtl_chunks_top_qtls_only.json" ] && [ ! -f "enhanced_rag_chunks.json" ]; then
+    echo "❌ Error: No QTL chunks found!"
     echo "Please run chunking.py first to generate QTL chunks"
+    echo "Expected: qtl_chunks_top_qtls_only.json or enhanced_rag_chunks.json"
     exit 1
 fi
 

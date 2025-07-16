@@ -92,3 +92,11 @@ deepeval_results/*
 
 chroma_db/
 chroma_db/*
+
+# New database directories
+multi_file_chroma_db/
+hybrid_chroma_db/
+test_logs/
+qtl_hybrid_docs.json
+qtl_summary_docs.json
+qtl_qa_dataset.json

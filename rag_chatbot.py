@@ -6,6 +6,7 @@ import os
 from typing import List, Dict, Any
 import textwrap
 from chromadb import Documents, EmbeddingFunction, Embeddings
+import requests
 
 # Add OpenAI imports
 try:
@@ -53,8 +54,8 @@ class LocalEmbeddingFunction(EmbeddingFunction):
         return embeddings
 
 class QTLChatbot:
-    def __init__(self, use_openai_backup=True, use_local_embeddings=False):
-        """Initialize the QTL chatbot with ChromaDB and Gemini."""
+    def __init__(self, use_openai_backup=True, use_local_embeddings=False, ollama_url="http://localhost:11434/api/generate", ollama_model="llama2"):
+        """Initialize the QTL chatbot with ChromaDB and Ollama."""
         # Load environment variables
         load_dotenv('config.env')
         
@@ -83,9 +84,10 @@ class QTLChatbot:
                 print("⚠️ OPENAI_API_KEY not found or is placeholder - no backup available")
                 self.use_openai_backup = False
         
-        # Initialize Gemini model
-        if not use_local_embeddings:
-            self.model = genai.GenerativeModel('models/gemini-2.0-flash-exp')  # Updated to Gemini 2.0 Flash
+        # Ollama configuration
+        self.ollama_url = ollama_url
+        self.ollama_model = ollama_model
+        print(f"✅ Ollama configured: {self.ollama_url} (model: {self.ollama_model})")
         
         # Connect to ChromaDB
         self.chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -190,22 +192,37 @@ User Question: {query}
 
 Provide a comprehensive, scientifically accurate answer using ONLY the provided data. Include biological interpretation where relevant."""
 
-    def _generate_with_openai_backup(self, prompt: str) -> str:
-        """Try Gemini first, fallback to OpenAI if quota exceeded."""
+    def _call_ollama(self, prompt: str) -> str:
+        """Send a prompt to Ollama and return the response text."""
         try:
-            # Try Gemini first
-            response = self.model.generate_content(prompt)
-            return response.text
-            
+            print("[INFO] Using Ollama for text generation.")
+            response = requests.post(
+                self.ollama_url,
+                json={
+                    "model": self.ollama_model,
+                    "prompt": prompt,
+                    "stream": False
+                },
+                timeout=60
+            )
+            response.raise_for_status()
+            data = response.json()
+            return "[Ollama] " + data.get("response", "[No response from Ollama]")
         except Exception as e:
-            error_str = str(e)
-            
-            # Check if it's a quota error
-            if "429" in error_str or "quota" in error_str.lower():
-                print("⚠️ Google API quota exceeded, trying OpenAI backup...")
-                
+            return f"❌ Ollama error: {str(e)}"
+
+    def _generate_with_openai_backup(self, prompt: str) -> str:
+        """Try Ollama first, fallback to OpenAI if available."""
+        try:
+            # Try Ollama first
+            response_text = self._call_ollama(prompt)
+            if response_text and not response_text.startswith("❌"):
+                return response_text
+            else:
+                print("⚠️ Ollama failed, trying OpenAI backup...")
                 if self.use_openai_backup:
                     try:
+                        print("[INFO] Using OpenAI for text generation.")
                         response = openai.chat.completions.create(
                             model="gpt-3.5-turbo",
                             messages=[
@@ -217,11 +234,11 @@ Provide a comprehensive, scientifically accurate answer using ONLY the provided 
                         )
                         return "🔄 [OpenAI Backup] " + response.choices[0].message.content
                     except Exception as openai_error:
-                        return f"❌ Both APIs failed. Google: {error_str[:100]}... OpenAI: {str(openai_error)[:100]}..."
+                        return f"❌ Both Ollama and OpenAI failed. Ollama: {response_text[:100]}... OpenAI: {str(openai_error)[:100]}..."
                 else:
-                    return f"❌ Google API quota exceeded and no OpenAI backup configured. Error: {error_str[:200]}..."
-            else:
-                return f"❌ An error occurred: {error_str}"
+                    return f"❌ Ollama failed and no OpenAI backup configured. Error: {response_text[:200]}..."
+        except Exception as e:
+            return f"❌ An error occurred: {str(e)}"
 
     def process_query(self, user_input: str, n_results: int = 10) -> str:
         """Process a user query with enhanced biological analysis."""
@@ -242,27 +259,8 @@ Provide a comprehensive, scientifically accurate answer using ONLY the provided 
             # Create enhanced prompt
             prompt = self._create_enhanced_prompt(user_input, context)
             
-            # Generate response with backup (only if not using local embeddings)
-            if self.use_local_embeddings:
-                # For local embeddings, we need OpenAI for text generation
-                if self.use_openai_backup:
-                    try:
-                        response = openai.chat.completions.create(
-                            model="gpt-3.5-turbo",
-                            messages=[
-                                {"role": "system", "content": "You are an expert QTL research assistant."},
-                                {"role": "user", "content": prompt}
-                            ],
-                            max_tokens=1000,
-                            temperature=0.1
-                        )
-                        response_text = response.choices[0].message.content
-                    except Exception as e:
-                        return f"❌ OpenAI error: {str(e)[:200]}..."
-                else:
-                    return f"❌ Local embeddings mode requires OpenAI API for text generation. Please configure OPENAI_API_KEY."
-            else:
-                response_text = self._generate_with_openai_backup(prompt)
+            # Generate response with backup (Ollama first, then OpenAI)
+            response_text = self._generate_with_openai_backup(prompt)
             
             # Update chat history
             self.chat_history.append({

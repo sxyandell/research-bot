@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import argparse
 import shutil
+import duckdb
 
 
 def display_ai_results(results):

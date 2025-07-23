@@ -25,6 +25,7 @@ import re
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from google.generativeai.protos import Tool, FunctionDeclaration, Part
 import requests
+
 from itertools import groupby
 
 # Import GWAS integration
@@ -206,7 +207,8 @@ class HybridQTLSystem:
     Layer 3: GWAS integration for human-mouse cross-species analysis
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", **kwargs): # Absorb old gwas_db_path
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "llama3:latest", **kwargs):
+
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
         self.raw_data = None
@@ -220,7 +222,9 @@ class HybridQTLSystem:
         # Initialize embedding models
         self.local_embedder = None
         self.google_embedder = None
-        self.generative_model = None
+        # self.generative_model = None  # No longer using Gemini
+        self.ollama_url = ollama_url
+        self.ollama_model = ollama_model
         
         # Initialize GWAS client and the new Ortholog Matcher
         self.gwas_client = None
@@ -364,7 +368,7 @@ class HybridQTLSystem:
                 genai.configure(api_key=google_api_key)
                 self.google_embedder = genai.GenerativeModel('models/text-embedding-004')
                 logger.info("✅ Google embedder ready")
-                self.generative_model = genai.GenerativeModel('gemini-1.5-flash')
+                # self.generative_model = genai.GenerativeModel('gemini-1.5-flash') # No longer using Gemini
                 logger.info("✅ Google generative model ready")
             except Exception as e:
                 logger.error(f"❌ Failed to setup Google services: {e}")
@@ -785,77 +789,101 @@ class HybridQTLSystem:
             self._define_tools()
 
         # The first call to the LLM is just to decide which tool to use
-        response = self.generative_model.generate_content(
-            query,
-            tools=[self.tools],
-            # Safety settings can be important for tool use
-            safety_settings={
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-            }
-        )
+        # response = self.generative_model.generate_content( # No longer using Gemini
+        #     query,
+        #     tools=[self.tools],
+        #     # Safety settings can be important for tool use
+        #     safety_settings={
+        #         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+        #     }
+        # )
 
-        try:
-            function_call = response.candidates[0].content.parts[0].function_call
-            tool_name = function_call.name
-            tool_args = {key: value for key, value in function_call.args.items()}
+        # try:
+        #     function_call = response.candidates[0].content.parts[0].function_call # No longer using Gemini
+        #     tool_name = function_call.name
+        #     tool_args = {key: value for key, value in function_call.args.items()} # No longer using Gemini
             
-            logger.info(f"🤖 LLM decided to use tool: '{tool_name}' with args: {tool_args}")
+        #     logger.info(f"🤖 LLM decided to use tool: '{tool_name}' with args: {tool_args}")
             
-            # Now, execute the chosen function
-            if hasattr(self, tool_name):
-                tool_function = getattr(self, tool_name)
+        #     # Now, execute the chosen function
+        #     if hasattr(self, tool_name):
+        #         tool_function = getattr(self, tool_name)
                 
-                # Special handling for semantic search which has a different return format
-                if tool_name == 'semantic_search':
-                    # The LLM will pass the original query back to us
-                    results_data = tool_function(query=tool_args['query'], n_results=5)
-                # Handle analytical functions that return DataFrames
-                elif tool_name == 'analytical_query_top_lod':
-                    results_df = tool_function(**tool_args)
-                    results_data = results_df.to_dict('records')
-                # Handle helper functions that return a single dictionary
-                else:
-                    results_data = tool_function(**tool_args)
-                    # Ensure results are always a list for consistency
-                    if not isinstance(results_data, list):
-                        results_data = [results_data]
+        #         # Special handling for semantic search which has a different return format
+        #         if tool_name == 'semantic_search':
+        #             # The LLM will pass the original query back to us
+        #             results_data = tool_function(query=tool_args['query'], n_results=5)
+        #         # Handle analytical functions that return DataFrames
+        #         elif tool_name == 'analytical_query_top_lod':
+        #             results_df = tool_function(**tool_args)
+        #             results_data = results_df.to_dict('records')
+        #         # Handle helper functions that return a single dictionary
+        #         else:
+        #             results_data = tool_function(**tool_args)
+        #             # Ensure results are always a list for consistency
+        #             if not isinstance(results_data, list):
+        #                 results_data = [results_data]
                 
-                return {
-                    'detected_intent': 'tool_call',
-                    'method': tool_name,
-                    'arguments': tool_args,
-                    'results': results_data,
-                    'result_count': len(results_data)
-                }
-            else:
-                raise ValueError(f"LLM wanted to call a non-existent tool: {tool_name}")
+        #         return {
+        #             'detected_intent': 'tool_call',
+        #             'method': tool_name,
+        #             'arguments': tool_args,
+        #             'results': results_data,
+        #             'result_count': len(results_data)
+        #         }
+        #     else:
+        #         raise ValueError(f"LLM wanted to call a non-existent tool: {tool_name}")
 
-        except (AttributeError, IndexError):
-            # The LLM didn't choose a tool, so we fall back to a simple semantic search
-            logger.warning("LLM did not choose a tool. Falling back to default semantic search.")
-            results_data = self.semantic_search(query=query, n_results=5)
-            return {
-                'detected_intent': 'semantic_fallback',
-                'method': 'semantic_search',
-                'results': results_data,
-                'result_count': len(results_data)
-            }
+        # except (AttributeError, IndexError):
+        #     # The LLM didn't choose a tool, so we fall back to a simple semantic search
+        #     logger.warning("LLM did not choose a tool. Falling back to default semantic search.")
+        #     results_data = self.semantic_search(query=query, n_results=5)
+        #     return {
+        #         'detected_intent': 'semantic_fallback',
+        #         'method': 'semantic_search',
+        #         'results': results_data,
+        #         'result_count': len(results_data)
+        #     }
+        # Fallback to a simple semantic search if tools are not defined or if there's an error
+        logger.warning("LLM did not choose a tool. Falling back to default semantic search.")
+        results_data = self.semantic_search(query=query, n_results=5)
+        return {
+            'detected_intent': 'semantic_fallback',
+            'method': 'semantic_search',
+            'results': results_data,
+            'result_count': len(results_data)
+        }
     
+    def _call_ollama(self, prompt: str) -> str:
+        """Send a prompt to Ollama and return the response text."""
+        try:
+            print("[INFO] Using Ollama (llama3:latest) for text generation.")
+            response = requests.post(
+                self.ollama_url,
+                json={
+                    "model": self.ollama_model,
+                    "prompt": prompt,
+                    "stream": False
+                },
+                timeout=300
+            )
+
+            response.raise_for_status()
+            data = response.json()
+            return "[Ollama] " + data.get("response", "[No response from Ollama]")
+        except Exception as e:
+            return f"❌ Ollama error: {str(e)}"
+
     def generate_response(self, query: str, search_results: Dict) -> str:
         """Generates a natural language response using retrieved context."""
-        if not self.generative_model:
-            return "The generative AI model is not configured. Please provide a Google AI API key to enable natural language responses."
-
+        # Use Ollama for LLM generation
         intent = search_results.get('detected_intent')
         method = search_results.get('method')
         context_str = ""
-        
         if not search_results.get('results'):
             return "I couldn't find any relevant information in the database to answer your question."
-
-        # NEW: Special formatting for get_gene_details
         if method == 'get_gene_details' and search_results['results']:
-            gene_data = search_results['results'][0]  # It's a list with one dict
+            gene_data = search_results['results'][0]
             context_parts = []
             context_parts.append(f"Gene: {gene_data['gene_symbol']}")
             if gene_data.get('biological_summary') and gene_data['biological_summary'] != 'No summary available.':
@@ -864,11 +892,9 @@ class HybridQTLSystem:
                 context_parts.append(f"Gene Ontology Terms: {', '.join(gene_data['go_terms'])}")
             if gene_data.get('kegg_pathways'):
                 context_parts.append(f"KEGG Pathways: {', '.join(gene_data['kegg_pathways'])}")
-
             context_parts.append(f"\nThis gene has {gene_data['qtl_count']} associated QTL peaks.")
             if gene_data.get('qtls'):
                 context_parts.append("Here is the data for the top peaks:")
-                # Limit to top 3 for a concise context
                 for i, qtl in enumerate(gene_data['qtls'][:3]):
                     qtl_info = (f"  - Peak {i+1}: Located on Chromosome {qtl.get('qtl_chr', 'N/A')} "
                                 f"at position {qtl.get('qtl_pos', 0.0):.2f} Mb "
@@ -876,21 +902,16 @@ class HybridQTLSystem:
                                 f"It is a {'cis-acting' if qtl.get('cis') else 'trans-acting'} regulator.")
                     context_parts.append(qtl_info)
             context_str = "\n".join(context_parts)
-        
-        # Fallback to existing logic for all other cases
         else:
             if isinstance(search_results.get('results'), list):
                 if search_results['results'] and isinstance(search_results['results'][0], dict) and 'content' in search_results['results'][0]:
-                    # Semantic search results
                     context_str = "\n---\n".join([doc['content'] for doc in search_results['results']])
                 else:
-                    # Analytical/tool_call results
                     df = pd.DataFrame(search_results['results'])
                     context_str = "Based on the following data table:\n" + df.to_string(index=False)
             elif isinstance(search_results.get('results'), pd.DataFrame):
                 df = search_results['results']
                 context_str = "Based on the following data table:\n" + df.to_string(index=False)
-
         prompt = f"""
 You are a specialized bioinformatics research assistant for a QTL database.
 Your task is to synthesize a clear and accurate answer for the user based *only* on the provided search results.
@@ -905,6 +926,7 @@ Your task is to synthesize a clear and accurate answer for the user based *only*
 4.  **Crucially, cite your sources.** Refer to the document IDs (e.g., 'gene_Gnai3', 'peak_1234_...') or the analytical query when explaining your answer.
 5.  If the context does not contain the information needed to answer the question, you MUST state that the information is not available in the database and do not invent an answer.
 
+
 **User's Question:** "{query}"
 
 **Retrieved Context from Database:**
@@ -914,13 +936,8 @@ Your task is to synthesize a clear and accurate answer for the user based *only*
 
 Based *only* on the context above, provide a helpful, synthesized answer to the user's question.
 """
-        
-        try:
-            response = self.generative_model.generate_content(prompt)
-            return response.text
-        except Exception as e:
-            logger.error(f"❌ LLM response generation failed: {e}")
-            return "There was an error generating an AI response. Please check the logs."
+        response = self._call_ollama(prompt)
+        return response
 
     def ask(self, query: str) -> Dict[str, Any]:
         """
@@ -1239,7 +1256,6 @@ Based *only* on the context above, provide a helpful, synthesized answer to the 
 # Example usage and testing
 if __name__ == "__main__":
     system = HybridQTLSystem("/data/dev/miniViewer_3.0/DO1200_liver_genes_all_mice_additive_peaks.csv")
-    
     print("Setting up hybrid system with both summary and granular documents...")
     system.setup_vector_store(use_google_embeddings=False)
     

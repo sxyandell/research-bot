@@ -25,6 +25,7 @@ import re
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from google.generativeai.protos import Tool, FunctionDeclaration, Part
 import requests
+import inspect
 
 from itertools import groupby
 
@@ -780,79 +781,149 @@ class HybridQTLSystem:
         sql = f"SELECT gene_symbol, qtl_lod, qtl_chr, qtl_pos FROM qtl_peaks ORDER BY qtl_lod DESC LIMIT {limit}"
         return self.analytical_query(sql)
 
+    def _format_tools_for_prompt(self) -> str:
+        """
+        Formats the tool definitions into a JSON string for the prompt.
+        This version correctly handles the protobuf-based Schema objects.
+        """
+        if not hasattr(self, 'tools'):
+            self._define_tools()
+        
+        tool_declarations = []
+        for func_dec in self.tools.function_declarations:
+            properties_dict = {}
+            if func_dec.parameters and func_dec.parameters.properties:
+                for key, schema_val in func_dec.parameters.properties.items():
+                    # The 'type' field is an enum, so we access its name
+                    prop_type_name = schema_val.type.name if hasattr(schema_val.type, 'name') else str(schema_val.type)
+                    properties_dict[key] = {
+                        "type": prop_type_name,
+                        "description": schema_val.description
+                    }
+            
+            # The 'type' field is an enum, so we access its name
+            param_type_name = func_dec.parameters.type.name if hasattr(func_dec.parameters.type, 'name') else str(func_dec.parameters.type)
+            
+            params = {
+                "type": param_type_name,
+                "properties": properties_dict,
+                "required": list(func_dec.parameters.required) if func_dec.parameters and func_dec.parameters.required else []
+            }
+
+            tool_declarations.append({
+                "name": func_dec.name,
+                "description": func_dec.description,
+                "parameters": params
+            })
+        return json.dumps(tool_declarations, indent=2)
+
+    def _call_ollama_for_tool_choice(self, prompt: str) -> Optional[Dict[str, Any]]:
+        """Calls Ollama with a specific prompt to get a tool choice in JSON format."""
+        try:
+            logger.info("[INFO] Using Ollama for tool selection...")
+            response = requests.post(
+                self.ollama_url,
+                json={
+                    "model": self.ollama_model,
+                    "prompt": prompt,
+                    "stream": False,
+                    "format": "json"  # Request JSON output
+                },
+                timeout=60
+            )
+            response.raise_for_status()
+            data = response.json()
+            # The response from Ollama is a string containing JSON, so we parse it.
+            tool_choice_json = json.loads(data.get("response", "{}"))
+            return tool_choice_json
+        except Exception as e:
+            logger.error(f"❌ Ollama tool choice error: {e}")
+            return None
 
     def intelligent_router(self, query: str) -> Dict[str, Any]:
         """
         New, smarter router that uses an LLM with function calling to determine the user's intent.
+        This version is specifically implemented for Ollama with JSON mode.
         """
         if not hasattr(self, 'tools'):
             self._define_tools()
 
-        # The first call to the LLM is just to decide which tool to use
-        # response = self.generative_model.generate_content( # No longer using Gemini
-        #     query,
-        #     tools=[self.tools],
-        #     # Safety settings can be important for tool use
-        #     safety_settings={
-        #         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-        #     }
-        # )
+        # 1. Build the prompt for the LLM
+        tools_json_str = self._format_tools_for_prompt()
+        prompt = f"""
+You are an expert at routing user questions to the correct tool.
+Based on the user's query and the available tools, choose the single best tool to answer the question.
+You must respond in JSON format with the following structure: {{"tool_name": "...", "arguments": {{...}} }}
+If no tool is appropriate or the question is conversational, you MUST respond with: {{"tool_name": "semantic_search", "arguments": {{"query": "{query}"}} }}
 
-        # try:
-        #     function_call = response.candidates[0].content.parts[0].function_call # No longer using Gemini
-        #     tool_name = function_call.name
-        #     tool_args = {key: value for key, value in function_call.args.items()} # No longer using Gemini
-            
-        #     logger.info(f"🤖 LLM decided to use tool: '{tool_name}' with args: {tool_args}")
-            
-        #     # Now, execute the chosen function
-        #     if hasattr(self, tool_name):
-        #         tool_function = getattr(self, tool_name)
-                
-        #         # Special handling for semantic search which has a different return format
-        #         if tool_name == 'semantic_search':
-        #             # The LLM will pass the original query back to us
-        #             results_data = tool_function(query=tool_args['query'], n_results=5)
-        #         # Handle analytical functions that return DataFrames
-        #         elif tool_name == 'analytical_query_top_lod':
-        #             results_df = tool_function(**tool_args)
-        #             results_data = results_df.to_dict('records')
-        #         # Handle helper functions that return a single dictionary
-        #         else:
-        #             results_data = tool_function(**tool_args)
-        #             # Ensure results are always a list for consistency
-        #             if not isinstance(results_data, list):
-        #                 results_data = [results_data]
-                
-        #         return {
-        #             'detected_intent': 'tool_call',
-        #             'method': tool_name,
-        #             'arguments': tool_args,
-        #             'results': results_data,
-        #             'result_count': len(results_data)
-        #         }
-        #     else:
-        #         raise ValueError(f"LLM wanted to call a non-existent tool: {tool_name}")
+**Available Tools:**
+{tools_json_str}
 
-        # except (AttributeError, IndexError):
-        #     # The LLM didn't choose a tool, so we fall back to a simple semantic search
-        #     logger.warning("LLM did not choose a tool. Falling back to default semantic search.")
-        #     results_data = self.semantic_search(query=query, n_results=5)
-        #     return {
-        #         'detected_intent': 'semantic_fallback',
-        #         'method': 'semantic_search',
-        #         'results': results_data,
-        #         'result_count': len(results_data)
-        #     }
-        # Fallback to a simple semantic search if tools are not defined or if there's an error
-        logger.warning("LLM did not choose a tool. Falling back to default semantic search.")
-        results_data = self.semantic_search(query=query, n_results=5)
-        return {
-            'detected_intent': 'semantic_fallback',
-            'method': 'semantic_search',
-            'results': results_data,
-            'result_count': len(results_data)
-        }
+**User Query:**
+"{query}"
+
+**Your JSON response:**
+"""
+
+        # 2. Call Ollama to get the tool choice
+        tool_choice = self._call_ollama_for_tool_choice(prompt)
+
+        if not tool_choice or 'tool_name' not in tool_choice:
+            logger.warning("LLM tool selection failed or returned invalid format. Falling back to semantic search.")
+            tool_name = 'semantic_search'
+            tool_args = {'query': query}
+        else:
+            tool_name = tool_choice.get('tool_name')
+            tool_args = tool_choice.get('arguments', {})
+            logger.info(f"🤖 LLM decided to use tool: '{tool_name}' with args: {tool_args}")
+
+        # 3. Execute the chosen function
+        try:
+            if hasattr(self, tool_name):
+                tool_function = getattr(self, tool_name)
+                
+                # Validate arguments against the function's signature
+                sig = inspect.signature(tool_function)
+                valid_args = {k: v for k, v in tool_args.items() if k in sig.parameters}
+                
+                # For semantic_search, ensure the query argument is present
+                if tool_name == 'semantic_search' and 'query' not in valid_args:
+                    valid_args['query'] = query
+
+                # Call the function with validated arguments
+                results_data = tool_function(**valid_args)
+
+                # Format results for consistency
+                if isinstance(results_data, pd.DataFrame):
+                    results_data = results_data.to_dict('records')
+                elif not isinstance(results_data, list):
+                    if isinstance(results_data, dict):
+                         results_data = [results_data]
+                    else:
+                         # Fallback for unexpected types
+                         results_data = []
+                
+                return {
+                    'detected_intent': 'tool_call',
+                    'method': tool_name,
+                    'arguments': tool_args,
+                    'results': results_data,
+                    'result_count': len(results_data)
+                }
+            else:
+                logger.error(f"LLM wanted to call a non-existent tool: {tool_name}. Falling back.")
+                raise ValueError(f"Tool '{tool_name}' not found.")
+
+        except Exception as e:
+            logger.error(f"Error executing tool '{tool_name}': {e}. Falling back to semantic search.")
+            results_data = self.semantic_search(query=query, n_results=5)
+            return {
+                'detected_intent': 'semantic_fallback_error',
+                'method': 'semantic_search',
+                'error': str(e),
+                'results': results_data,
+                'result_count': len(results_data)
+            }
     
     def _call_ollama(self, prompt: str) -> str:
         """Send a prompt to Ollama and return the response text."""

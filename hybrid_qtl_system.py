@@ -1113,8 +1113,8 @@ Based *only* on the context above, provide your concise and direct answer.
         
         base_query += " ORDER BY qtl_lod DESC"
         
-        # Execute query
-        all_params = gene_list + filter_params
+        # Execute query with a lowercased list of gene symbols for the case-insensitive search
+        all_params = [g.lower() for g in gene_list] + filter_params
         result_df = self.duck_conn.execute(base_query, all_params).fetchdf()
         
         return result_df

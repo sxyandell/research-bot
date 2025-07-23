@@ -93,6 +93,9 @@ deepeval_results/*
 chroma_db/
 chroma_db/*
 
+# Large data files
+unified_qtl_data.csv
+
 # New database directories
 multi_file_chroma_db/
 hybrid_chroma_db/
@@ -100,3 +103,15 @@ test_logs/
 qtl_hybrid_docs.json
 qtl_summary_docs.json
 qtl_qa_dataset.json
+gene_context_cache.json
+MGI_Gene.rpt
+gwas_catalog_full.tsv
+gwas_catalog.db
+gwas_cache.db
+gwas_catalog_associations.tsv
+HOM_Mouse_All_DB.rpt
+MGI_Gene.rpt
+HOM_MouseHumanSequence.rpt
+
+
+

@@ -36,12 +36,103 @@ def display_ai_results(results):
     print("="*80)
 
 
+def display_gwas_analysis_results(results):
+    """Display comprehensive GWAS-QTL analysis results in a formatted way."""
+    
+    trait_class = results.get('trait_class', 'Unknown')
+    
+    print("\n" + "="*80)
+    print(f"🧬 GWAS-QTL Analysis Results: {trait_class.upper()} Traits".center(80))
+    print("="*80)
+    
+    if 'error' in results:
+        print(f"❌ Analysis failed: {results['error']}")
+        return
+    
+    # Display GWAS genes
+    if 'gwas_genes' in results:
+        gwas_count = results['gwas_genes']['human_gene_count']
+        ortholog_count = results['gwas_genes']['mouse_ortholog_count']
+        
+        print(f"📊 Step 1: Found {gwas_count} human genes for {trait_class} traits in GWAS.")
+        print(f"   - Converted to {ortholog_count} unique mouse orthologs for analysis.")
+        
+        if ortholog_count > 0:
+            example_genes = results['gwas_genes']['genes'][:10]
+            print(f"   Mouse ortholog examples: {', '.join(example_genes)}")
+            if ortholog_count > 10:
+                print(f"   ... and {ortholog_count - 10} more.")
+    
+    # Display cis-eQTL results
+    if 'cis_eqtl_genes' in results:
+        cis_count = results['cis_eqtl_genes']['count']
+        cis_peaks = results['cis_eqtl_genes']['qtl_peaks']
+        print(f"\n🎯 Step 2: Found {cis_count} GWAS genes with cis-eQTL in DO liver study")
+        print(f"   Total cis-QTL peaks: {cis_peaks}")
+        
+        if cis_count > 0:
+            cis_genes = results['cis_eqtl_genes']['genes'][:5]
+            print(f"   Top genes: {', '.join(cis_genes)}")
+    
+    # Display trans-eQTL results  
+    if 'trans_eqtl_genes' in results:
+        trans_count = results['trans_eqtl_genes']['count']
+        trans_peaks = results['trans_eqtl_genes']['qtl_peaks']
+        print(f"\n🌐 Step 3: Found {trans_count} GWAS genes with trans-eQTL in DO liver study")
+        print(f"   Total trans-QTL peaks: {trans_peaks}")
+        
+        if trans_count > 0:
+            trans_genes = results['trans_eqtl_genes']['genes'][:5]
+            print(f"   Top genes: {', '.join(trans_genes)}")
+    
+    # Display potential hub genes
+    if 'potential_hub_genes' in results:
+        hub_count = results['potential_hub_genes']['count']
+        print(f"\n⭐ Step 4: Found {hub_count} potential hub genes (both cis and trans QTLs)")
+        
+        if hub_count > 0:
+            hub_genes = results['potential_hub_genes']['genes']
+            print(f"   Hub genes: {', '.join(hub_genes)}")
+    
+    # Display overlap analysis
+    if 'overlap_analysis' in results:
+        overlap = results['overlap_analysis']
+        print(f"\n📈 Summary Statistics:")
+        print(f"   • GWAS genes with any QTL: {overlap.get('gwas_with_any_qtl', 0)}")
+        print(f"   • GWAS genes with cis-QTL only: {overlap.get('gwas_with_cis_only', 0)}")
+        print(f"   • GWAS genes with trans-QTL only: {overlap.get('gwas_with_trans_only', 0)}")
+        print(f"   • GWAS genes with both: {overlap.get('gwas_with_both', 0)}")
+        print(f"   • GWAS genes without QTL: {overlap.get('gwas_without_qtl', 0)}")
+    
+    print("="*80)
+
+
+def show_gwas_help():
+    """Display help for GWAS analysis commands."""
+    print("\n" + "="*60)
+    print("🧬 GWAS-QTL Analysis Commands")
+    print("="*60)
+    print("Available trait classes:")
+    print("  • glycemic  - Diabetes, glucose, insulin resistance")
+    print("  • lipid     - Cholesterol, triglycerides, lipoproteins") 
+    print("  • hepatic   - Liver function, fatty liver, hepatic enzymes")
+    print()
+    print("Commands:")
+    print("  gwas:glycemic   - Analyze glycemic trait genes")
+    print("  gwas:lipid      - Analyze lipid trait genes") 
+    print("  gwas:hepatic    - Analyze hepatic trait genes")
+    print("  gwas:all        - Analyze all three trait classes")
+    print("  help:gwas       - Show this help")
+    print("="*60)
+
+
 def chatbot_loop(system: HybridQTLSystem):
     """Starts an interactive loop to chat with the QTL system."""
     print("\n" + "="*50)
     print(" Hybrid QTL Chatbot is Ready! ".center(50, "="))
     print("="*50)
     print("Ask me anything about your QTL data.")
+    print("Type 'help:gwas' for GWAS analysis commands.")
     print("Type 'exit' or 'quit' to end the session.")
     
     while True:
@@ -54,7 +145,56 @@ def chatbot_loop(system: HybridQTLSystem):
             if not query:
                 continue
 
-            # Use the new 'ask' method to get a synthesized response
+            # Handle special GWAS commands
+            if query.lower() == 'help:gwas':
+                show_gwas_help()
+                continue
+            
+            elif query.lower().startswith('gwas:'):
+                trait_class = query.lower().split(':')[1].strip()
+                
+                if trait_class == 'all':
+                    # Run analysis for all trait classes
+                    trait_classes = ['glycemic', 'lipid', 'hepatic']
+                    for tc in trait_classes:
+                        print(f"\n🔍 Running analysis for {tc} traits...")
+                        try:
+                            results = system.comprehensive_gwas_qtl_analysis(tc)
+                            display_gwas_analysis_results(results)
+                            
+                            # Optionally export results
+                            export_choice = input(f"\nExport {tc} results to CSV? (y/n): ").lower()
+                            if export_choice == 'y':
+                                system.export_results_to_csv(results)
+                                print(f"✅ Results exported for {tc}")
+                        except Exception as e:
+                            print(f"❌ Error analyzing {tc} traits: {e}")
+                
+                elif trait_class in ['glycemic', 'lipid', 'hepatic']:
+                    print(f"\n🔍 Running comprehensive GWAS-QTL analysis for {trait_class} traits...")
+                    print("This may take a few minutes to query GWAS data...")
+                    
+                    try:
+                        results = system.comprehensive_gwas_qtl_analysis(trait_class)
+                        display_gwas_analysis_results(results)
+                        
+                        # Ask if user wants to export results
+                        export_choice = input("\nExport results to CSV files? (y/n): ").lower()
+                        if export_choice == 'y':
+                            system.export_results_to_csv(results)
+                            print("✅ Results exported to ./gwas_qtl_results/")
+                            
+                    except Exception as e:
+                        print(f"❌ Error running GWAS analysis: {e}")
+                        print("Make sure you have internet connection for GWAS data access.")
+                
+                else:
+                    print(f"❌ Unknown trait class: {trait_class}")
+                    print("Available: glycemic, lipid, hepatic, all")
+                
+                continue
+
+            # Regular chatbot query
             results = system.ask(query)
             display_ai_results(results)
 
@@ -66,11 +206,16 @@ def chatbot_loop(system: HybridQTLSystem):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Hybrid QTL Chatbot")
+    parser = argparse.ArgumentParser(description="Hybrid QTL Chatbot with GWAS Integration")
     parser.add_argument(
         '--rebuild-db',
         action='store_true',
         help="Force a full rebuild of the vector database."
+    )
+    parser.add_argument(
+        '--gwas-analysis',
+        choices=['glycemic', 'lipid', 'hepatic', 'all'],
+        help="Run GWAS analysis for specified trait class and exit."
     )
     args = parser.parse_args()
 
@@ -109,6 +254,33 @@ if __name__ == "__main__":
     # Setup the vector store (will build only if it doesn't exist)
     system.setup_vector_store(use_google_embeddings=False) # Still use local for speed
     
+    # NEW: Initialize the GWAS data handler (will download file on first run)
+    system.setup_gwas_database()
+    
     print("✅ System ready.")
+    
+    # Check if GWAS integration is available
+    if hasattr(system, 'gwas_client') and system.gwas_client:
+        print("🧬 GWAS integration ready for human-mouse cross-species analysis.")
+    else:
+        print("⚠️  GWAS integration not available. Check gwas_integration.py")
+    
+    # Handle command-line GWAS analysis
+    if args.gwas_analysis:
+        if args.gwas_analysis == 'all':
+            trait_classes = ['glycemic', 'lipid', 'hepatic']
+            for trait_class in trait_classes:
+                print(f"\n🔍 Running analysis for {trait_class} traits...")
+                results = system.comprehensive_gwas_qtl_analysis(trait_class)
+                display_gwas_analysis_results(results)
+                system.export_results_to_csv(results)
+        else:
+            print(f"\n🔍 Running analysis for {args.gwas_analysis} traits...")
+            results = system.comprehensive_gwas_qtl_analysis(args.gwas_analysis)
+            display_gwas_analysis_results(results)
+            system.export_results_to_csv(results)
+        
+        print("\n✅ Analysis complete. Results exported to ./gwas_qtl_results/")
+        exit()
     
     chatbot_loop(system)

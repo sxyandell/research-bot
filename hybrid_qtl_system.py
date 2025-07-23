@@ -4,6 +4,7 @@ WORKING VERSION
 Hybrid QTL Analysis System
 
 Combines a vector store with a relational database for efficient QTL analysis.
+NOW WITH GWAS INTEGRATION for human-mouse cross-species analysis.
 """
 
 import pandas as pd
@@ -11,7 +12,7 @@ import json
 import numpy as np
 import sqlite3
 import duckdb
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Set
 from pathlib import Path
 import chromadb
 from chromadb.config import Settings
@@ -23,6 +24,17 @@ import mygene
 import re
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from google.generativeai.protos import Tool, FunctionDeclaration, Part
+import requests
+from itertools import groupby
+
+# Import GWAS integration
+try:
+    # Final version: Use the reliable, local file-based client.
+    from gwas_integration import GWASCatalog as GWASCatalogClient
+    GWAS_AVAILABLE = True
+except ImportError:
+    GWAS_AVAILABLE = False
+    logging.warning("GWAS integration not available. Install required packages or check gwas_integration.py")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,6 +42,105 @@ logger = logging.getLogger(__name__)
 # Cache to avoid re-querying the API for the same gene
 gene_cache = {}
 mg = mygene.MyGeneInfo()
+
+class OrthologMatcher:
+    """
+    Handles downloading and parsing the MGI ortholog file to reliably map
+    human gene symbols to mouse gene symbols locally.
+    """
+    def __init__(self):
+        self.file_url = "https://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt"
+        self.local_path = Path("./HOM_MouseHumanSequence.rpt")
+        self.human_to_mouse_map = None
+
+    def _download_file(self, force=False):
+        """Downloads the MGI ortholog file."""
+        if self.local_path.exists() and not force:
+            logger.info("MGI ortholog file already exists. Skipping download.")
+            return
+
+        logger.info(f"Downloading MGI ortholog file from {self.file_url}...")
+        try:
+            with requests.get(self.file_url, stream=True) as r:
+                r.raise_for_status()
+                with open(self.local_path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            logger.info("✅ Successfully downloaded MGI ortholog file.")
+        except Exception as e:
+            logger.error(f"❌ Failed to download MGI file: {e}")
+            raise
+
+    def _build_map(self):
+        """Builds a dictionary mapping human symbols to mouse symbols."""
+        self._download_file()
+        logger.info("Building human-to-mouse ortholog map...")
+        
+        self.human_to_mouse_map = {}
+        
+        try:
+            with open(self.local_path, 'r') as f:
+                # This function defines the data lines, skipping the header.
+                def data_lines(f_handle):
+                    next(f_handle) # Skip header line
+                    for line in f_handle:
+                        yield line
+
+                # Group the file lines by the first column (DB Class Key).
+                # This correctly handles multi-line entries for a single ortholog pair.
+                for key, group in groupby(data_lines(f), key=lambda x: x.split('\t')[0]):
+                    human_symbol = None
+                    mouse_symbol = None
+                    
+                    for line in group:
+                        parts = line.strip().split('\t')
+                        if len(parts) < 4: continue
+                        
+                        organism = parts[1]
+                        symbol = parts[3]
+                        
+                        if organism == 'human':
+                            human_symbol = symbol
+                        elif organism == 'mouse, laboratory':
+                            mouse_symbol = symbol
+                    
+                    if human_symbol and mouse_symbol:
+                        self.human_to_mouse_map[human_symbol.upper()] = mouse_symbol
+
+        except Exception as e:
+            logger.error(f"❌ Failed to parse MGI ortholog file: {e}")
+            raise
+
+        logger.info(f"✅ Built ortholog map with {len(self.human_to_mouse_map)} entries.")
+
+        # --- DEBUGGING START ---
+        if self.human_to_mouse_map:
+            sample_keys = list(self.human_to_mouse_map.keys())[:10]
+            logger.info(f"DEBUG: Sample keys from ortholog map: {sample_keys}")
+        else:
+            logger.warning("DEBUG: Ortholog map is empty after building.")
+        # --- DEBUGGING END ---
+
+
+    def get_mouse_orthologs(self, human_genes: Set[str]) -> Set[str]:
+        """Converts a set of human gene symbols to mouse orthologs using the local map."""
+        if self.human_to_mouse_map is None:
+            self._build_map()
+
+        # --- DEBUGGING START ---
+        if human_genes:
+            sample_genes_to_convert = list(human_genes)[:10]
+            logger.info(f"DEBUG: Sample human genes to convert: {sample_genes_to_convert}")
+        # --- DEBUGGING END ---
+
+        mouse_orthologs = set()
+        for human_gene in human_genes:
+            # Check for the uppercase version of the gene symbol.
+            if human_gene.upper() in self.human_to_mouse_map:
+                mouse_orthologs.add(self.human_to_mouse_map[human_gene.upper()])
+        
+        logger.info(f"Successfully converted {len(human_genes)} human genes to {len(mouse_orthologs)} unique mouse orthologs.")
+        return mouse_orthologs
 
 def fetch_gene_context(gene_symbol: str) -> Dict[str, Any]:
     """
@@ -92,9 +203,10 @@ class HybridQTLSystem:
     Hybrid 2-layer QTL analysis system:
     Layer 1: Vector store with embedded summary docs (~10k-20k docs)
     Layer 2: Relational store with raw rows for exact queries/analytics
+    Layer 3: GWAS integration for human-mouse cross-species analysis
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db"):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", **kwargs): # Absorb old gwas_db_path
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
         self.raw_data = None
@@ -110,10 +222,99 @@ class HybridQTLSystem:
         self.google_embedder = None
         self.generative_model = None
         
+        # Initialize GWAS client and the new Ortholog Matcher
+        self.gwas_client = None
+        self.ortholog_matcher = None
+        if GWAS_AVAILABLE:
+            # This client now manages its own data loading.
+            self.gwas_client = GWASCatalogClient()
+            self.ortholog_matcher = OrthologMatcher()
+        
         # Load data and models immediately for a robust, ready-to-use instance.
         self.load_raw_data()
         self.setup_embedding_models()
         
+    def setup_gwas_database(self, **kwargs):
+        """
+        This method now simply triggers the data loading within the GWAS client.
+        """
+        if self.gwas_client:
+            logger.info("Initializing GWAS data handler...")
+            # The client will download if necessary on the first data access.
+            self.gwas_client.load_data()
+            logger.info("✅ GWAS data handler is ready.")
+        if self.ortholog_matcher:
+            logger.info("Initializing local Ortholog Matcher...")
+            # This will download the file on first run.
+            self.ortholog_matcher.get_mouse_orthologs(set())
+            logger.info("✅ Ortholog Matcher is ready.")
+
+    def _fetch_all_gene_contexts_batch(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Fetches biological context for all unique gene symbols in the raw_data
+        using an efficient batch query. This is much faster than one-by-one queries.
+        """
+        unique_genes = self.raw_data['gene_symbol'].dropna().unique().tolist()
+        logger.info(f"Fetching biological context for {len(unique_genes)} unique genes in batches...")
+        
+        gene_context_map = {}
+        mg = mygene.MyGeneInfo()
+        
+        batch_size = 1000
+        for i in range(0, len(unique_genes), batch_size):
+            batch = unique_genes[i:i+batch_size]
+            logger.info(f"Querying mygene.info for batch {i//batch_size + 1}/{ (len(unique_genes) // batch_size) + 1 }...")
+            try:
+                # Use querymany for batch processing
+                query_results = mg.querymany(
+                    batch,
+                    scopes="symbol,alias,ensembl.gene",
+                    species="mouse",
+                    fields="name,symbol,summary,go,pathway",
+                    verbose=False
+                )
+                
+                for result in query_results:
+                    query_symbol = result.get('query')
+                    if result.get('notfound'):
+                        gene_context_map[query_symbol] = {}
+                        continue
+
+                    context = {
+                        'name': result.get('name', 'No name available.'),
+                        'summary': result.get('summary', 'No summary available.'),
+                        'go_terms_bp': [term.get('term', 'N/A') for term in result.get('go', {}).get('BP', []) if isinstance(term, dict)],
+                        'kegg_pathways': [p.get('name', 'N/A') for p in result.get('pathway', {}).get('kegg', []) if isinstance(p, dict)]
+                    }
+                    
+                    # Use the actual gene symbol from the result for the key to handle aliases
+                    actual_symbol = result.get('symbol', query_symbol)
+                    gene_context_map[actual_symbol] = context
+                    # Also map the original query term if it was an alias
+                    if actual_symbol.lower() != query_symbol.lower():
+                         gene_context_map[query_symbol] = context
+
+            except Exception as e:
+                logger.error(f"Error querying mygene.info for batch: {e}")
+                # For genes in the failed batch, add an empty context to avoid errors later
+                for gene_symbol in batch:
+                    if gene_symbol not in gene_context_map:
+                        gene_context_map[gene_symbol] = {}
+
+        logger.info(f"Successfully fetched context for {len(gene_context_map)} genes.")
+        return gene_context_map
+
+    def convert_human_to_mouse_orthologs(self, human_genes: Set[str]) -> Set[str]:
+        """
+        Converts a set of human gene symbols to their corresponding mouse orthologs
+        using the new reliable local OrthologMatcher.
+        """
+        if not self.ortholog_matcher:
+            logger.error("Ortholog Matcher not initialized.")
+            return set()
+        
+        return self.ortholog_matcher.get_mouse_orthologs(human_genes)
+
     def load_raw_data(self):
         """Load the raw QTL data into memory and DuckDB."""
         try:
@@ -178,6 +379,10 @@ class HybridQTLSystem:
         """
         all_docs = []
         
+        # NEW: Fetch all gene contexts in one efficient batch operation
+        logger.info("Pre-fetching all gene contexts in batches for efficiency...")
+        gene_context_map = self._fetch_all_gene_contexts_batch()
+        
         # 1. GENE-LEVEL SUMMARIES (ENRICHED)
         logger.info("Generating enriched gene-level summaries...")
         gene_groups = self.raw_data.groupby('gene_symbol')
@@ -192,7 +397,8 @@ class HybridQTLSystem:
             cis_count = (gene_data['cis'] == 'TRUE').sum()
             trans_count = qtl_count - cis_count
             
-            context = fetch_gene_context(gene_symbol)
+            # Use the pre-fetched context instead of calling the API one-by-one
+            context = gene_context_map.get(gene_symbol, {})
             
             summary_text = f"""
             Gene Summary for {gene_symbol} (Full Name: {context.get('name', 'N/A')})
@@ -740,6 +946,295 @@ Based *only* on the context above, provide a helpful, synthesized answer to the 
         with open(output_file, 'w') as f:
             json.dump(self.summary_docs, f, indent=2, default=str)
         logger.info(f"✅ Saved {len(self.summary_docs)} summary docs to {output_file}")
+
+    def get_gwas_genes_for_trait_class(self, trait_class: str, p_value_threshold: float = 5e-8) -> Set[str]:
+        """
+        Get genes associated with a trait class from GWAS data
+        
+        Args:
+            trait_class: One of 'glycemic', 'lipid', 'hepatic'
+            p_value_threshold: P-value threshold for significance
+        
+        Returns:
+            Set of gene symbols from GWAS
+        """
+        if not self.gwas_client:
+            raise ValueError("GWAS client not available. Check gwas_integration.py installation.")
+        
+        return self.gwas_client.get_genes_for_trait_class(trait_class, p_value_threshold)
+    
+    def find_qtl_genes_in_gwas_set(self, gwas_genes: Set[str], qtl_filters: Optional[Dict] = None) -> pd.DataFrame:
+        """
+        Find which genes from a GWAS gene set have QTL data in the DO liver study
+        
+        Args:
+            gwas_genes: Set of gene symbols from GWAS
+            qtl_filters: Optional filters for QTL data (e.g., {'cis': 'TRUE', 'min_lod': 10})
+        
+        Returns:
+            DataFrame of QTL data for genes that appear in both datasets
+        """
+        # Convert set to list for SQL query
+        gene_list = list(gwas_genes)
+        if not gene_list:
+            return pd.DataFrame()
+        
+        # Build SQL query
+        placeholders = ','.join(['?' for _ in gene_list])
+        base_query = f"""
+            SELECT * FROM qtl_peaks 
+            WHERE gene_symbol IN ({placeholders})
+        """
+        
+        # Add filters if provided
+        filter_conditions = []
+        filter_params = []
+        
+        if qtl_filters:
+            if 'cis' in qtl_filters:
+                filter_conditions.append("cis = ?")
+                filter_params.append(qtl_filters['cis'])
+            
+            if 'min_lod' in qtl_filters:
+                filter_conditions.append("qtl_lod >= ?")
+                filter_params.append(qtl_filters['min_lod'])
+            
+            if 'max_lod' in qtl_filters:
+                filter_conditions.append("qtl_lod <= ?")
+                filter_params.append(qtl_filters['max_lod'])
+            
+            if 'chromosome' in qtl_filters:
+                filter_conditions.append("qtl_chr = ?")
+                filter_params.append(qtl_filters['chromosome'])
+        
+        if filter_conditions:
+            base_query += " AND " + " AND ".join(filter_conditions)
+        
+        base_query += " ORDER BY qtl_lod DESC"
+        
+        # Execute query
+        all_params = gene_list + filter_params
+        result_df = self.duck_conn.execute(base_query, all_params).fetchdf()
+        
+        return result_df
+    
+    def get_diet_dependent_cis_eqtl_genes(self, gwas_genes: Set[str]) -> pd.DataFrame:
+        """
+        Among GWAS genes, find those with diet-dependent cis-eQTL in DO liver study
+        
+        This requires the QTL dataset to have diet interaction terms.
+        For now, this is a placeholder that filters for cis-QTLs.
+        
+        Args:
+            gwas_genes: Set of gene symbols from GWAS
+        
+        Returns:
+            DataFrame of cis-QTL data for GWAS genes
+        """
+        # For now, filter for cis-QTLs (diet-dependence would require additional data columns)
+        qtl_filters = {'cis': 'TRUE', 'min_lod': 5.0}
+        
+        cis_qtl_df = self.find_qtl_genes_in_gwas_set(gwas_genes, qtl_filters)
+        
+        # Add a note that this is a simplified version
+        if len(cis_qtl_df) > 0:
+            logger.info(f"Found {len(cis_qtl_df)} cis-QTL records for {cis_qtl_df['gene_symbol'].nunique()} GWAS genes")
+            logger.warning("Diet-dependence analysis requires additional data columns not present in current dataset")
+        
+        return cis_qtl_df
+    
+    def get_diet_dependent_trans_eqtl_genes(self, gwas_genes: Set[str]) -> pd.DataFrame:
+        """
+        Among GWAS genes, find those with diet-dependent trans-eQTL in DO liver study
+        
+        Args:
+            gwas_genes: Set of gene symbols from GWAS
+        
+        Returns:
+            DataFrame of trans-QTL data for GWAS genes
+        """
+        # For now, filter for trans-QTLs
+        qtl_filters = {'cis': 'FALSE', 'min_lod': 5.0}
+        
+        trans_qtl_df = self.find_qtl_genes_in_gwas_set(gwas_genes, qtl_filters)
+        
+        if len(trans_qtl_df) > 0:
+            logger.info(f"Found {len(trans_qtl_df)} trans-QTL records for {trans_qtl_df['gene_symbol'].nunique()} GWAS genes")
+            logger.warning("Diet-dependence analysis requires additional data columns not present in current dataset")
+        
+        return trans_qtl_df
+    
+    def comprehensive_gwas_qtl_analysis(self, trait_class: str) -> Dict[str, Any]:
+        """
+        Comprehensive analysis following the research questions 1-4:
+        1. Get GWAS genes for trait class
+        2. Find those with cis-eQTL in DO liver study  
+        3. Find those with trans-eQTL in DO liver study
+        4. Analyze potential hub genes
+        
+        Args:
+            trait_class: One of 'glycemic', 'lipid', 'hepatic'
+        
+        Returns:
+            Dictionary with comprehensive analysis results
+        """
+        logger.info(f"Starting comprehensive GWAS-QTL analysis for {trait_class}")
+        
+        results = {
+            'trait_class': trait_class,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        try:
+            # Step 1: Get HUMAN GWAS genes for trait class
+            logger.info("Step 1: Getting human GWAS genes for trait class...")
+            human_gwas_genes = self.get_gwas_genes_for_trait_class(trait_class)
+            logger.info(f"Found {len(human_gwas_genes)} human GWAS genes for {trait_class}")
+            
+            if not human_gwas_genes:
+                results['error'] = "No GWAS genes found for this trait class"
+                return results
+
+            # Step 1b: Convert human genes to mouse orthologs
+            logger.info("Step 1b: Converting human genes to mouse orthologs...")
+            gwas_genes = self.convert_human_to_mouse_orthologs(human_gwas_genes)
+            
+            results['gwas_genes'] = {
+                'human_gene_count': len(human_gwas_genes),
+                'mouse_ortholog_count': len(gwas_genes),
+                'genes': list(gwas_genes),
+                'human_genes': list(human_gwas_genes)
+            }
+            logger.info(f"Found {len(gwas_genes)} mouse orthologs to use for QTL analysis.")
+
+            if not gwas_genes:
+                results['error'] = "No mouse orthologs found for the identified human GWAS genes."
+                return results
+            
+            # Step 2: Find those with cis-eQTL in the mouse study
+            logger.info("Step 2: Finding cis-eQTL genes in mouse data...")
+            cis_qtl_df = self.get_diet_dependent_cis_eqtl_genes(gwas_genes)
+            cis_genes = set(cis_qtl_df['gene_symbol'].unique()) if len(cis_qtl_df) > 0 else set()
+            
+            results['cis_eqtl_genes'] = {
+                'count': len(cis_genes),
+                'genes': list(cis_genes),
+                'qtl_peaks': len(cis_qtl_df)
+            }
+            
+            # Step 3: Find those with trans-eQTL in the mouse study
+            logger.info("Step 3: Finding trans-eQTL genes in mouse data...")
+            trans_qtl_df = self.get_diet_dependent_trans_eqtl_genes(gwas_genes)
+            trans_genes = set(trans_qtl_df['gene_symbol'].unique()) if len(trans_qtl_df) > 0 else set()
+            
+            results['trans_eqtl_genes'] = {
+                'count': len(trans_genes),
+                'genes': list(trans_genes),
+                'qtl_peaks': len(trans_qtl_df)
+            }
+            
+            # Step 4: Identify potential hub genes (genes with both cis and trans QTLs)
+            logger.info("Step 4: Identifying potential hub genes...")
+            potential_hubs = cis_genes & trans_genes
+            
+            results['potential_hub_genes'] = {
+                'count': len(potential_hubs),
+                'genes': list(potential_hubs)
+            }
+            
+            # Additional analysis: overlap statistics
+            results['overlap_analysis'] = {
+                'gwas_with_any_qtl': len(cis_genes | trans_genes),
+                'gwas_with_cis_only': len(cis_genes - trans_genes),
+                'gwas_with_trans_only': len(trans_genes - cis_genes),
+                'gwas_with_both': len(potential_hubs),
+                'gwas_without_qtl': len(gwas_genes - cis_genes - trans_genes)
+            }
+            
+            logger.info(f"Comprehensive analysis complete for {trait_class}")
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error in comprehensive analysis: {e}")
+            results['error'] = str(e)
+            return results
+    
+    def export_results_to_csv(self, analysis_results: Dict[str, Any], output_dir: str = "./gwas_qtl_results"):
+        """
+        Export comprehensive analysis results to CSV files
+        
+        Args:
+            analysis_results: Results from comprehensive_gwas_qtl_analysis
+            output_dir: Directory to save CSV files
+        """
+        output_path = Path(output_dir)
+        output_path.mkdir(exist_ok=True)
+        
+        trait_class = analysis_results['trait_class']
+        
+        # Export GWAS genes
+        if 'gwas_genes' in analysis_results:
+            gwas_df = pd.DataFrame({
+                'gene_symbol': analysis_results['gwas_genes']['genes'],
+                'human_gene_symbol': analysis_results['gwas_genes'].get('human_genes', [None]*len(analysis_results['gwas_genes']['genes'])),
+                'source': 'GWAS_Mouse_Ortholog',
+                'trait_class': trait_class
+            })
+            gwas_df.to_csv(output_path / f"{trait_class}_gwas_genes_mouse_orthologs.csv", index=False)
+        
+        # Export cis-eQTL genes
+        if 'cis_eqtl_genes' in analysis_results and analysis_results['cis_eqtl_genes']['genes']:
+            cis_df = pd.DataFrame({
+                'gene_symbol': analysis_results['cis_eqtl_genes']['genes'],
+                'qtl_type': 'cis',
+                'trait_class': trait_class
+            })
+            cis_df.to_csv(output_path / f"{trait_class}_cis_eqtl_genes.csv", index=False)
+        
+        # Export trans-eQTL genes  
+        if 'trans_eqtl_genes' in analysis_results and analysis_results['trans_eqtl_genes']['genes']:
+            trans_df = pd.DataFrame({
+                'gene_symbol': analysis_results['trans_eqtl_genes']['genes'],
+                'qtl_type': 'trans',
+                'trait_class': trait_class
+            })
+            trans_df.to_csv(output_path / f"{trait_class}_trans_eqtl_genes.csv", index=False)
+        
+        # Export potential hub genes
+        if 'potential_hub_genes' in analysis_results and analysis_results['potential_hub_genes']['genes']:
+            hub_df = pd.DataFrame({
+                'gene_symbol': analysis_results['potential_hub_genes']['genes'],
+                'qtl_type': 'hub (cis + trans)',
+                'trait_class': trait_class
+            })
+            hub_df.to_csv(output_path / f"{trait_class}_hub_genes.csv", index=False)
+        
+        # Export summary statistics
+        summary_data = []
+        for category, data in analysis_results.items():
+            if isinstance(data, dict) and 'count' in data:
+                summary_data.append({
+                    'category': category,
+                    'count': data['count'],
+                    'trait_class': trait_class
+                })
+            elif isinstance(data, dict) and 'human_gene_count' in data:
+                 summary_data.append({
+                    'category': 'human_gwas_genes',
+                    'count': data['human_gene_count'],
+                    'trait_class': trait_class
+                })
+                 summary_data.append({
+                    'category': 'mouse_orthologs',
+                    'count': data['mouse_ortholog_count'],
+                    'trait_class': trait_class
+                })
+        
+        if summary_data:
+            summary_df = pd.DataFrame(summary_data)
+            summary_df.to_csv(output_path / f"{trait_class}_analysis_summary.csv", index=False)
+        
+        logger.info(f"Results exported to {output_path}")
 
 # Example usage and testing
 if __name__ == "__main__":

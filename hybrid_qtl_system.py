@@ -95,7 +95,7 @@ class HybridQTLSystem:
     Layer 2: Relational store with raw rows for exact queries/analytics
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://localhost:11434/api/generate", ollama_model: str = "llama3:latest"):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "llama3:latest"):
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
         self.raw_data = None
@@ -658,8 +658,9 @@ class HybridQTLSystem:
                     "prompt": prompt,
                     "stream": False
                 },
-                timeout=60
+                timeout=300
             )
+
             response.raise_for_status()
             data = response.json()
             return "[Ollama] " + data.get("response", "[No response from Ollama]")
@@ -718,6 +719,7 @@ Your task is to synthesize a clear and accurate answer for the user based *only*
 4.  **Crucially, cite your sources.** Refer to the document IDs (e.g., 'gene_Gnai3', 'peak_1234_...') or the analytical query when explaining your answer.
 5.  If the context does not contain the information needed to answer the question, you MUST state that the information is not available in the database and do not invent an answer.
 
+
 **User's Question:** "{query}"
 
 **Retrieved Context from Database:**
@@ -758,7 +760,6 @@ Based *only* on the context above, provide a helpful, synthesized answer to the 
 # Example usage and testing
 if __name__ == "__main__":
     system = HybridQTLSystem("/data/dev/miniViewer_3.0/DO1200_liver_genes_all_mice_additive_peaks.csv")
-    
     print("Setting up hybrid system with both summary and granular documents...")
     system.setup_vector_store(use_google_embeddings=False)
     

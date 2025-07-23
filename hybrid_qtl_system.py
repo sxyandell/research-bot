@@ -621,7 +621,7 @@ class HybridQTLSystem:
             logger.error(f"❌ Semantic search failed: {e}")
             return []
     
-    def analytical_query(self, sql_query: str) -> pd.DataFrame:
+    def analytical_query(self, sql_query: str, params: Optional[Dict] = None) -> pd.DataFrame:
         """
         Layer 2: Direct SQL queries on raw data.
         Use this for exact lookups and analytics.
@@ -630,7 +630,7 @@ class HybridQTLSystem:
             raise ValueError("DuckDB connection not initialized")
         
         try:
-            result = self.duck_conn.execute(sql_query).fetchdf()
+            result = self.duck_conn.execute(sql_query, params).fetchdf()
             return result
         except Exception as e:
             logger.error(f"❌ Analytical query failed: {e}")
@@ -851,10 +851,26 @@ class HybridQTLSystem:
         # 1. Build the prompt for the LLM
         tools_json_str = self._format_tools_for_prompt()
         prompt = f"""
-You are an expert at routing user questions to the correct tool.
-Based on the user's query and the available tools, choose the single best tool to answer the question.
-You must respond in JSON format with the following structure: {{"tool_name": "...", "arguments": {{...}} }}
-If no tool is appropriate or the question is conversational, you MUST respond with: {{"tool_name": "semantic_search", "arguments": {{"query": "{query}"}} }}
+You are an expert at routing user questions to the correct tool for a bioinformatics QTL database.
+Your goal is to choose the single best tool to answer the user's question based on the tool descriptions.
+
+**DATABASE CONTEXT:**
+- The database contains Quantitative Trait Loci (QTL) data.
+- Each record is called a "peak" or a "QTL".
+- The significance of each peak is measured by its "LOD score".
+- "Highest peak" means the peak with the highest LOD score.
+
+**CRITICAL INSTRUCTIONS:**
+1.  Analyze the user's query to determine the core intent.
+2.  **Gene-specific vs. Global:**
+    - If the query mentions a specific gene name (e.g., 'Apoe', 'Tdpoz2'), you MUST choose a gene-specific tool.
+    - If the query asks for "highest" or "top" peaks in general, use `analytical_query_top_lod`.
+3.  **Specific Tool Selection (for Gene-specific queries):**
+    - For general information (function, summary), use `get_gene_summary`.
+    - To list ALL peaks for a gene, use `get_gene_details`.
+    - For RANKED peaks (e.g., "top 5", "second highest"), use `get_top_peaks_for_gene`. You must infer the `limit` parameter. For "second highest", `limit` should be 2.
+4.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
+5.  If no tool fits, default to `semantic_search`.
 
 **Available Tools:**
 {tools_json_str}
@@ -984,19 +1000,16 @@ If no tool is appropriate or the question is conversational, you MUST respond wi
                 df = search_results['results']
                 context_str = "Based on the following data table:\n" + df.to_string(index=False)
         prompt = f"""
-You are a specialized bioinformatics research assistant for a QTL database.
-Your task is to synthesize a clear and accurate answer for the user based *only* on the provided search results.
+You are a specialized bioinformatics research assistant. Your task is to provide a clear, concise, and accurate answer based ONLY on the provided database context.
 
-**Instructions:**
-1.  Analyze the user's question to understand their core intent.
-2.  Examine the retrieved context below. Note whether it came from a precise analytical query (like a data table) or a broader semantic search (like text documents).
-3.  Synthesize a comprehensive answer.
-    - If the context is a data table from an analytical query, present the key findings from the table directly.
-    - If the context is from a semantic search, summarize the information from the provided documents.
-    - If both are present, prioritize the specific data from the analytical query and use the semantic context for background information.
-4.  **Crucially, cite your sources.** Refer to the document IDs (e.g., 'gene_Gnai3', 'peak_1234_...') or the analytical query when explaining your answer.
-5.  If the context does not contain the information needed to answer the question, you MUST state that the information is not available in the database and do not invent an answer.
-
+**CRITICAL INSTRUCTIONS:**
+1.  **Be Direct:** Answer the user's question directly. Do not repeat the question or use conversational filler.
+2.  **Be Concise:** Do not state the same piece of information multiple times in different ways. Avoid redundant phrases.
+3.  **Synthesize Findings:**
+    - If the context is a data table from an analytical query, directly state the key findings from the table.
+    - If the context is from a semantic search, summarize the information accurately.
+4.  **Cite Sources:** If helpful, you can briefly mention the source of the information (e.g., "from the gene summary" or "from the analytical query").
+5.  **Handle Missing Information:** If the context does not contain the answer, you MUST state that clearly (e.g., "The database does not contain information about..."). Do not invent answers.
 
 **User's Question:** "{query}"
 
@@ -1005,7 +1018,7 @@ Your task is to synthesize a clear and accurate answer for the user based *only*
 {context_str}
 ---
 
-Based *only* on the context above, provide a helpful, synthesized answer to the user's question.
+Based *only* on the context above, provide your concise and direct answer.
 """
         response = self._call_ollama(prompt)
         return response
@@ -1071,7 +1084,7 @@ Based *only* on the context above, provide a helpful, synthesized answer to the 
         placeholders = ','.join(['?' for _ in gene_list])
         base_query = f"""
             SELECT * FROM qtl_peaks 
-            WHERE gene_symbol IN ({placeholders})
+            WHERE LOWER(gene_symbol) IN ({placeholders})
         """
         
         # Add filters if provided

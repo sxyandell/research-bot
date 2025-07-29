@@ -1229,8 +1229,7 @@ Your goal is to choose the single best tool to answer the user's question based 
     - If the query mentions a specific gene name (e.g., 'Apoe', 'Tdpoz2'), you MUST choose a gene-specific tool.
     - If the query asks for "highest" or "top" peaks in general, use `analytical_query_top_lod`.
 3.  **Specific Tool Selection (for Gene-specific queries):**
-    - For general information (function, summary), use `get_gene_summary`.
-    - To list ALL peaks for a gene, use `get_gene_details`.
+    - For general information about a gene (function, summary, QTLs), use `get_gene_details`.
     - For comprehensive gene analysis with Ensemble API data (variants, detailed annotations), use `get_enhanced_gene_details`.
     - For cross-species analysis (human orthologs, comparative studies), use `get_cross_species_gene_info`.
     - For RANKED peaks (e.g., "top 5", "second highest"), use `get_top_peaks_for_gene`. You must infer the `limit` parameter. For "second highest", `limit` should be 2.

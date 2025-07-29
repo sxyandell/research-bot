@@ -224,14 +224,18 @@ def chatbot_loop(system: HybridQTLSystem):
             elif query.lower() == 'test:ensemble':
                 print("\n🔬 Testing Ensemble API connection...")
                 if system.ensemble_client:
-                    success = system.ensemble_client.test_ensemble_connection()
-                    if success:
-                        print("✅ Ensemble API connection successful!")
-                        available_genes = system.ensemble_client.get_available_ensemble_genes(5)
-                        if available_genes:
-                            print(f"📋 Available genes for testing: {', '.join(available_genes)}")
-                    else:
-                        print("❌ Ensemble API connection failed!")
+                    # Test basic connectivity first
+                    try:
+                        # Test with a simple gene lookup
+                        test_gene = "Apoe"
+                        gene_info = system.ensemble_client.get_gene_info(test_gene)
+                        if gene_info:
+                            print("✅ Ensemble API connection successful!")
+                            print(f"📊 Found gene info for {test_gene}")
+                        else:
+                            print("⚠️ Ensemble API connected but no gene data found")
+                    except Exception as e:
+                        print(f"❌ Ensemble API connection failed: {e}")
                 else:
                     print("❌ Ensemble API client not available!")
                 continue

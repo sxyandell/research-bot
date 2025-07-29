@@ -9,11 +9,11 @@ import shutil
 import duckdb
 
 
-def display_ensemble_results(results):
-    """Display Ensemble API results in a formatted way."""
+def display_ensembl_results(results):
+    """Display Ensembl API results in a formatted way."""
     
     print("\n" + "="*80)
-    print("🔬 Ensemble API Results".center(80))
+    print("🔬 Ensembl API Results".center(80))
     print("="*80)
     
     if 'ensemble_data' in results:
@@ -79,9 +79,9 @@ def display_ai_results(results):
     print(textwrap.fill(ai_response, width=80))
     print("-" * 80)
     
-    # Display Ensemble API results if available
+    # Display Ensembl API results if available
     if 'ensemble_data' in results or 'human_orthologs' in results:
-        display_ensemble_results(results)
+        display_ensembl_results(results)
     
     # Optionally display the sources used
     if results.get('results'):
@@ -202,7 +202,7 @@ def chatbot_loop(system: HybridQTLSystem):
     print("="*50)
     print("Ask me anything about your QTL data.")
     print("Type 'help:gwas' for GWAS analysis commands.")
-    print("Type 'test:ensemble' to test Ensemble API connection.")
+    print("Type 'test:ensembl' to test Ensembl API connection.")
     print("Type 'test:genes' to test gene matching between orthologs and QTL database.")
     print("Type 'exit' or 'quit' to end the session.")
     
@@ -221,8 +221,8 @@ def chatbot_loop(system: HybridQTLSystem):
                 show_gwas_help()
                 continue
             
-            elif query.lower() == 'test:ensemble':
-                print("\n🔬 Testing Ensemble API connection...")
+            elif query.lower() == 'test:ensembl':
+                print("\n🔬 Testing Ensembl API connection...")
                 if system.ensemble_client:
                     # Test basic connectivity first
                     try:
@@ -230,14 +230,14 @@ def chatbot_loop(system: HybridQTLSystem):
                         test_gene = "Apoe"
                         gene_info = system.ensemble_client.get_gene_info(test_gene)
                         if gene_info:
-                            print("✅ Ensemble API connection successful!")
+                            print("✅ Ensembl API connection successful!")
                             print(f"📊 Found gene info for {test_gene}")
                         else:
-                            print("⚠️ Ensemble API connected but no gene data found")
+                            print("⚠️ Ensembl API connected but no gene data found")
                     except Exception as e:
-                        print(f"❌ Ensemble API connection failed: {e}")
+                        print(f"❌ Ensembl API connection failed: {e}")
                 else:
-                    print("❌ Ensemble API client not available!")
+                    print("❌ Ensembl API client not available!")
                 continue
             
             elif query.lower() == 'test:genes':

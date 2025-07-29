@@ -38,13 +38,13 @@ except ImportError:
     GWAS_AVAILABLE = False
     logging.warning("GWAS integration not available. Install required packages or check gwas_integration.py")
 
-# Import Ensemble API integration
+# Import Ensembl API integration
 try:
     import requests
-    ENSEMBLE_AVAILABLE = True
+    ENSEMBL_AVAILABLE = True
 except ImportError:
-    ENSEMBLE_AVAILABLE = False
-    logging.warning("Ensemble API integration not available. Install requests package.")
+    ENSEMBL_AVAILABLE = False
+    logging.warning("Ensembl API integration not available. Install requests package.")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,9 +53,9 @@ logger = logging.getLogger(__name__)
 gene_cache = {}
 mg = mygene.MyGeneInfo()
 
-class EnsembleAPIClient:
+class EnsemblAPIClient:
     """
-    Client for interacting with the Ensemble API to retrieve gene annotations,
+    Client for interacting with the Ensembl API to retrieve gene annotations,
     variant information, and cross-species data.
     """
     
@@ -68,7 +68,7 @@ class EnsembleAPIClient:
     
     def get_gene_info(self, gene_symbol: str, species: str = "mus_musculus") -> Dict[str, Any]:
         """
-        Retrieve detailed gene information from Ensemble API.
+        Retrieve detailed gene information from Ensembl API.
         
         Args:
             gene_symbol: Gene symbol to query
@@ -78,7 +78,7 @@ class EnsembleAPIClient:
             Dictionary containing gene information
         """
         try:
-            # Use the correct Ensemble REST API endpoints
+            # Use the correct Ensembl REST API endpoints
             # First try the lookup/symbol endpoint
             search_url = f"{self.base_url}/lookup/symbol/{species}/{gene_symbol}"
             logger.debug(f"🔍 Trying Ensemble lookup: {search_url}")
@@ -143,7 +143,7 @@ class EnsembleAPIClient:
     
     def get_variants(self, gene_symbol: str, species: str = "mus_musculus") -> List[Dict[str, Any]]:
         """
-        Retrieve variant information for a gene from Ensemble API.
+        Retrieve variant information for a gene from Ensembl API.
         
         Args:
             gene_symbol: Gene symbol to query
@@ -441,10 +441,10 @@ class HybridQTLSystem:
             self.gwas_client = GWASCatalogClient()
             self.ortholog_matcher = OrthologMatcher()
         
-        # Initialize Ensemble API client
-        self.ensemble_client = None
-        if ENSEMBLE_AVAILABLE:
-            self.ensemble_client = EnsembleAPIClient()
+        # Initialize Ensembl API client
+        self.ensembl_client = None
+        if ENSEMBL_AVAILABLE:
+            self.ensembl_client = EnsemblAPIClient()
         
         # Load data and models immediately for a robust, ready-to-use instance.
         self.load_raw_data()
@@ -888,7 +888,7 @@ class HybridQTLSystem:
     
     def get_enhanced_gene_details(self, gene_symbol: str) -> Dict:
         """
-        Enhanced gene details including Ensemble API data for comprehensive gene information.
+        Enhanced gene details including Ensembl API data for comprehensive gene information.
         
         Args:
             gene_symbol: Gene symbol to query
@@ -899,26 +899,26 @@ class HybridQTLSystem:
         # Get basic gene details
         basic_details = self.get_gene_details(gene_symbol)
         
-        # Add Ensemble API data if available
-        ensemble_data = {}
-        if self.ensemble_client:
-            logger.info(f"🔬 Calling Ensemble API for gene: {gene_symbol}")
+        # Add Ensembl API data if available
+        ensembl_data = {}
+        if self.ensembl_client:
+            logger.info(f"🔬 Calling Ensembl API for gene: {gene_symbol}")
             try:
-                # Get Ensemble gene information
-                logger.info(f"📊 Fetching Ensemble gene information for {gene_symbol}...")
-                ensemble_info = self.ensemble_client.get_gene_function(gene_symbol)
-                if ensemble_info:
-                    ensemble_data['ensemble_info'] = ensemble_info
-                    logger.info(f"✅ Ensemble gene info retrieved for {gene_symbol}")
-                    logger.debug(f"Ensemble gene info: {ensemble_info}")
+                # Get Ensembl gene information
+                logger.info(f"📊 Fetching Ensembl gene information for {gene_symbol}...")
+                ensembl_info = self.ensembl_client.get_gene_function(gene_symbol)
+                if ensembl_info:
+                    ensembl_data['ensembl_info'] = ensembl_info
+                    logger.info(f"✅ Ensembl gene info retrieved for {gene_symbol}")
+                    logger.debug(f"Ensembl gene info: {ensembl_info}")
                 else:
-                    logger.warning(f"⚠️ No Ensemble gene info found for {gene_symbol}")
+                    logger.warning(f"⚠️ No Ensembl gene info found for {gene_symbol}")
                 
                 # Get variant information
                 logger.info(f"🧬 Fetching variant information for {gene_symbol}...")
-                variants = self.ensemble_client.get_variants(gene_symbol)
+                variants = self.ensembl_client.get_variants(gene_symbol)
                 if variants:
-                    ensemble_data['variants'] = variants
+                    ensembl_data['variants'] = variants
                     logger.info(f"✅ Found {len(variants)} variants for {gene_symbol}")
                     logger.debug(f"Variants: {variants}")
                 else:
@@ -926,22 +926,22 @@ class HybridQTLSystem:
                 
                 # Get ortholog information
                 logger.info(f"🔄 Fetching ortholog information for {gene_symbol}...")
-                orthologs = self.ensemble_client.get_orthologs(gene_symbol)
+                orthologs = self.ensembl_client.get_orthologs(gene_symbol)
                 if orthologs:
-                    ensemble_data['orthologs'] = orthologs
+                    ensembl_data['orthologs'] = orthologs
                     logger.info(f"✅ Found {len(orthologs)} orthologs for {gene_symbol}")
                     logger.debug(f"Orthologs: {orthologs}")
                 else:
                     logger.info(f"ℹ️ No orthologs found for {gene_symbol}")
                     
             except Exception as e:
-                logger.error(f"❌ Ensemble API error for {gene_symbol}: {e}")
+                logger.error(f"❌ Ensembl API error for {gene_symbol}: {e}")
         
         # Combine all data
         enhanced_details = {
             **basic_details,
-            'ensemble_data': ensemble_data,
-            'data_sources': ['qtl_database', 'mygene_info', 'ensemble_api']
+            'ensembl_data': ensembl_data,
+            'data_sources': ['qtl_database', 'mygene_info', 'ensembl_api']
         }
         
         return enhanced_details

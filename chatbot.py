@@ -9,6 +9,65 @@ import shutil
 import duckdb
 
 
+def display_ensemble_results(results):
+    """Display Ensemble API results in a formatted way."""
+    
+    print("\n" + "="*80)
+    print("🔬 Ensemble API Results".center(80))
+    print("="*80)
+    
+    if 'ensemble_data' in results:
+        ensemble_data = results['ensemble_data']
+        
+        # Display gene information
+        if 'ensemble_info' in ensemble_data:
+            info = ensemble_data['ensemble_info']
+            print(f"📊 Gene Information:")
+            if 'display_name' in info:
+                print(f"   Gene Name: {info['display_name']}")
+            if 'description' in info:
+                print(f"   Description: {info['description']}")
+            if 'biotype' in info:
+                print(f"   Biotype: {info['biotype']}")
+            if 'version' in info:
+                print(f"   Version: {info['version']}")
+        
+        # Display variants
+        if 'variants' in ensemble_data:
+            variants = ensemble_data['variants']
+            print(f"\n🧬 Variants ({len(variants)} found):")
+            for i, variant in enumerate(variants[:5], 1):  # Show first 5
+                print(f"   [{i}] {variant.get('id', 'N/A')} - {variant.get('consequence_type', 'N/A')}")
+            if len(variants) > 5:
+                print(f"   ... and {len(variants) - 5} more variants")
+        
+        # Display orthologs
+        if 'orthologs' in ensemble_data:
+            orthologs = ensemble_data['orthologs']
+            print(f"\n🔄 Orthologs ({len(orthologs)} found):")
+            for i, ortholog in enumerate(orthologs[:3], 1):  # Show first 3
+                if 'target' in ortholog:
+                    target = ortholog['target']
+                    print(f"   [{i}] {target.get('display_name', 'N/A')} ({target.get('species', 'N/A')})")
+            if len(orthologs) > 3:
+                print(f"   ... and {len(orthologs) - 3} more orthologs")
+    
+    # Display cross-species information
+    if 'human_orthologs' in results:
+        human_data = results['human_orthologs']
+        if 'ortholog_count' in human_data and human_data['ortholog_count'] > 0:
+            print(f"\n🌍 Cross-Species Analysis:")
+            print(f"   Human Orthologs: {human_data['ortholog_count']} found")
+            
+            if 'human_gene_details' in human_data:
+                human_gene = human_data['human_gene_details']
+                print(f"   Primary Human Ortholog: {human_gene.get('display_name', 'N/A')}")
+                if 'description' in human_gene:
+                    print(f"   Human Gene Description: {human_gene['description']}")
+    
+    print("="*80)
+
+
 def display_ai_results(results):
     """Formats and displays the AI-generated response and its sources."""
     
@@ -19,6 +78,10 @@ def display_ai_results(results):
     print("="*80)
     print(textwrap.fill(ai_response, width=80))
     print("-" * 80)
+    
+    # Display Ensemble API results if available
+    if 'ensemble_data' in results or 'human_orthologs' in results:
+        display_ensemble_results(results)
     
     # Optionally display the sources used
     if results.get('results'):
@@ -34,6 +97,11 @@ def display_ai_results(results):
         elif intent == 'analytical':
             sql = results.get('sql_query', 'N/A')
             print(f"  - Analytical query: {sql}")
+    
+    # Show data sources used
+    if 'data_sources' in results:
+        print(f"📚 Data Sources: {', '.join(results['data_sources'])}")
+    
     print("="*80)
 
 
@@ -134,6 +202,8 @@ def chatbot_loop(system: HybridQTLSystem):
     print("="*50)
     print("Ask me anything about your QTL data.")
     print("Type 'help:gwas' for GWAS analysis commands.")
+    print("Type 'test:ensemble' to test Ensemble API connection.")
+    print("Type 'test:genes' to test gene matching between orthologs and QTL database.")
     print("Type 'exit' or 'quit' to end the session.")
     
     while True:
@@ -149,6 +219,27 @@ def chatbot_loop(system: HybridQTLSystem):
             # Handle special GWAS commands
             if query.lower() == 'help:gwas':
                 show_gwas_help()
+                continue
+            
+            elif query.lower() == 'test:ensemble':
+                print("\n🔬 Testing Ensemble API connection...")
+                if system.ensemble_client:
+                    success = system.ensemble_client.test_ensemble_connection()
+                    if success:
+                        print("✅ Ensemble API connection successful!")
+                        available_genes = system.ensemble_client.get_available_ensemble_genes(5)
+                        if available_genes:
+                            print(f"📋 Available genes for testing: {', '.join(available_genes)}")
+                    else:
+                        print("❌ Ensemble API connection failed!")
+                else:
+                    print("❌ Ensemble API client not available!")
+                continue
+            
+            elif query.lower() == 'test:genes':
+                print("\n🔍 Testing gene matching between orthologs and QTL database...")
+                test_results = system.test_gene_matching()
+                print("✅ Gene matching test complete. Check logs for details.")
                 continue
             
             elif query.lower().startswith('gwas:'):

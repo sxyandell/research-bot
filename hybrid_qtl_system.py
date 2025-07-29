@@ -38,12 +38,218 @@ except ImportError:
     GWAS_AVAILABLE = False
     logging.warning("GWAS integration not available. Install required packages or check gwas_integration.py")
 
+# Import Ensemble API integration
+try:
+    import requests
+    ENSEMBLE_AVAILABLE = True
+except ImportError:
+    ENSEMBLE_AVAILABLE = False
+    logging.warning("Ensemble API integration not available. Install requests package.")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Cache to avoid re-querying the API for the same gene
 gene_cache = {}
 mg = mygene.MyGeneInfo()
+
+class EnsembleAPIClient:
+    """
+    Client for interacting with the Ensemble API to retrieve gene annotations,
+    variant information, and cross-species data.
+    """
+    
+    def __init__(self):
+        self.base_url = "https://rest.ensembl.org"
+        self.headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    
+    def get_gene_info(self, gene_symbol: str, species: str = "mus_musculus") -> Dict[str, Any]:
+        """
+        Retrieve detailed gene information from Ensemble API.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+            species: Species identifier (default: mus_musculus for mouse)
+        
+        Returns:
+            Dictionary containing gene information
+        """
+        try:
+            # Use the correct Ensemble REST API endpoints
+            # First try the lookup/symbol endpoint
+            search_url = f"{self.base_url}/lookup/symbol/{species}/{gene_symbol}"
+            logger.debug(f"🔍 Trying Ensemble lookup: {search_url}")
+            response = requests.get(search_url, headers=self.headers)
+            
+            if response.status_code == 404:
+                # Try with different case variations
+                logger.info(f"⚠️ Gene {gene_symbol} not found, trying case variations...")
+                for variant in [gene_symbol.upper(), gene_symbol.lower(), gene_symbol.capitalize()]:
+                    if variant != gene_symbol:
+                        search_url = f"{self.base_url}/lookup/symbol/{species}/{variant}"
+                        logger.debug(f"🔍 Trying variant: {search_url}")
+                        response = requests.get(search_url, headers=self.headers)
+                        if response.status_code == 200:
+                            logger.info(f"✅ Found gene with variant case: {variant}")
+                            break
+                
+                # If still not found, try the xrefs endpoint
+                if response.status_code == 404:
+                    logger.info(f"🔍 Trying xrefs endpoint for {gene_symbol}...")
+                    search_url = f"{self.base_url}/xrefs/symbol/{species}/{gene_symbol}"
+                    response = requests.get(search_url, headers=self.headers)
+            
+            response.raise_for_status()
+            gene_data = response.json()
+            
+            # Handle search results (array) vs direct lookup (object)
+            if isinstance(gene_data, list) and len(gene_data) > 0:
+                gene_data = gene_data[0]  # Take first result
+                logger.info(f"✅ Found gene via search: {gene_data.get('display_name', gene_symbol)}")
+            elif isinstance(gene_data, dict) and gene_data:
+                logger.info(f"✅ Found gene via direct lookup: {gene_data.get('display_name', gene_symbol)}")
+            else:
+                logger.warning(f"⚠️ No gene data returned for {gene_symbol}")
+                return {}
+            
+            # Get additional details if gene found
+            if gene_data and 'id' in gene_data:
+                gene_id = gene_data['id']
+                
+                # Get gene details using lookup/id
+                details_url = f"{self.base_url}/lookup/id/{gene_id}"
+                details_response = requests.get(details_url, headers=self.headers)
+                if details_response.status_code == 200:
+                    details = details_response.json()
+                    gene_data.update(details)
+                
+                # Get gene description using overlap/id
+                desc_url = f"{self.base_url}/overlap/id/{gene_id}"
+                desc_response = requests.get(desc_url, headers=self.headers)
+                if desc_response.status_code == 200:
+                    desc_data = desc_response.json()
+                    gene_data['description'] = desc_data
+                
+                return gene_data
+            
+            return {}
+            
+        except Exception as e:
+            logger.error(f"Error fetching gene info for {gene_symbol}: {e}")
+            return {}
+    
+    def get_variants(self, gene_symbol: str, species: str = "mus_musculus") -> List[Dict[str, Any]]:
+        """
+        Retrieve variant information for a gene from Ensemble API.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+            species: Species identifier
+        
+        Returns:
+            List of variant information
+        """
+        try:
+            # First get gene info to find the gene ID
+            gene_info = self.get_gene_info(gene_symbol, species)
+            if not gene_info or 'id' not in gene_info:
+                return []
+            
+            gene_id = gene_info['id']
+            
+            # Get variants for the gene using the correct endpoint
+            # Use overlap/id to get features including variants
+            variants_url = f"{self.base_url}/overlap/id/{gene_id}?feature=variation"
+            response = requests.get(variants_url, headers=self.headers)
+            response.raise_for_status()
+            
+            variants = response.json()
+            # Filter for variation features
+            variation_features = [v for v in variants if v.get('feature_type') == 'variation']
+            
+            logger.info(f"✅ Found {len(variation_features)} variants for {gene_symbol}")
+            return variation_features
+            
+        except Exception as e:
+            logger.error(f"Error fetching variants for {gene_symbol}: {e}")
+            return []
+    
+    def get_orthologs(self, gene_symbol: str, target_species: str = "homo_sapiens") -> List[Dict[str, Any]]:
+        """
+        Retrieve ortholog information for cross-species comparison.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+            target_species: Target species for ortholog search
+        
+        Returns:
+            List of ortholog information
+        """
+        try:
+            # Get gene info first
+            gene_info = self.get_gene_info(gene_symbol)
+            if not gene_info or 'id' not in gene_info:
+                return []
+            
+            gene_id = gene_info['id']
+            
+            # Get orthologs using the correct homology endpoint
+            orthologs_url = f"{self.base_url}/homology/id/{gene_id}?target_species={target_species}"
+            response = requests.get(orthologs_url, headers=self.headers)
+            response.raise_for_status()
+            
+            homology_data = response.json()
+            
+            orthologs = []
+            if 'data' in homology_data:
+                for homology in homology_data['data']:
+                    if 'homologies' in homology:
+                        for h in homology['homologies']:
+                            if h.get('type') == 'ortholog_one2one':
+                                orthologs.append(h)
+            
+            logger.info(f"✅ Found {len(orthologs)} orthologs for {gene_symbol}")
+            return orthologs
+            
+        except Exception as e:
+            logger.error(f"Error fetching orthologs for {gene_symbol}: {e}")
+            return []
+    
+    def get_gene_function(self, gene_symbol: str, species: str = "mus_musculus") -> Dict[str, Any]:
+        """
+        Retrieve comprehensive gene function information.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+            species: Species identifier
+        
+        Returns:
+            Dictionary with gene function information
+        """
+        try:
+            gene_info = self.get_gene_info(gene_symbol, species)
+            
+            # Get GO terms
+            if gene_info and 'id' in gene_info:
+                gene_id = gene_info['id']
+                go_url = f"{self.base_url}/ontology/annotation/{gene_id}"
+                go_response = requests.get(go_url, headers=self.headers)
+                
+                go_terms = []
+                if go_response.status_code == 200:
+                    go_data = go_response.json()
+                    go_terms = [term for term in go_data if 'term' in term]
+                
+                gene_info['go_terms'] = go_terms
+            
+            return gene_info
+            
+        except Exception as e:
+            logger.error(f"Error fetching gene function for {gene_symbol}: {e}")
+            return {}
 
 class OrthologMatcher:
     """
@@ -235,6 +441,11 @@ class HybridQTLSystem:
             self.gwas_client = GWASCatalogClient()
             self.ortholog_matcher = OrthologMatcher()
         
+        # Initialize Ensemble API client
+        self.ensemble_client = None
+        if ENSEMBLE_AVAILABLE:
+            self.ensemble_client = EnsembleAPIClient()
+        
         # Load data and models immediately for a robust, ready-to-use instance.
         self.load_raw_data()
         self.setup_embedding_models()
@@ -318,7 +529,15 @@ class HybridQTLSystem:
             logger.error("Ortholog Matcher not initialized.")
             return set()
         
-        return self.ortholog_matcher.get_mouse_orthologs(human_genes)
+        # Convert human genes to mouse orthologs
+        mouse_orthologs = self.ortholog_matcher.get_mouse_orthologs(human_genes)
+        
+        # Normalize mouse orthologs to lowercase for consistent matching
+        normalized_orthologs = {ortholog.lower() for ortholog in mouse_orthologs}
+        
+        logger.info(f"🔄 Normalized {len(mouse_orthologs)} mouse orthologs to lowercase for matching")
+        
+        return normalized_orthologs
 
     def load_raw_data(self):
         """Load the raw QTL data into memory and DuckDB."""
@@ -326,6 +545,11 @@ class HybridQTLSystem:
             logger.info(f"Loading raw data from {self.csv_file}")
             self.raw_data = pd.read_csv(self.csv_file)
             logger.info(f"✅ Loaded {len(self.raw_data)} QTL records")
+            
+            # Normalize gene symbols to lowercase for consistent matching
+            if 'gene_symbol' in self.raw_data.columns:
+                self.raw_data['gene_symbol_normalized'] = self.raw_data['gene_symbol'].str.lower()
+                logger.info("🔄 Normalized gene symbols to lowercase for consistent matching")
             
             # Initialize DuckDB for fast analytics
             self.duck_conn = duckdb.connect(":memory:")
@@ -339,6 +563,9 @@ class HybridQTLSystem:
             # Create indexes for common queries
             self.duck_conn.execute("""
                 CREATE INDEX idx_gene_symbol ON qtl_peaks(gene_symbol)
+            """)
+            self.duck_conn.execute("""
+                CREATE INDEX idx_gene_symbol_normalized ON qtl_peaks(gene_symbol_normalized)
             """)
             self.duck_conn.execute("""
                 CREATE INDEX idx_qtl_chr ON qtl_peaks(qtl_chr)
@@ -638,10 +865,10 @@ class HybridQTLSystem:
     
     def get_gene_details(self, gene_symbol: str) -> Dict:
         """Quick helper for gene-specific queries, now including biological context."""
-        # 1. Get QTL data from DuckDB
+        # 1. Get QTL data from DuckDB using normalized gene symbol
         query = """
         SELECT * FROM qtl_peaks 
-        WHERE lower(gene_symbol) = lower(?) 
+        WHERE gene_symbol_normalized = lower(?) 
         ORDER BY qtl_lod DESC
         """
         qtl_result_df = self.duck_conn.execute(query, [gene_symbol]).fetchdf()
@@ -657,6 +884,120 @@ class HybridQTLSystem:
             'kegg_pathways': biological_context.get('kegg_pathways', []),
             'qtl_count': len(qtl_result_df),
             'qtls': qtl_result_df.to_dict('records') if len(qtl_result_df) > 0 else []
+        }
+    
+    def get_enhanced_gene_details(self, gene_symbol: str) -> Dict:
+        """
+        Enhanced gene details including Ensemble API data for comprehensive gene information.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+        
+        Returns:
+            Dictionary with comprehensive gene information from multiple sources
+        """
+        # Get basic gene details
+        basic_details = self.get_gene_details(gene_symbol)
+        
+        # Add Ensemble API data if available
+        ensemble_data = {}
+        if self.ensemble_client:
+            logger.info(f"🔬 Calling Ensemble API for gene: {gene_symbol}")
+            try:
+                # Get Ensemble gene information
+                logger.info(f"📊 Fetching Ensemble gene information for {gene_symbol}...")
+                ensemble_info = self.ensemble_client.get_gene_function(gene_symbol)
+                if ensemble_info:
+                    ensemble_data['ensemble_info'] = ensemble_info
+                    logger.info(f"✅ Ensemble gene info retrieved for {gene_symbol}")
+                    logger.debug(f"Ensemble gene info: {ensemble_info}")
+                else:
+                    logger.warning(f"⚠️ No Ensemble gene info found for {gene_symbol}")
+                
+                # Get variant information
+                logger.info(f"🧬 Fetching variant information for {gene_symbol}...")
+                variants = self.ensemble_client.get_variants(gene_symbol)
+                if variants:
+                    ensemble_data['variants'] = variants
+                    logger.info(f"✅ Found {len(variants)} variants for {gene_symbol}")
+                    logger.debug(f"Variants: {variants}")
+                else:
+                    logger.info(f"ℹ️ No variants found for {gene_symbol}")
+                
+                # Get ortholog information
+                logger.info(f"🔄 Fetching ortholog information for {gene_symbol}...")
+                orthologs = self.ensemble_client.get_orthologs(gene_symbol)
+                if orthologs:
+                    ensemble_data['orthologs'] = orthologs
+                    logger.info(f"✅ Found {len(orthologs)} orthologs for {gene_symbol}")
+                    logger.debug(f"Orthologs: {orthologs}")
+                else:
+                    logger.info(f"ℹ️ No orthologs found for {gene_symbol}")
+                    
+            except Exception as e:
+                logger.error(f"❌ Ensemble API error for {gene_symbol}: {e}")
+        
+        # Combine all data
+        enhanced_details = {
+            **basic_details,
+            'ensemble_data': ensemble_data,
+            'data_sources': ['qtl_database', 'mygene_info', 'ensemble_api']
+        }
+        
+        return enhanced_details
+    
+    def get_cross_species_gene_info(self, gene_symbol: str) -> Dict:
+        """
+        Get comprehensive cross-species gene information including human orthologs.
+        
+        Args:
+            gene_symbol: Mouse gene symbol
+        
+        Returns:
+            Dictionary with cross-species gene information
+        """
+        # Get mouse gene details
+        mouse_details = self.get_enhanced_gene_details(gene_symbol)
+        
+        # Get human ortholog information
+        human_ortholog_info = {}
+        if self.ensemble_client:
+            logger.info(f"🌍 Calling Ensemble API for cross-species analysis of {gene_symbol}")
+            try:
+                logger.info(f"🔄 Fetching human orthologs for mouse gene {gene_symbol}...")
+                orthologs = self.ensemble_client.get_orthologs(gene_symbol, "homo_sapiens")
+                if orthologs:
+                    human_ortholog_info = {
+                        'human_orthologs': orthologs,
+                        'ortholog_count': len(orthologs)
+                    }
+                    logger.info(f"✅ Found {len(orthologs)} human orthologs for {gene_symbol}")
+                    logger.debug(f"Human orthologs: {orthologs}")
+                    
+                    # Get details for the first human ortholog if available
+                    if orthologs and 'target' in orthologs[0]:
+                        human_gene_name = orthologs[0]['target'].get('display_name', '')
+                        logger.info(f"📊 Fetching details for human ortholog: {human_gene_name}")
+                        human_gene_info = self.ensemble_client.get_gene_info(
+                            human_gene_name, 
+                            "homo_sapiens"
+                        )
+                        if human_gene_info:
+                            human_ortholog_info['human_gene_details'] = human_gene_info
+                            logger.info(f"✅ Human gene details retrieved for {human_gene_name}")
+                            logger.debug(f"Human gene details: {human_gene_info}")
+                        else:
+                            logger.warning(f"⚠️ No human gene details found for {human_gene_name}")
+                else:
+                    logger.info(f"ℹ️ No human orthologs found for {gene_symbol}")
+                            
+            except Exception as e:
+                logger.error(f"❌ Cross-species Ensemble API error for {gene_symbol}: {e}")
+        
+        return {
+            'mouse_gene': mouse_details,
+            'human_orthologs': human_ortholog_info,
+            'cross_species_analysis': True
         }
     
     def get_specific_peak_data(self, gene_symbol: str, chromosome: str, position_mb: float) -> List[Dict[str, Any]]:
@@ -723,6 +1064,28 @@ class HybridQTLSystem:
                         "type": "OBJECT",
                         "properties": {
                             "gene_symbol": {"type": "STRING", "description": "The official symbol of the gene, e.g., 'Apoe' or 'Gnai3'."}
+                        },
+                        "required": ["gene_symbol"],
+                    },
+                ),
+                FunctionDeclaration(
+                    name="get_enhanced_gene_details",
+                    description="Retrieves comprehensive gene information including Ensemble API data, variants, and cross-species information. Use this for detailed gene analysis requests that mention 'Ensemble', 'variants', or 'comprehensive' information.",
+                    parameters={
+                        "type": "OBJECT",
+                        "properties": {
+                            "gene_symbol": {"type": "STRING", "description": "The official symbol of the gene, e.g., 'Apoe' or 'Gnai3'."}
+                        },
+                        "required": ["gene_symbol"],
+                    },
+                ),
+                FunctionDeclaration(
+                    name="get_cross_species_gene_info",
+                    description="Retrieves comprehensive cross-species gene information including human orthologs and comparative analysis. Use this for queries about 'human orthologs', 'cross-species', or 'human-mouse comparison'.",
+                    parameters={
+                        "type": "OBJECT",
+                        "properties": {
+                            "gene_symbol": {"type": "STRING", "description": "The official symbol of the mouse gene, e.g., 'Apoe' or 'Gnai3'."}
                         },
                         "required": ["gene_symbol"],
                     },
@@ -868,9 +1231,14 @@ Your goal is to choose the single best tool to answer the user's question based 
 3.  **Specific Tool Selection (for Gene-specific queries):**
     - For general information (function, summary), use `get_gene_summary`.
     - To list ALL peaks for a gene, use `get_gene_details`.
+    - For comprehensive gene analysis with Ensemble API data (variants, detailed annotations), use `get_enhanced_gene_details`.
+    - For cross-species analysis (human orthologs, comparative studies), use `get_cross_species_gene_info`.
     - For RANKED peaks (e.g., "top 5", "second highest"), use `get_top_peaks_for_gene`. You must infer the `limit` parameter. For "second highest", `limit` should be 2.
-4.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
-5.  If no tool fits, default to `semantic_search`.
+4.  **Ensemble API Integration:**
+    - Use `get_enhanced_gene_details` when users ask for "Ensemble data", "variants", or "comprehensive" gene information.
+    - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
+5.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
+6.  If no tool fits, default to `semantic_search`.
 
 **Available Tools:**
 {tools_json_str}
@@ -1075,17 +1443,97 @@ Based *only* on the context above, provide your concise and direct answer.
         Returns:
             DataFrame of QTL data for genes that appear in both datasets
         """
-        # Convert set to list for SQL query
-        gene_list = list(gwas_genes)
+        # Convert set to list for SQL query and normalize to lowercase
+        gene_list = [g.lower() for g in gwas_genes]
         if not gene_list:
             return pd.DataFrame()
         
-        # Build SQL query
-        placeholders = ','.join(['?' for _ in gene_list])
-        base_query = f"""
-            SELECT * FROM qtl_peaks 
-            WHERE LOWER(gene_symbol) IN ({placeholders})
+        logger.info(f"🔍 Searching for {len(gene_list)} GWAS genes in QTL database...")
+        
+        # DEBUG: Check what genes are in the QTL database
+        qtl_gene_count = self.duck_conn.execute("SELECT COUNT(DISTINCT gene_symbol_normalized) FROM qtl_peaks").fetchone()[0]
+        logger.info(f"📊 QTL database contains {qtl_gene_count} unique genes")
+        
+        # DEBUG: Show some examples from QTL database
+        qtl_examples = self.duck_conn.execute("SELECT DISTINCT gene_symbol_normalized FROM qtl_peaks LIMIT 10").fetchdf()
+        logger.info(f"📋 QTL database examples: {qtl_examples['gene_symbol_normalized'].tolist()}")
+        
+        # DEBUG: Show some examples from GWAS genes
+        gwas_examples = list(gene_list)[:10]
+        logger.info(f"📋 GWAS ortholog examples: {gwas_examples}")
+        
+        # DEBUG: Check for any exact matches
+        exact_matches = set(gene_list) & set(qtl_examples['gene_symbol_normalized'].tolist())
+        logger.info(f"🔍 Found {len(exact_matches)} exact matches in examples: {list(exact_matches)[:5]}")
+        
+        # Use a different approach to avoid parameter limits
+        # Create a temporary table with the gene list
+        temp_table_name = f"temp_genes_{hash(tuple(gene_list)) % 10000}"
+        
+        logger.info(f"🔧 Creating temporary table: {temp_table_name}")
+        
+        # Create temporary table with gene list
+        self.duck_conn.execute(f"CREATE TEMP TABLE {temp_table_name} (gene_symbol TEXT)")
+        
+        # Insert genes in batches to avoid parameter limits
+        batch_size = 1000
+        total_inserted = 0
+        for i in range(0, len(gene_list), batch_size):
+            batch = gene_list[i:i+batch_size]
+            placeholders = ','.join(['(?)' for _ in batch])
+            insert_query = f"INSERT INTO {temp_table_name} VALUES {placeholders}"
+            self.duck_conn.execute(insert_query, batch)
+            total_inserted += len(batch)
+            logger.info(f"📥 Inserted batch {i//batch_size + 1}: {len(batch)} genes (total: {total_inserted})")
+        
+        # Verify temporary table contents
+        temp_count = self.duck_conn.execute(f"SELECT COUNT(*) FROM {temp_table_name}").fetchone()[0]
+        logger.info(f"📊 Temporary table contains {temp_count} genes")
+        
+        # Show some examples from temp table
+        temp_examples = self.duck_conn.execute(f"SELECT gene_symbol FROM {temp_table_name} LIMIT 5").fetchdf()
+        logger.info(f"📋 Temp table examples: {temp_examples['gene_symbol'].tolist()}")
+        
+        # DEBUG: Test the JOIN with a simple query
+        test_query = f"""
+            SELECT COUNT(*) as match_count 
+            FROM qtl_peaks q 
+            JOIN {temp_table_name} t ON q.gene_symbol_normalized = t.gene_symbol
         """
+        test_result = self.duck_conn.execute(test_query).fetchone()[0]
+        logger.info(f"🔍 Test JOIN found {test_result} matches without filters")
+        
+        # DEBUG: Check the actual values in the QTL database for the filters
+        cis_values = self.duck_conn.execute("SELECT DISTINCT cis FROM qtl_peaks LIMIT 10").fetchdf()
+        logger.info(f"📊 CIS values in QTL database: {cis_values['cis'].tolist()}")
+        
+        lod_stats = self.duck_conn.execute("SELECT MIN(qtl_lod) as min_lod, MAX(qtl_lod) as max_lod, AVG(qtl_lod) as avg_lod FROM qtl_peaks").fetchone()
+        logger.info(f"📊 LOD stats: min={lod_stats[0]}, max={lod_stats[1]}, avg={lod_stats[2]:.2f}")
+        
+        # DEBUG: Test with the actual filter values
+        test_filtered_query = f"""
+            SELECT COUNT(*) as match_count 
+            FROM qtl_peaks q 
+            JOIN {temp_table_name} t ON q.gene_symbol_normalized = t.gene_symbol
+            WHERE q.cis = 'TRUE' AND q.qtl_lod >= 5.0
+        """
+        test_filtered_result = self.duck_conn.execute(test_filtered_query).fetchone()[0]
+        logger.info(f"🔍 Test JOIN with filters found {test_filtered_result} matches")
+        
+        # DEBUG: Check if any genes from temp table exist in qtl_peaks
+        test_genes = temp_examples['gene_symbol'].tolist()
+        placeholders = ','.join(['?' for _ in test_genes])
+        check_query = f"SELECT gene_symbol_normalized FROM qtl_peaks WHERE gene_symbol_normalized IN ({placeholders})"
+        existing_genes = self.duck_conn.execute(check_query, test_genes).fetchdf()
+        logger.info(f"🔍 Found {len(existing_genes)} test genes in QTL database: {existing_genes['gene_symbol_normalized'].tolist()}")
+        
+        # Build the main query using JOIN instead of IN clause
+        base_query = f"""
+            SELECT q.* FROM qtl_peaks q
+            JOIN {temp_table_name} t ON q.gene_symbol_normalized = t.gene_symbol
+        """
+        
+        logger.info(f"🔍 Executing query: {base_query}")
         
         # Add filters if provided
         filter_conditions = []
@@ -1093,29 +1541,44 @@ Based *only* on the context above, provide your concise and direct answer.
         
         if qtl_filters:
             if 'cis' in qtl_filters:
-                filter_conditions.append("cis = ?")
-                filter_params.append(qtl_filters['cis'])
+                filter_conditions.append("q.cis = ?")
+                # Convert string to boolean if needed
+                cis_value = qtl_filters['cis']
+                if isinstance(cis_value, str):
+                    cis_value = cis_value.upper() == 'TRUE'
+                filter_params.append(cis_value)
             
             if 'min_lod' in qtl_filters:
-                filter_conditions.append("qtl_lod >= ?")
-                filter_params.append(qtl_filters['min_lod'])
+                filter_conditions.append("q.qtl_lod >= ?")
+                # Ensure it's a float
+                min_lod = float(qtl_filters['min_lod'])
+                filter_params.append(min_lod)
             
             if 'max_lod' in qtl_filters:
-                filter_conditions.append("qtl_lod <= ?")
-                filter_params.append(qtl_filters['max_lod'])
+                filter_conditions.append("q.qtl_lod <= ?")
+                # Ensure it's a float
+                max_lod = float(qtl_filters['max_lod'])
+                filter_params.append(max_lod)
             
             if 'chromosome' in qtl_filters:
-                filter_conditions.append("qtl_chr = ?")
+                filter_conditions.append("q.qtl_chr = ?")
                 filter_params.append(qtl_filters['chromosome'])
         
         if filter_conditions:
-            base_query += " AND " + " AND ".join(filter_conditions)
+            base_query += " WHERE " + " AND ".join(filter_conditions)
+            logger.info(f"🔧 Added filters: {filter_conditions}")
         
-        base_query += " ORDER BY qtl_lod DESC"
+        base_query += " ORDER BY q.qtl_lod DESC"
         
-        # Execute query with a lowercased list of gene symbols for the case-insensitive search
-        all_params = [g.lower() for g in gene_list] + filter_params
-        result_df = self.duck_conn.execute(base_query, all_params).fetchdf()
+        # Execute query
+        logger.info(f"🚀 Executing final query with {len(filter_params)} parameters")
+        result_df = self.duck_conn.execute(base_query, filter_params).fetchdf()
+        
+        # Clean up temporary table
+        self.duck_conn.execute(f"DROP TABLE {temp_table_name}")
+        logger.info(f"🧹 Cleaned up temporary table {temp_table_name}")
+        
+        logger.info(f"✅ Found {len(result_df)} QTL records for {result_df['gene_symbol'].nunique()} GWAS genes")
         
         return result_df
     
@@ -1133,7 +1596,7 @@ Based *only* on the context above, provide your concise and direct answer.
             DataFrame of cis-QTL data for GWAS genes
         """
         # For now, filter for cis-QTLs (diet-dependence would require additional data columns)
-        qtl_filters = {'cis': 'TRUE', 'min_lod': 5.0}
+        qtl_filters = {'cis': True, 'min_lod': 5.0}  # Use boolean True instead of string
         
         cis_qtl_df = self.find_qtl_genes_in_gwas_set(gwas_genes, qtl_filters)
         
@@ -1155,7 +1618,7 @@ Based *only* on the context above, provide your concise and direct answer.
             DataFrame of trans-QTL data for GWAS genes
         """
         # For now, filter for trans-QTLs
-        qtl_filters = {'cis': 'FALSE', 'min_lod': 5.0}
+        qtl_filters = {'cis': False, 'min_lod': 5.0}  # Use boolean False instead of string
         
         trans_qtl_df = self.find_qtl_genes_in_gwas_set(gwas_genes, qtl_filters)
         
@@ -1200,6 +1663,9 @@ Based *only* on the context above, provide your concise and direct answer.
             logger.info("Step 1b: Converting human genes to mouse orthologs...")
             gwas_genes = self.convert_human_to_mouse_orthologs(human_gwas_genes)
             
+            # DEBUG: Check ortholog mapping quality
+            debug_info = self.debug_ortholog_mapping(human_gwas_genes, sample_size=20)
+            
             results['gwas_genes'] = {
                 'human_gene_count': len(human_gwas_genes),
                 'mouse_ortholog_count': len(gwas_genes),
@@ -1217,6 +1683,11 @@ Based *only* on the context above, provide your concise and direct answer.
             cis_qtl_df = self.get_diet_dependent_cis_eqtl_genes(gwas_genes)
             cis_genes = set(cis_qtl_df['gene_symbol'].unique()) if len(cis_qtl_df) > 0 else set()
             
+            # Debug: Show some examples of matched genes
+            if len(cis_genes) > 0:
+                example_matches = list(cis_genes)[:5]
+                logger.info(f"🔍 Example cis-QTL matches: {example_matches}")
+            
             results['cis_eqtl_genes'] = {
                 'count': len(cis_genes),
                 'genes': list(cis_genes),
@@ -1227,6 +1698,11 @@ Based *only* on the context above, provide your concise and direct answer.
             logger.info("Step 3: Finding trans-eQTL genes in mouse data...")
             trans_qtl_df = self.get_diet_dependent_trans_eqtl_genes(gwas_genes)
             trans_genes = set(trans_qtl_df['gene_symbol'].unique()) if len(trans_qtl_df) > 0 else set()
+            
+            # Debug: Show some examples of matched genes
+            if len(trans_genes) > 0:
+                example_matches = list(trans_genes)[:5]
+                logger.info(f"🔍 Example trans-QTL matches: {example_matches}")
             
             results['trans_eqtl_genes'] = {
                 'count': len(trans_genes),
@@ -1336,6 +1812,170 @@ Based *only* on the context above, provide your concise and direct answer.
             summary_df.to_csv(output_path / f"{trait_class}_analysis_summary.csv", index=False)
         
         logger.info(f"Results exported to {output_path}")
+
+    def test_ensemble_connection(self) -> bool:
+        """
+        Test the Ensemble API connection and get available gene examples.
+        
+        Returns:
+            True if connection successful, False otherwise
+        """
+        try:
+            logger.info("🔬 Testing Ensemble API connection...")
+            
+            # First test basic API connectivity
+            info_url = f"{self.base_url}/info/species"
+            logger.info(f"🔍 Testing basic API connectivity: {info_url}")
+            response = requests.get(info_url, headers=self.headers)
+            
+            if response.status_code != 200:
+                logger.error(f"❌ Basic API connectivity failed: {response.status_code}")
+                return False
+            
+            logger.info("✅ Basic API connectivity successful")
+            
+            # Test with a known mouse gene - try different approaches
+            test_genes = ["Apoe", "Gnai3", "Actb", "Gapdh"]
+            
+            for gene in test_genes:
+                logger.info(f"🔍 Testing gene: {gene}")
+                
+                # Try different endpoints using correct API
+                endpoints = [
+                    f"{self.base_url}/lookup/symbol/mus_musculus/{gene}",
+                    f"{self.base_url}/xrefs/symbol/mus_musculus/{gene}"
+                ]
+                
+                for endpoint in endpoints:
+                    logger.debug(f"🔍 Trying endpoint: {endpoint}")
+                    response = requests.get(endpoint, headers=self.headers)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data:
+                            logger.info(f"✅ Successfully found {gene} via {endpoint}")
+                            logger.debug(f"Gene info: {data}")
+                            return True
+                
+                logger.warning(f"⚠️ Could not find {gene} in any Ensemble endpoint")
+            
+            logger.error("❌ No test genes found in Ensemble API")
+            return False
+            
+        except Exception as e:
+            logger.error(f"❌ Ensemble API connection test failed: {e}")
+            return False
+    
+    def get_available_ensemble_genes(self, limit: int = 10) -> List[str]:
+        """
+        Get a list of available genes in Ensemble for testing.
+        
+        Args:
+            limit: Maximum number of genes to return
+        
+        Returns:
+            List of gene symbols available in Ensemble
+        """
+        try:
+            logger.info("🔍 Getting available genes from Ensemble...")
+            
+            # Try to get genes from a known region
+            search_url = f"{self.base_url}/lookup/mus_musculus/region/1:1-1000000"
+            response = requests.get(search_url, headers=self.headers)
+            
+            if response.status_code == 200:
+                genes = response.json()
+                gene_symbols = []
+                for gene in genes:
+                    if isinstance(gene, dict) and 'display_name' in gene:
+                        gene_symbols.append(gene['display_name'])
+                
+                logger.info(f"✅ Found {len(gene_symbols)} genes in Ensemble")
+                return gene_symbols[:limit]
+            else:
+                logger.warning(f"⚠️ Could not get gene list from Ensemble: {response.status_code}")
+                return []
+                
+        except Exception as e:
+            logger.error(f"❌ Error getting available genes: {e}")
+            return []
+
+    def debug_ortholog_mapping(self, human_genes: Set[str], sample_size: int = 10) -> Dict[str, Any]:
+        """
+        Debug the ortholog mapping process to see what's happening.
+        
+        Args:
+            human_genes: Set of human gene symbols
+            sample_size: Number of genes to sample for debugging
+        
+        Returns:
+            Dictionary with debugging information
+        """
+        logger.info("🔍 Debugging ortholog mapping process...")
+        
+        # Sample some human genes
+        sample_human = list(human_genes)[:sample_size]
+        logger.info(f"📋 Sample human genes: {sample_human}")
+        
+        # Get mouse orthologs for these genes
+        mouse_orthologs = self.ortholog_matcher.get_mouse_orthologs(set(sample_human))
+        logger.info(f"🔄 Mouse orthologs found: {list(mouse_orthologs)}")
+        
+        # Check which of these are in the QTL database
+        if mouse_orthologs:
+            ortholog_list = [ortholog.lower() for ortholog in mouse_orthologs]
+            placeholders = ','.join(['?' for _ in ortholog_list])
+            query = f"SELECT DISTINCT gene_symbol_normalized FROM qtl_peaks WHERE gene_symbol_normalized IN ({placeholders})"
+            qtl_matches = self.duck_conn.execute(query, ortholog_list).fetchdf()
+            
+            logger.info(f"📊 Found {len(qtl_matches)} orthologs in QTL database")
+            if len(qtl_matches) > 0:
+                logger.info(f"📋 QTL matches: {qtl_matches['gene_symbol_normalized'].tolist()}")
+        
+        return {
+            'sample_human_genes': sample_human,
+            'mouse_orthologs': list(mouse_orthologs),
+            'qtl_matches': qtl_matches['gene_symbol_normalized'].tolist() if len(qtl_matches) > 0 else []
+        }
+
+    def test_gene_matching(self):
+        """
+        Test gene matching between orthologs and QTL database to identify the issue.
+        """
+        logger.info("🔍 Testing gene matching between orthologs and QTL database...")
+        
+        # Get some genes from QTL database
+        qtl_genes = self.duck_conn.execute("SELECT DISTINCT gene_symbol, gene_symbol_normalized FROM qtl_peaks LIMIT 20").fetchdf()
+        logger.info(f"📋 QTL database genes (original): {qtl_genes['gene_symbol'].tolist()}")
+        logger.info(f"📋 QTL database genes (normalized): {qtl_genes['gene_symbol_normalized'].tolist()}")
+        
+        # Test with some common genes that should exist
+        test_genes = ['apoe', 'gnai3', 'actb', 'gapdh', 'ins', 'glu', 'ldl']
+        logger.info(f"🔍 Testing common genes: {test_genes}")
+        
+        for gene in test_genes:
+            # Check if gene exists in QTL database
+            result = self.duck_conn.execute("SELECT COUNT(*) FROM qtl_peaks WHERE gene_symbol_normalized = ?", [gene]).fetchone()[0]
+            logger.info(f"📊 Gene '{gene}' found {result} times in QTL database")
+        
+        # Test ortholog mapping with some common human genes
+        test_human_genes = ['APOE', 'GNAI3', 'ACTB', 'GAPDH', 'INS', 'GLU', 'LDL']
+        logger.info(f"🔍 Testing human genes: {test_human_genes}")
+        
+        mouse_orthologs = self.ortholog_matcher.get_mouse_orthologs(set(test_human_genes))
+        logger.info(f"🔄 Mouse orthologs found: {list(mouse_orthologs)}")
+        
+        # Check which orthologs are in QTL database
+        for ortholog in mouse_orthologs:
+            ortholog_lower = ortholog.lower()
+            result = self.duck_conn.execute("SELECT COUNT(*) FROM qtl_peaks WHERE gene_symbol_normalized = ?", [ortholog_lower]).fetchone()[0]
+            logger.info(f"📊 Ortholog '{ortholog}' (normalized: '{ortholog_lower}') found {result} times in QTL database")
+        
+        return {
+            'qtl_genes': qtl_genes.to_dict('records'),
+            'test_genes': test_genes,
+            'mouse_orthologs': list(mouse_orthologs)
+        }
 
 # Example usage and testing
 if __name__ == "__main__":

@@ -961,11 +961,11 @@ class HybridQTLSystem:
         
         # Get human ortholog information
         human_ortholog_info = {}
-        if self.ensemble_client:
-            logger.info(f"🌍 Calling Ensemble API for cross-species analysis of {gene_symbol}")
+        if self.ensembl_client:
+            logger.info(f"🌍 Calling Ensembl API for cross-species analysis of {gene_symbol}")
             try:
                 logger.info(f"🔄 Fetching human orthologs for mouse gene {gene_symbol}...")
-                orthologs = self.ensemble_client.get_orthologs(gene_symbol, "homo_sapiens")
+                orthologs = self.ensembl_client.get_orthologs(gene_symbol, "homo_sapiens")
                 if orthologs:
                     human_ortholog_info = {
                         'human_orthologs': orthologs,
@@ -978,7 +978,7 @@ class HybridQTLSystem:
                     if orthologs and 'target' in orthologs[0]:
                         human_gene_name = orthologs[0]['target'].get('display_name', '')
                         logger.info(f"📊 Fetching details for human ortholog: {human_gene_name}")
-                        human_gene_info = self.ensemble_client.get_gene_info(
+                        human_gene_info = self.ensembl_client.get_gene_info(
                             human_gene_name, 
                             "homo_sapiens"
                         )
@@ -992,7 +992,7 @@ class HybridQTLSystem:
                     logger.info(f"ℹ️ No human orthologs found for {gene_symbol}")
                             
             except Exception as e:
-                logger.error(f"❌ Cross-species Ensemble API error for {gene_symbol}: {e}")
+                logger.error(f"❌ Cross-species Ensembl API error for {gene_symbol}: {e}")
         
         return {
             'mouse_gene': mouse_details,
@@ -1070,7 +1070,7 @@ class HybridQTLSystem:
                 ),
                 FunctionDeclaration(
                     name="get_enhanced_gene_details",
-                    description="Retrieves comprehensive gene information including Ensemble API data, variants, and cross-species information. Use this for detailed gene analysis requests that mention 'Ensemble', 'variants', or 'comprehensive' information.",
+                    description="Retrieves comprehensive gene information including Ensembl API data, variants, and cross-species information. Use this for detailed gene analysis requests that mention 'Ensembl', 'variants', or 'comprehensive' information.",
                     parameters={
                         "type": "OBJECT",
                         "properties": {
@@ -1232,9 +1232,8 @@ Your goal is to choose the single best tool to answer the user's question based 
     - For general information about a gene (function, summary, QTLs), use `get_gene_details`.
     - For comprehensive gene analysis with Ensemble API data (variants, detailed annotations), use `get_enhanced_gene_details`.
     - For cross-species analysis (human orthologs, comparative studies), use `get_cross_species_gene_info`.
-    - For RANKED peaks (e.g., "top 5", "second highest"), use `get_top_peaks_for_gene`. You must infer the `limit` parameter. For "second highest", `limit` should be 2.
-4.  **Ensemble API Integration:**
-    - Use `get_enhanced_gene_details` when users ask for "Ensemble data", "variants", or "comprehensive" gene information.
+4.  **Ensembl API Integration:**
+    - Use `get_enhanced_gene_details` when users ask for "Ensembl data", "variants", or "comprehensive" gene information.
     - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
 5.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
 6.  If no tool fits, default to `semantic_search`.
@@ -1812,15 +1811,15 @@ Based *only* on the context above, provide your concise and direct answer.
         
         logger.info(f"Results exported to {output_path}")
 
-    def test_ensemble_connection(self) -> bool:
+    def test_ensembl_connection(self) -> bool:
         """
-        Test the Ensemble API connection and get available gene examples.
+        Test the Ensembl API connection and get available gene examples.
         
         Returns:
             True if connection successful, False otherwise
         """
         try:
-            logger.info("🔬 Testing Ensemble API connection...")
+            logger.info("🔬 Testing Ensembl API connection...")
             
             # First test basic API connectivity
             info_url = f"{self.base_url}/info/species"
@@ -1856,18 +1855,18 @@ Based *only* on the context above, provide your concise and direct answer.
                             logger.debug(f"Gene info: {data}")
                             return True
                 
-                logger.warning(f"⚠️ Could not find {gene} in any Ensemble endpoint")
+                logger.warning(f"⚠️ Could not find {gene} in any Ensembl endpoint")
             
-            logger.error("❌ No test genes found in Ensemble API")
+            logger.error("❌ No test genes found in Ensembl API")
             return False
             
         except Exception as e:
-            logger.error(f"❌ Ensemble API connection test failed: {e}")
+            logger.error(f"❌ Ensembl API connection test failed: {e}")
             return False
     
-    def get_available_ensemble_genes(self, limit: int = 10) -> List[str]:
+    def get_available_ensembl_genes(self, limit: int = 10) -> List[str]:
         """
-        Get a list of available genes in Ensemble for testing.
+        Get a list of available genes in Ensembl for testing.
         
         Args:
             limit: Maximum number of genes to return
@@ -1876,7 +1875,7 @@ Based *only* on the context above, provide your concise and direct answer.
             List of gene symbols available in Ensemble
         """
         try:
-            logger.info("🔍 Getting available genes from Ensemble...")
+            logger.info("🔍 Getting available genes from Ensembl...")
             
             # Try to get genes from a known region
             search_url = f"{self.base_url}/lookup/mus_musculus/region/1:1-1000000"
@@ -1889,15 +1888,15 @@ Based *only* on the context above, provide your concise and direct answer.
                     if isinstance(gene, dict) and 'display_name' in gene:
                         gene_symbols.append(gene['display_name'])
                 
-                logger.info(f"✅ Found {len(gene_symbols)} genes in Ensemble")
+                logger.info(f"✅ Found {len(gene_symbols)} genes in Ensembl")
                 return gene_symbols[:limit]
             else:
-                logger.warning(f"⚠️ Could not get gene list from Ensemble: {response.status_code}")
+                logger.warning(f"⚠️ Could not get gene list from Ensembl: {response.status_code}")
                 return []
                 
         except Exception as e:
-            logger.error(f"❌ Error getting available genes: {e}")
-            return []
+                            logger.error(f"❌ Error getting available genes from Ensembl: {e}")
+        return []
 
     def debug_ortholog_mapping(self, human_genes: Set[str], sample_size: int = 10) -> Dict[str, Any]:
         """

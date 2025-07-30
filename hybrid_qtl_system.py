@@ -712,6 +712,20 @@ class HybridQTLSystem:
         result = self.duck_conn.execute(query, [gene1, gene2]).fetchdf()
         return result.to_dict('records')[0] if len(result) > 0 else {}
     
+    def find_gene_by_lod(self, lod_score: float) -> pd.DataFrame:
+        """Finds the gene, position, and chromosome for a specific LOD score."""
+        # Use a small tolerance for float comparison since LOD scores are floats
+        tolerance = 0.0001
+        sql = """
+        SELECT gene_symbol, qtl_chr, qtl_pos, qtl_lod 
+        FROM qtl_peaks 
+        WHERE qtl_lod BETWEEN ? AND ?
+        LIMIT 1
+        """
+        # DuckDB expects a list of parameters, not a dictionary
+        params = [lod_score - tolerance, lod_score + tolerance]
+        return self.analytical_query(sql, params)
+
     def _define_tools(self):
         """Defines the function calling tools for the LLM."""
         self.tools = Tool(
@@ -725,6 +739,17 @@ class HybridQTLSystem:
                             "gene_symbol": {"type": "STRING", "description": "The official symbol of the gene, e.g., 'Apoe' or 'Gnai3'."}
                         },
                         "required": ["gene_symbol"],
+                    },
+                ),
+                FunctionDeclaration(
+                    name="find_gene_by_lod",
+                    description="Finds the gene/peak associated with a precise LOD score. Use this when the user provides a specific LOD score and asks for the corresponding gene.",
+                    parameters={
+                        "type": "OBJECT",
+                        "properties": {
+                            "lod_score": {"type": "NUMBER", "description": "The precise LOD score to search for, e.g., 608.58098"}
+                        },
+                        "required": ["lod_score"],
                     },
                 ),
                 FunctionDeclaration(
@@ -856,21 +881,17 @@ Your goal is to choose the single best tool to answer the user's question based 
 
 **DATABASE CONTEXT:**
 - The database contains Quantitative Trait Loci (QTL) data.
-- Each record is called a "peak" or a "QTL".
-- The significance of each peak is measured by its "LOD score".
+- Each record is a "peak" with a "LOD score" indicating its significance.
 - "Highest peak" means the peak with the highest LOD score.
 
 **CRITICAL INSTRUCTIONS:**
 1.  Analyze the user's query to determine the core intent.
-2.  **Gene-specific vs. Global:**
-    - If the query mentions a specific gene name (e.g., 'Apoe', 'Tdpoz2'), you MUST choose a gene-specific tool.
-    - If the query asks for "highest" or "top" peaks in general, use `analytical_query_top_lod`.
-3.  **Specific Tool Selection (for Gene-specific queries):**
-    - For general information (function, summary), use `get_gene_summary`.
-    - To list ALL peaks for a gene, use `get_gene_details`.
-    - For RANKED peaks (e.g., "top 5", "second highest"), use `get_top_peaks_for_gene`. You must infer the `limit` parameter. For "second highest", `limit` should be 2.
-4.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
-5.  If no tool fits, default to `semantic_search`.
+2.  **Differentiate Query Type:**
+    - If the query is about a specific **GENE NAME** (e.g., 'Apoe'), use the `get_gene_details` tool.
+    - If the query is about a specific **LOD SCORE** (e.g., 'the gene with lod 608.5'), you MUST use the `find_gene_by_lod` tool.
+    - If the query is about a general "highest" or "top" peak **overall**, use `analytical_query_top_lod`.
+3.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
+4.  If no tool fits, default to `semantic_search`.
 
 **Available Tools:**
 {tools_json_str}

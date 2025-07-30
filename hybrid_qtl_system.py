@@ -1236,7 +1236,8 @@ Your goal is to choose the single best tool to answer the user's question based 
     - Use `get_enhanced_gene_details` when users ask for "Ensembl data", "variants", or "comprehensive" gene information.
     - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
 5.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
-6.  If no tool fits, default to `semantic_search`.
+6.  If it is a broad biological concept queries use 'semantic_search'
+7.  Default to `semantic_search` if no tool fits.
 
 **Available Tools:**
 {tools_json_str}

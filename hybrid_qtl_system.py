@@ -414,7 +414,7 @@ class HybridQTLSystem:
     Layer 3: GWAS integration for human-mouse cross-species analysis
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "llama3:latest", **kwargs):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "llama3.2:latest", **kwargs):
 
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
@@ -1311,7 +1311,7 @@ Your goal is to choose the single best tool to answer the user's question based 
     def _call_ollama(self, prompt: str) -> str:
         """Send a prompt to Ollama and return the response text."""
         try:
-            print("[INFO] Using Ollama (llama3:latest) for text generation.")
+            print(f"[INFO] Using Ollama ({self.ollama_model}) for text generation.")
             response = requests.post(
                 self.ollama_url,
                 json={

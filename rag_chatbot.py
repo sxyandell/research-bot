@@ -54,7 +54,7 @@ class LocalEmbeddingFunction(EmbeddingFunction):
         return embeddings
 
 class QTLChatbot:
-    def __init__(self, use_openai_backup=True, use_local_embeddings=False, ollama_url="http://localhost:11434/api/generate", ollama_model="llama2"):
+    def __init__(self, use_openai_backup=True, use_local_embeddings=False, ollama_url="http://localhost:11434/api/generate", ollama_model="llama3.2:latest"):
         """Initialize the QTL chatbot with ChromaDB and Ollama."""
         # Load environment variables
         load_dotenv('config.env')

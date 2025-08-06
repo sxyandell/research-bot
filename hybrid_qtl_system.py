@@ -414,7 +414,7 @@ class HybridQTLSystem:
     Layer 3: GWAS integration for human-mouse cross-species analysis
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "llama3.2:latest", **kwargs):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "phi3:mini", ollama_tool_model: str = "phi3:mini", **kwargs):
 
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
@@ -432,6 +432,8 @@ class HybridQTLSystem:
         # self.generative_model = None  # No longer using Gemini
         self.ollama_url = ollama_url
         self.ollama_model = ollama_model
+        self.ollama_tool_model = ollama_tool_model
+        self.ollama_session = requests.Session()
         
         # Initialize GWAS client and the new Ortholog Matcher
         self.gwas_client = None
@@ -864,20 +866,17 @@ class HybridQTLSystem:
             raise
     
     def get_gene_details(self, gene_symbol: str) -> Dict:
-        """Quick helper for gene-specific queries, now including biological context."""
-        # 1. Get QTL data from DuckDB using normalized gene symbol
-        query = """
-        SELECT * FROM qtl_peaks 
-        WHERE gene_symbol_normalized = lower(?) 
-        ORDER BY qtl_lod DESC
         """
+        Retrieves a comprehensive summary for a single, named gene, including its biological
+        function from MyGene.info, all associated QTL peak data from the database, and
+        detailed data from the Ensembl API (including variants and orthologs).
+        """
+        # 1. Get QTL data from DuckDB and biological context from mygene.info
+        query = "SELECT * FROM qtl_peaks WHERE gene_symbol_normalized = lower(?) ORDER BY qtl_lod DESC"
         qtl_result_df = self.duck_conn.execute(query, [gene_symbol]).fetchdf()
-
-        # 2. Get biological context
         biological_context = fetch_gene_context(gene_symbol)
 
-        # 3. Combine them
-        return {
+        basic_details = {
             'gene_symbol': gene_symbol,
             'biological_summary': biological_context.get('summary', 'No summary available.'),
             'go_terms': biological_context.get('go_terms_bp', []),
@@ -885,98 +884,61 @@ class HybridQTLSystem:
             'qtl_count': len(qtl_result_df),
             'qtls': qtl_result_df.to_dict('records') if len(qtl_result_df) > 0 else []
         }
-    
-    def get_enhanced_gene_details(self, gene_symbol: str) -> Dict:
-        """
-        Enhanced gene details including Ensembl API data for comprehensive gene information.
         
-        Args:
-            gene_symbol: Gene symbol to query
-        
-        Returns:
-            Dictionary with comprehensive gene information from multiple sources
-        """
-        # Get basic gene details
-        basic_details = self.get_gene_details(gene_symbol)
-        
-        # Add Ensembl API data if available
+        # 2. Add Ensembl API data if available
         ensembl_data = {}
         if self.ensembl_client:
-            logger.info(f"🔬 Calling Ensembl API for gene: {gene_symbol}")
+            logger.info(f"🔬 Calling Ensembl API for comprehensive data on gene: {gene_symbol}")
             try:
-                # Get Ensembl gene information
-                logger.info(f"📊 Fetching Ensembl gene information for {gene_symbol}...")
+                # Get Ensembl gene function, variants, and orthologs
                 ensembl_info = self.ensembl_client.get_gene_function(gene_symbol)
                 if ensembl_info:
                     ensembl_data['ensembl_info'] = ensembl_info
-                    logger.info(f"✅ Ensembl gene info retrieved for {gene_symbol}")
-                    logger.debug(f"Ensembl gene info: {ensembl_info}")
-                else:
-                    logger.warning(f"⚠️ No Ensembl gene info found for {gene_symbol}")
                 
-                # Get variant information
-                logger.info(f"🧬 Fetching variant information for {gene_symbol}...")
                 variants = self.ensembl_client.get_variants(gene_symbol)
                 if variants:
                     ensembl_data['variants'] = variants
-                    logger.info(f"✅ Found {len(variants)} variants for {gene_symbol}")
-                    logger.debug(f"Variants: {variants}")
-                else:
-                    logger.info(f"ℹ️ No variants found for {gene_symbol}")
-                
-                # Get ortholog information
-                logger.info(f"🔄 Fetching ortholog information for {gene_symbol}...")
+
                 orthologs = self.ensembl_client.get_orthologs(gene_symbol)
                 if orthologs:
                     ensembl_data['orthologs'] = orthologs
-                    logger.info(f"✅ Found {len(orthologs)} orthologs for {gene_symbol}")
-                    logger.debug(f"Orthologs: {orthologs}")
-                else:
-                    logger.info(f"ℹ️ No orthologs found for {gene_symbol}")
                     
             except Exception as e:
                 logger.error(f"❌ Ensembl API error for {gene_symbol}: {e}")
         
-        # Combine all data
-        enhanced_details = {
+        # 3. Combine all data
+        return {
             **basic_details,
             'ensembl_data': ensembl_data,
             'data_sources': ['qtl_database', 'mygene_info', 'ensembl_api']
         }
-        
-        return enhanced_details
     
     def get_cross_species_gene_info(self, gene_symbol: str) -> Dict:
         """
         Get comprehensive cross-species gene information including human orthologs.
-        
-        Args:
-            gene_symbol: Mouse gene symbol
-        
-        Returns:
-            Dictionary with cross-species gene information
         """
-        # Get mouse gene details
-        mouse_details = self.get_enhanced_gene_details(gene_symbol)
+        # Get comprehensive mouse gene details (which now includes orthologs)
+        mouse_details = self.get_gene_details(gene_symbol)
         
-        # Get human ortholog information
+        # Extract human ortholog information from the details
         human_ortholog_info = {}
+        # Get orthologs from the correct species (homo_sapiens)
+        orthologs = []
         if self.ensembl_client:
-            logger.info(f"🌍 Calling Ensembl API for cross-species analysis of {gene_symbol}")
+            orthologs = self.ensembl_client.get_orthologs(gene_symbol, "homo_sapiens")
+
+        if self.ensembl_client and orthologs:
+            logger.info(f"🌍 Processing human orthologs for cross-species analysis of {gene_symbol}")
             try:
-                logger.info(f"🔄 Fetching human orthologs for mouse gene {gene_symbol}...")
-                orthologs = self.ensembl_client.get_orthologs(gene_symbol, "homo_sapiens")
-                if orthologs:
-                    human_ortholog_info = {
-                        'human_orthologs': orthologs,
-                        'ortholog_count': len(orthologs)
-                    }
-                    logger.info(f"✅ Found {len(orthologs)} human orthologs for {gene_symbol}")
-                    logger.debug(f"Human orthologs: {orthologs}")
-                    
-                    # Get details for the first human ortholog if available
-                    if orthologs and 'target' in orthologs[0]:
-                        human_gene_name = orthologs[0]['target'].get('display_name', '')
+                human_ortholog_info = {
+                    'human_orthologs': orthologs,
+                    'ortholog_count': len(orthologs)
+                }
+                
+                # Get details for the first human ortholog if available
+                if 'target' in orthologs[0]:
+                    human_gene_name = orthologs[0]['target'].get('display_name', '')
+                    if human_gene_name:
                         logger.info(f"📊 Fetching details for human ortholog: {human_gene_name}")
                         human_gene_info = self.ensembl_client.get_gene_info(
                             human_gene_name, 
@@ -984,15 +946,9 @@ class HybridQTLSystem:
                         )
                         if human_gene_info:
                             human_ortholog_info['human_gene_details'] = human_gene_info
-                            logger.info(f"✅ Human gene details retrieved for {human_gene_name}")
-                            logger.debug(f"Human gene details: {human_gene_info}")
-                        else:
-                            logger.warning(f"⚠️ No human gene details found for {human_gene_name}")
-                else:
-                    logger.info(f"ℹ️ No human orthologs found for {gene_symbol}")
                             
             except Exception as e:
-                logger.error(f"❌ Cross-species Ensembl API error for {gene_symbol}: {e}")
+                logger.error(f"❌ Cross-species analysis error for {gene_symbol}: {e}")
         
         return {
             'mouse_gene': mouse_details,
@@ -1073,7 +1029,7 @@ class HybridQTLSystem:
             function_declarations=[
                 FunctionDeclaration(
                     name="get_gene_details",
-                    description="Retrieves a complete summary for a single, named gene, including its biological function, GO terms, and all associated QTL peak data. Use this for any question about a specific gene. If the user asks for 'the peak' (singular), use this tool to show all peaks, as they may not know there are multiple.",
+                    description="Retrieves a comprehensive summary for a single, named gene, including its biological function from MyGene.info, all associated QTL peak data from the database, and detailed data from the Ensembl API (including variants, and orthologs). This is the primary tool for any question about a specific gene.",
                     parameters={
                         "type": "OBJECT",
                         "properties": {
@@ -1091,17 +1047,6 @@ class HybridQTLSystem:
                             "lod_score": {"type": "NUMBER", "description": "The precise LOD score to search for, e.g., 608.58098"}
                         },
                         "required": ["lod_score"],
-                    },
-                ),
-                FunctionDeclaration(
-                    name="get_enhanced_gene_details",
-                    description="Retrieves comprehensive gene information including Ensembl API data, variants, and cross-species information. Use this for detailed gene analysis requests that mention 'Ensembl', 'variants', or 'comprehensive' information.",
-                    parameters={
-                        "type": "OBJECT",
-                        "properties": {
-                            "gene_symbol": {"type": "STRING", "description": "The official symbol of the gene, e.g., 'Apoe' or 'Gnai3'."}
-                        },
-                        "required": ["gene_symbol"],
                     },
                 ),
                 FunctionDeclaration(
@@ -1166,6 +1111,8 @@ class HybridQTLSystem:
 
     def analytical_query_top_lod(self, limit: int = 5) -> pd.DataFrame:
         """Wrapper for the 'top LOD' analytical query."""
+        if limit is None:
+            limit = 5  # Default to 5 if the LLM provides no limit
         sql = f"SELECT gene_symbol, qtl_lod, qtl_chr, qtl_pos FROM qtl_peaks ORDER BY qtl_lod DESC LIMIT {limit}"
         return self.analytical_query(sql)
 
@@ -1205,25 +1152,38 @@ class HybridQTLSystem:
             })
         return json.dumps(tool_declarations, indent=2)
 
-    def _call_ollama_for_tool_choice(self, prompt: str) -> Optional[Dict[str, Any]]:
+    def _call_ollama_for_tool_choice(self, user_prompt: str, system_prompt: str) -> Optional[Dict[str, Any]]:
         """Calls Ollama with a specific prompt to get a tool choice in JSON format."""
+        data = {}  # Initialize data to ensure it's available in except blocks
         try:
-            logger.info("[INFO] Using Ollama for tool selection...")
-            response = requests.post(
+            logger.info(f"[INFO] Using Ollama ({self.ollama_tool_model}) for tool selection...")
+            response = self.ollama_session.post(
                 self.ollama_url,
                 json={
-                    "model": self.ollama_model,
-                    "prompt": prompt,
+                    "model": self.ollama_tool_model,
+                    "system": system_prompt,
+                    "prompt": user_prompt,
                     "stream": False,
                     "format": "json"  # Request JSON output
                 },
-                timeout=60
+                timeout=300
             )
             response.raise_for_status()
             data = response.json()
+            
             # The response from Ollama is a string containing JSON, so we parse it.
-            tool_choice_json = json.loads(data.get("response", "{}"))
+            # More robust parsing
+            ollama_response_str = data.get("response")
+            if not ollama_response_str or not ollama_response_str.strip():
+                logger.warning("Ollama returned an empty or whitespace-only response for tool choice.")
+                return None
+
+            tool_choice_json = json.loads(ollama_response_str)
             return tool_choice_json
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ Ollama tool choice JSON decoding error: {e}")
+            logger.error(f"Raw model response that failed to parse: '{data.get('response')}'")
+            return None
         except Exception as e:
             logger.error(f"❌ Ollama tool choice error: {e}")
             return None
@@ -1238,9 +1198,9 @@ class HybridQTLSystem:
 
         # 1. Build the prompt for the LLM
         tools_json_str = self._format_tools_for_prompt()
-        prompt = f"""
+        system_prompt = f"""
 You are an expert at routing user questions to the correct tool for a bioinformatics QTL database.
-Your goal is to choose the single best tool to answer the user's question based on the tool descriptions.
+Your goal is to choose the single best tool to answer the user's question based on the tool descriptions and return ONLY the corresponding JSON object.
 
 **DATABASE CONTEXT:**
 - The database contains Quantitative Trait Loci (QTL) data.
@@ -1248,25 +1208,31 @@ Your goal is to choose the single best tool to answer the user's question based 
 - "Highest peak" means the peak with the highest LOD score.
 
 **CRITICAL INSTRUCTIONS:**
-1.  Analyze the user's query to determine the core intent.
-2.  **Differentiate Query Type:**
-    - If the query is about a specific **GENE NAME** (e.g., 'Apoe'), use the `get_gene_details` tool.
-    - If the query is about a specific **LOD SCORE** (e.g., 'the gene with lod 608.5'), you MUST use the `find_gene_by_lod` tool.
-    - If the query is about a general "highest" or "top" peak **overall**, use `analytical_query_top_lod`.
-3.  **Specific Tool Selection (for Gene-specific queries):**
+1.  **Prioritize Gene-Specific Queries:** If the user's query mentions a specific gene symbol (like 'Apoe', 'Tdpoz2', 'Gnai3', etc.), your primary choice should almost always be the `get_gene_details` tool. This is true even if the query also asks about "LOD scores", "peaks", or other general terms. Use `get_gene_details` to retrieve all information for that specific gene.
+2.  **Differentiate General vs. Specific Queries:**
+    - **Specific Gene:** "what are the lods on tdpoz2" -> `get_gene_details(gene_symbol='Tdpoz2')`
+    - **General Top Scores:** "what is the highest lod score" -> `analytical_query_top_lod(limit=1)`
+    - **Specific LOD Score:** "what gene has a lod of 608.5" -> `find_gene_by_lod(lod_score=608.5)`
+3.  **Tool Selection Logic:**
+    - For questions about a specific **GENE NAME** (e.g., 'Apoe', 'what about Gnai3'), use `get_gene_details`.
+    - For questions about a specific **LOD SCORE** (e.g., 'the gene with lod 608.5'), you MUST use the `find_gene_by_lod` tool.
+    - For questions about general "highest" or "top" peaks **overall** (that do NOT mention a specific gene), use `analytical_query_top_lod`. If the user asks for "the highest" or "the top" in the singular (e.g., "what is the highest score"), set `limit` to 1.
+4.  **Specific Tool Selection (for Gene-specific queries):**
     - For general information about a gene (function, summary, QTLs), use `get_gene_details`.
     - For comprehensive gene analysis with Ensemble API data (variants, detailed annotations), use `get_enhanced_gene_details`.
     - For cross-species analysis (human orthologs, comparative studies), use `get_cross_species_gene_info`.
-4.  **Ensembl API Integration:**
+5.  **Ensembl API Integration:**
     - Use `get_enhanced_gene_details` when users ask for "Ensembl data", "variants", or "comprehensive" gene information.
     - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
-5.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
-6.  If it is a broad biological concept queries use 'semantic_search'
-7.  Default to `semantic_search` if no tool fits.
+6.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
+7.  If it is a broad biological concept queries use 'semantic_search'
+8.  Default to `semantic_search` if no tool fits.
 
 **Available Tools:**
 {tools_json_str}
-
+"""
+        
+        user_prompt = f"""
 **User Query:**
 "{query}"
 
@@ -1274,7 +1240,7 @@ Your goal is to choose the single best tool to answer the user's question based 
 """
 
         # 2. Call Ollama to get the tool choice
-        tool_choice = self._call_ollama_for_tool_choice(prompt)
+        tool_choice = self._call_ollama_for_tool_choice(user_prompt=user_prompt, system_prompt=system_prompt)
 
         if not tool_choice or 'tool_name' not in tool_choice:
             logger.warning("LLM tool selection failed or returned invalid format. Falling back to semantic search.")
@@ -1337,7 +1303,7 @@ Your goal is to choose the single best tool to answer the user's question based 
         """Send a prompt to Ollama and return the response text."""
         try:
             print(f"[INFO] Using Ollama ({self.ollama_model}) for text generation.")
-            response = requests.post(
+            response = self.ollama_session.post(
                 self.ollama_url,
                 json={
                     "model": self.ollama_model,

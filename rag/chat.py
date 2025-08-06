@@ -11,16 +11,17 @@ class Chat:
         self.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
     def chat(self, query: str = None):
+        if query:
+            self.messages.append({"role": "user", "content": query})
         response = self.model.generate(self.messages)
-        self.messages.append({"role": "user", "content": query})
         self.messages.append(response.message)
         tool_calls = response.message.tool_calls
         if tool_calls:
-            self.execute_tool(tool_calls)
-            return self.chat(self.messages)
+            self.execute_tools(tool_calls)
+            return self.chat(self.messages) #isnt this going to return all the messages in history
         return response.message.content
     
-    def execute_tool(self, response):
+    def execute_tools(self, response):
         if response.message.tool_calls:
             for tool_call in response.message.tool_calls:
                 tool_name = tool_call.function.name

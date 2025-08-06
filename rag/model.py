@@ -2,8 +2,7 @@
 
 
 from typing import Optional, List, TypedDict, Literal
-
-import ollama
+from ollama import chat, ChatResponse
 
 
 class ToolCall(TypedDict):
@@ -22,10 +21,13 @@ class Model:
         self.model_name = model_name
 
     def chat(self, messages: List[Message], tools: dict = None):
-        url = "http://127.0.0.1:11434/api/generate"
-        response = requests.post(url, json={"model": self.model_name, "messages": messages, "tools": tools})
-        return response.json()
-        #TODO: Make it actually work
+        response: ChatResponse = chat(model=self.model_name, messages=messages, tools=tools)
+        return response.message.content
 
+
+if __name__ == "__main__":
+    model = Model("phi3:mini")
+    messages = [{"role": "user", "content": "Why is the sky blue?"}]
+    print(model.chat(messages))
     
 

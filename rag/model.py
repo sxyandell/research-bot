@@ -1,23 +1,10 @@
 #TODO: Implement model class
 
-
-from typing import Optional, List, TypedDict, Literal
+from data_types import Message
+from typing import List
 from ollama import chat, ChatResponse
 
 
-class FunctionCall(TypedDict):
-    name: str
-    arguments: dict
-
-
-class ToolCall(TypedDict):
-    function: FunctionCall
-
-
-class Message(TypedDict, total=False):
-    role: Literal["user", "assistant", "tool", "system"]
-    content: str
-    tool_calls: Optional[List[ToolCall]] = None
 
 
 class Model:

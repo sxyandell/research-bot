@@ -1,7 +1,8 @@
 from prompts import SYSTEM_PROMPT
 from typing import Callable, List
 from tools import tool_dict
-from model import Model, Message
+from model import Model
+from data_types import Message, ToolCall
 
 
 class Chatbot:
@@ -19,17 +20,21 @@ class Chatbot:
         if response.get('tool_calls'):
             self.messages.append(response)
             for tool_call in response['tool_calls']:
-                function = tool_call['function']
-                tool_name = function['name']
-                tool_args = function['arguments']
-                print(f"Calling tool: {tool_name} with args: {tool_args}")
-                tool = self.tools[tool_name]
-                function_response = tool(**tool_args)
-                self.messages.append(Message(role="tool", name=tool_name, content=str(function_response)))
+                function_response = self.execute_tool(tool_call)
+                self.messages.append(Message(role="tool", name=tool_call['function']['name'], content=str(function_response)))
             return self.chat()
         else:
             self.messages.append(response)
             return response['content']
+        
+    def execute_tool(self, tool_call: ToolCall):
+        function = tool_call['function']
+        tool_name = function['name']
+        tool_args = function['arguments']
+        print(f"Calling tool: {tool_name} with args: {tool_args}")
+        tool = self.tools[tool_name]
+        function_response = tool(**tool_args)
+        return function_response
 
 if __name__ == "__main__":
     chat = Chatbot("qwen3:8b", tool_dict)
@@ -37,6 +42,7 @@ if __name__ == "__main__":
     while query != "exit":
         print(chat.chat(query))
         query = input("Enter a query: ")
+    print(chat.messages)
 
 
     

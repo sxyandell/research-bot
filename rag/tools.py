@@ -2,6 +2,7 @@
 #from db import connector
 import requests
 from collections import defaultdict
+import pandas as pd
 
 
 def add_numbers(num1: int, num2: int):
@@ -12,52 +13,61 @@ def add_numbers(num1: int, num2: int):
     """
     return num1 + num2
 
+
 def convert_mouse_to_human_gene(gene_symbol: str):
     """
-    Converts a mouse gene symbol to its human homolog(s) using a local JAX labs database file.
-    A single mouse gene can map to multiple human homologs.
-    The search is case-insensitive.
-    Args:
-        gene_symbol: The mouse gene symbol to convert.
+    Given a mouse gene symbol, return its human homolog(s) by
+    looking up Homologene groups in a local JAX report.
+
+    Case-insensitive. Handles 1:many mappings.
     """
-    local_mapping_file = "HOM_MouseHumanSequence.rpt"
-    
-    # key: homolog_id, value: {'mouse': [genes], 'human': [genes]}
-    homologs = defaultdict(lambda: defaultdict(list))
-    try:
-        with open(local_mapping_file, 'r') as f:
-            for line in f:
-                
-                parts = line.strip().split("\t")
-                if len(parts) < 4:
-                    continue
+    mapping_file = "HOM_MouseHumanSequence.rpt"
+    # read only cols we care about
+    df = pd.read_csv(
+        mapping_file,
+        sep="\t",
+        usecols=["DB Class Key", "Common Organism Name", "Symbol"],
+        dtype=str,
+        comment='#'  
+    ).rename(columns={
+        "DB Class Key": "homologene_id",
+        "Common Organism Name": "organism",
+        "Symbol": "symbol"
+    })
 
-                homologene_id = parts[0]
-                organism = parts[1]
-                symbol = parts[3]
+    # split into mouse vs human
+    # make lowercase
+    df_mouse = (
+        df[df.organism == "mouse, laboratory"]
+        .assign(mouse_symbol=lambda d: d.symbol.str.lower())
+        .loc[:, ["homologene_id", "mouse_symbol"]]
+    )
+    df_human = (
+        df[df.organism == "human"]
+        .assign(human_symbol=lambda d: d.symbol.str.upper())
+        .loc[:, ["homologene_id", "human_symbol"]]
+    )
 
-                if organism == "mouse, laboratory":
-                    homologs[homologene_id]['mouse'].append(symbol)
-                elif organism == "human":
-                    homologs[homologene_id]['human'].append(symbol)
-    except FileNotFoundError:
-        return f"Error: The file '{local_mapping_file}' was not found."
+    # Inner-join on homologene_id to get all mouse↔human pairs
+    df_pairs = df_mouse.merge(df_human, on="homologene_id", how="inner")
 
-    # Create a mapping from a mouse gene to all its human homologs
-    mouse_to_human_map = defaultdict(list)
-    for homolog_id, symbols in homologs.items():
-        if symbols['mouse'] and symbols['human']:
-            for mouse_gene in symbols['mouse']:
-                mouse_to_human_map[mouse_gene.lower()].extend(symbols['human'])
+    # map mouse symbol to human symbol
+    mapping = (
+        df_pairs
+        .groupby("mouse_symbol")["human_symbol"]
+        .unique()
+        .apply(lambda arr: sorted(arr.tolist()))
+        .to_dict()
+    )
 
-    # Find the human homologs for the given mouse gene
-    found_genes = mouse_to_human_map.get(gene_symbol.lower())
-
-    if not found_genes:
+    # lookup
+    key = gene_symbol.lower()
+    human_list = mapping.get(key)
+    if not human_list:
         return f"No human homologs found for mouse gene '{gene_symbol}'."
-    
-    unique_genes = sorted(list(set(found_genes)))
-    return f"Found human homolog(s) for '{gene_symbol}': {', '.join(unique_genes)}."
+    return (f"Found human homolog(s) for '{gene_symbol}': "
+            f"{', '.join(human_list)}.")
+
 
 
 tool_dict = {

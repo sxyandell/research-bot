@@ -24,12 +24,9 @@ def convert_mouse_to_human_gene(gene_symbol: str):
     
     # key: homolog_id, value: {'mouse': [genes], 'human': [genes]}
     homologs = defaultdict(lambda: defaultdict(list))
-    
     try:
         with open(local_mapping_file, 'r') as f:
             for line in f:
-                if line.startswith("HomoloGene ID"): # Skip header
-                    continue
                 
                 parts = line.strip().split("\t")
                 if len(parts) < 4:

@@ -32,19 +32,18 @@ def convert_mouse_to_human_gene(gene_symbol: str):
     ).rename(columns={
         "DB Class Key": "homologene_id",
         "Common Organism Name": "organism",
-        "Symbol": "symbol"
     })
 
     # split into mouse vs human
     # make lowercase
     df_mouse = (
         df[df.organism == "mouse, laboratory"]
-        .assign(mouse_symbol=lambda d: d.symbol.str.lower())
+        .assign(mouse_symbol=lambda d: d.Symbol.str.lower())
         .loc[:, ["homologene_id", "mouse_symbol"]]
     )
     df_human = (
         df[df.organism == "human"]
-        .assign(human_symbol=lambda d: d.symbol.str.upper())
+        .assign(human_symbol=lambda d: d.Symbol.str.upper())
         .loc[:, ["homologene_id", "human_symbol"]]
     )
 

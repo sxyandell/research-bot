@@ -14,23 +14,25 @@ class Chatbot:
         if query:
             self.messages.append(Message(role="user", content=query))
         
-        response = self.model.chat(self.messages, tools=self.tools)
+        response = self.model.chat(self.messages, tools=list(self.tools.values()))
         
         if response.get('tool_calls'):
             self.messages.append(response)
             for tool_call in response['tool_calls']:
-                tool_name = tool_call['name']
-                tool_args = tool_call['args']
+                function = tool_call['function']
+                tool_name = function['name']
+                tool_args = function['arguments']
+                print(f"Calling tool: {tool_name} with args: {tool_args}")
                 tool = self.tools[tool_name]
                 function_response = tool(**tool_args)
-                self.messages.append(Message(role="tool", name=tool_name, content=function_response))
+                self.messages.append(Message(role="tool", name=tool_name, content=str(function_response)))
             return self.chat()
         else:
             self.messages.append(response)
             return response['content']
 
 if __name__ == "__main__":
-    chat = Chatbot("gemini-1.5-flash-latest", tool_dict)
+    chat = Chatbot("qwen3:8b", tool_dict)
     query = input("Enter a query: ")
     while query != "exit":
         print(chat.chat(query))

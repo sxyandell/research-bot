@@ -5,9 +5,13 @@ from typing import Optional, List, TypedDict, Literal
 from ollama import chat, ChatResponse
 
 
-class ToolCall(TypedDict):
+class FunctionCall(TypedDict):
     name: str
-    args: dict
+    arguments: dict
+
+
+class ToolCall(TypedDict):
+    function: FunctionCall
 
 
 class Message(TypedDict, total=False):
@@ -40,40 +44,9 @@ if __name__ == "__main__":
     response = model.chat(messages, tools=[add_numbers])
     print(messages)
     messages.append(response)
-    tool_args = response.tool_calls[0].function.arguments
+    tool_args = response['tool_calls'][0]['function']['arguments']
     tool_output = add_numbers(**tool_args)
     print(messages)
     messages.append({"role": "tool", "content": str(tool_output)})
     response = model.chat(messages, tools=[add_numbers])
     print(messages)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[{"role": "user", "content": "What is 4+4?", "tools": [add_numbers]}, 
- {"role": "assistant", "content": "", "tool_calls": [{"name": "add_numbers", "args": {"num1": 4, "num2": 4}}]},
- {"role": "tool", "content": "8"},
- {
-    "role": "assistant",
-    "content": "8",
-    "tool_calls": [
-        {
-            "name": "add_numbers",
-            "args": {"num1": 4, "num2": 4}
-        }
-    ]
-}]

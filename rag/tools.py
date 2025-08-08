@@ -3,6 +3,48 @@
 import requests
 from collections import defaultdict
 import pandas as pd
+from pathlib import Path
+import os
+def _resolve_mgi_path(default_filename: str = "HOM_MouseHumanSequence.rpt") -> Path:
+    """Resolve the path to the MGI ortholog report with robust fallbacks.
+
+    Order of precedence:
+    1) MGI_ORTHOLOG_PATH environment variable (absolute or relative)
+    2) Project root (parent of this file's directory) joined with default filename
+    3) This file's directory (rag/) joined with default filename
+    4) Current working directory joined with default filename
+    """
+    env_path = os.getenv("MGI_ORTHOLOG_PATH")
+    if env_path:
+        p = Path(env_path).expanduser()
+        if p.exists():
+            return p.resolve()
+
+    script_dir = Path(__file__).parent.resolve()
+    project_root = script_dir.parent
+    candidate_root = (project_root / default_filename)
+    if candidate_root.exists():
+        return candidate_root.resolve()
+
+    candidate_script = (script_dir / default_filename)
+    if candidate_script.exists():
+        return candidate_script.resolve()
+
+    candidate_cwd = (Path.cwd() / default_filename)
+    if candidate_cwd.exists():
+        return candidate_cwd.resolve()
+
+    # None found: raise a clear error listing tried locations
+    tried = [
+        env_path or "<MGI_ORTHOLOG_PATH unset>",
+        str(candidate_root),
+        str(candidate_script),
+        str(candidate_cwd),
+    ]
+    raise FileNotFoundError(
+        "HOM_MouseHumanSequence.rpt not found. Set MGI_ORTHOLOG_PATH or place the file in one of: "
+        + "; ".join(tried)
+    )
 
 
 def add_numbers(num1: int, num2: int):
@@ -21,10 +63,10 @@ def convert_mouse_to_human_gene(gene_symbol: str):
 
     Case-insensitive. Handles 1:many mappings.
     """
-    mapping_file = "HOM_MouseHumanSequence.rpt"
+    mapping_path = _resolve_mgi_path()
     # read only cols we care about
     df = pd.read_csv(
-        mapping_file,
+        str(mapping_path),
         sep="\t",
         usecols=["DB Class Key", "Common Organism Name", "Symbol"],
         dtype=str,
@@ -74,11 +116,11 @@ def convert_mouse_to_human_ortholog_info(gene_symbol: str):
 
     Case‐insensitive. Handles 1:many mappings.
     """
-    mapping_file = "HOM_MouseHumanSequence.rpt"
+    mapping_path = _resolve_mgi_path()
     
     # 1) Read only the columns we need
     df = pd.read_csv(
-        mapping_file,
+        str(mapping_path),
         sep="\t",
         usecols=[
             "DB Class Key",

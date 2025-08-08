@@ -25,7 +25,6 @@ ollama
 fastapi
 langchain
 langchain-community
-chromadb-client
 langchain-text-splitters
 pypdf
 requests

@@ -26,6 +26,7 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from google.generativeai.protos import Tool, FunctionDeclaration, Part
 import requests
 import inspect
+import os
 
 from itertools import groupby
 
@@ -256,9 +257,33 @@ class OrthologMatcher:
     Handles downloading and parsing the MGI ortholog file to reliably map
     human gene symbols to mouse gene symbols locally.
     """
-    def __init__(self):
+    def __init__(self, local_path: Optional[str] = None):
         self.file_url = "https://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt"
-        self.local_path = Path("./HOM_MouseHumanSequence.rpt")
+        # Resolve the MGI file robustly with multiple fallbacks
+        script_dir = Path(__file__).parent.resolve()
+        env_path = os.getenv("MGI_ORTHOLOG_PATH")
+        candidate_paths = []
+        if local_path:
+            candidate_paths.append(Path(local_path).expanduser())
+        if env_path:
+            candidate_paths.append(Path(env_path).expanduser())
+        candidate_paths.extend([
+            script_dir / "HOM_MouseHumanSequence.rpt",
+            Path.cwd() / "HOM_MouseHumanSequence.rpt",
+        ])
+        # Pick the first existing path; otherwise default to script_dir target
+        chosen = None
+        for p in candidate_paths:
+            try:
+                if p.exists():
+                    chosen = p
+                    break
+            except Exception:
+                continue
+        if chosen is None:
+            chosen = script_dir / "HOM_MouseHumanSequence.rpt"
+        self.local_path = chosen.resolve()
+        logger.info(f"Using MGI ortholog file path: {self.local_path}")
         self.human_to_mouse_map = None
 
     def _download_file(self, force=False):
@@ -269,6 +294,8 @@ class OrthologMatcher:
 
         logger.info(f"Downloading MGI ortholog file from {self.file_url}...")
         try:
+            # Ensure directory exists
+            self.local_path.parent.mkdir(parents=True, exist_ok=True)
             with requests.get(self.file_url, stream=True) as r:
                 r.raise_for_status()
                 with open(self.local_path, 'wb') as f:
@@ -287,7 +314,8 @@ class OrthologMatcher:
         self.human_to_mouse_map = {}
         
         try:
-            with open(self.local_path, 'r') as f:
+            logger.info(f"Opening MGI ortholog file at: {self.local_path}")
+            with open(self.local_path, 'r', encoding='utf-8', errors='ignore') as f:
                 # This function defines the data lines, skipping the header.
                 def data_lines(f_handle):
                     next(f_handle) # Skip header line
@@ -315,8 +343,17 @@ class OrthologMatcher:
                     if human_symbol and mouse_symbol:
                         self.human_to_mouse_map[human_symbol.upper()] = mouse_symbol
 
+        except FileNotFoundError as e:
+            logger.error(f"❌ Ortholog file not found at {self.local_path}: {e}")
+            # Attempt a final fallback to CWD
+            fallback_path = (Path.cwd() / "HOM_MouseHumanSequence.rpt").resolve()
+            if fallback_path.exists():
+                logger.info(f"Retrying with fallback path: {fallback_path}")
+                self.local_path = fallback_path
+                return self._build_map()
+            raise
         except Exception as e:
-            logger.error(f"❌ Failed to parse MGI ortholog file: {e}")
+            logger.error(f"❌ Failed to parse MGI ortholog file at {self.local_path}: {e}")
             raise
 
         logger.info(f"✅ Built ortholog map with {len(self.human_to_mouse_map)} entries.")
@@ -414,7 +451,7 @@ class HybridQTLSystem:
     Layer 3: GWAS integration for human-mouse cross-species analysis
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "phi3:mini", ollama_tool_model: str = "phi3:mini", **kwargs):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "qwen3:8b", ollama_tool_model: str = "qwen3:8b", ortholog_path: Optional[str] = None, **kwargs):
 
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
@@ -441,7 +478,7 @@ class HybridQTLSystem:
         if GWAS_AVAILABLE:
             # This client now manages its own data loading.
             self.gwas_client = GWASCatalogClient()
-            self.ortholog_matcher = OrthologMatcher()
+            self.ortholog_matcher = OrthologMatcher(local_path=ortholog_path)
         
         # Initialize Ensembl API client
         self.ensembl_client = None
@@ -746,10 +783,18 @@ class HybridQTLSystem:
     def setup_vector_store(self, use_google_embeddings: bool = True):
         """Setup ChromaDB vector store with all document types."""
         try:
-            self.chroma_client = chromadb.PersistentClient(
-                path=self.chroma_db_path,
-                settings=Settings(anonymized_telemetry=False)
-            )
+            # Use local on-disk Chroma client (no server / host required)
+            try:
+                self.chroma_client = chromadb.PersistentClient(path=self.chroma_db_path)
+            except Exception as e:
+                msg = str(e)
+                if "http-only client mode" in msg or "chroma_api_impl" in msg:
+                    raise RuntimeError(
+                        "Chroma is in HTTP-only client mode. For in-process PersistentClient, uninstall 'chromadb-client' "
+                        "and install the full 'chromadb' package.\n"
+                        "Run: python3 -m pip uninstall -y chromadb-client && python3 -m pip install -U chromadb"
+                    ) from e
+                raise
             
             collection_name = "qtl_hybrid_store"
             self.vector_collection = self.chroma_client.get_or_create_collection(

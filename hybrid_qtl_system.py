@@ -644,9 +644,7 @@ class HybridQTLSystem:
         """
         Generate all document types for a hybrid RAG strategy:
         1. Enriched Gene Summaries (with external biological context)
-        2. Chromosome Summaries
-        3. LOD Score Tier Summaries
-        4. Per-Peak Granular Documents
+        2. Per-Peak Granular Documents
         """
         all_docs = []
         
@@ -693,63 +691,7 @@ class HybridQTLSystem:
                 }
             })
 
-        # 2. CHROMOSOME-LEVEL SUMMARIES
-        logger.info("Generating chromosome-level summaries...")
-        chr_groups = self.raw_data.groupby('qtl_chr')
-        
-        for chr_name, chr_data in chr_groups:
-            qtl_count = len(chr_data)
-            unique_genes = chr_data['gene_symbol'].nunique()
-            max_lod = chr_data['qtl_lod'].max()
-            top_genes = chr_data.nlargest(5, 'qtl_lod')['gene_symbol'].tolist()
-            
-            summary_text = f"""
-            Chromosome {chr_name} Summary: This chromosome contains {qtl_count} significant QTL peaks affecting {unique_genes} unique genes.
-            The maximum LOD score is {max_lod:.2f}. The most strongly associated genes include {', '.join(map(str, top_genes[:3]))}.
-            This indicates {'high' if qtl_count > 1000 else 'moderate'} regulatory activity across the chromosome.
-            """
-            
-            all_docs.append({
-                'id': f'chr_{chr_name}',
-                'content': summary_text.strip(),
-                'metadata': {
-                    'type': 'chromosome_summary',
-                    'chromosome': str(chr_name),
-                    'qtl_count': int(qtl_count),
-                    'unique_genes': int(unique_genes),
-                    'max_lod': float(max_lod),
-                    'top_genes': ', '.join(map(str, top_genes))
-                }
-            })
-
-        # 3. LOD SCORE TIER SUMMARIES
-        logger.info("Generating significance tier summaries...")
-        lod_tiers = [(100, 'extremely_high'), (50, 'very_high'), (20, 'high')]
-        
-        for min_lod, tier_name in lod_tiers:
-            tier_data = self.raw_data[self.raw_data['qtl_lod'] >= min_lod]
-            if len(tier_data) == 0: continue
-            
-            qtl_count = len(tier_data)
-            unique_genes = tier_data['gene_symbol'].nunique()
-            
-            summary_text = f"""
-            Significance Tier Summary ({tier_name}, LOD > {min_lod}):
-            There are {qtl_count} QTLs with {tier_name.replace('_', ' ')} evidence of association, affecting {unique_genes} genes.
-            These peaks represent the highest-confidence genetic signals in the dataset, suitable for detailed validation studies.
-            """
-            
-            all_docs.append({
-                'id': f'lod_tier_{tier_name}',
-                'content': summary_text.strip(),
-                'metadata': {
-                    'type': 'significance_summary',
-                    'min_lod': min_lod, 
-                    'qtl_count': qtl_count
-                }
-            })
-
-        # 4. PER-PEAK GRANULAR DOCUMENTS
+        # 2. PER-PEAK GRANULAR DOCUMENTS
         logger.info(f"Generating per-peak document for all {len(self.raw_data)} records...")
         for index, row in self.raw_data.iterrows():
             content = (

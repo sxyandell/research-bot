@@ -5,6 +5,8 @@ from collections import defaultdict
 import pandas as pd
 from pathlib import Path
 import os
+from datetime import datetime
+
 def _resolve_mgi_path(default_filename: str = "HOM_MouseHumanSequence.rpt") -> Path:
     """Resolve the path to the MGI ortholog report with robust fallbacks.
 
@@ -182,11 +184,59 @@ def convert_mouse_to_human_ortholog_info(gene_symbol: str):
     ]
     return f"Found human homolog(s) for '{gene_symbol}': " + "; ".join(parts) + "."
 
+def query_ensembl_api(endpoint: str, params: dict = None, method: str = "GET", payload: dict = None):
+    """
+    Generic Ensembl API query tool for RAG chatbot.
+    
+    Access Ensembl's REST API to retrieve genomic data such as gene coordinates, 
+    sequences, transcript info, orthologs, variant annotations, phenotype data, and more.
+    
+    Args:
+        endpoint: REST endpoint path (excluding base URL)
+        params: Optional query parameters
+        method: HTTP method - GET or POST (default GET)
+        payload: Optional body for POST requests
+    
+    Returns:
+        JSON response from Ensembl API with source attribution
+    """
+    base_url = "https://rest.ensembl.org"
+    url = f"{base_url}{endpoint}"
+    
+    headers = {"Content-Type": "application/json"}
+    
+    try:
+        if method.upper() == "GET":
+            resp = requests.get(url, params=params, headers=headers, timeout=20)
+        elif method.upper() == "POST":
+            resp = requests.post(url, params=params, json=payload, headers=headers, timeout=20)
+        else:
+            return {"error": f"Unsupported HTTP method: {method}"}
+
+        if resp.status_code != 200:
+            return {"error": f"Ensembl API returned {resp.status_code}", "details": resp.text}
+
+        # Add source attribution to the response
+        response_data = resp.json()
+        if isinstance(response_data, dict):
+            response_data["_source"] = f"Data from Ensembl REST API (accessed {datetime.now().strftime('%Y-%m-%d')})"
+        elif isinstance(response_data, list):
+            response_data = {
+                "data": response_data,
+                "_source": f"Data from Ensembl REST API (accessed {datetime.now().strftime('%Y-%m-%d')})"
+            }
+        
+        return response_data
+        
+    except requests.RequestException as e:
+        return {"error": "Failed to connect to Ensembl API", "details": str(e)}
+
 # Update your tool registry:
 tool_dict = {
     "add_numbers": add_numbers,
     "convert_mouse_to_human_gene": convert_mouse_to_human_gene,
     "convert_mouse_to_human_ortholog_info": convert_mouse_to_human_ortholog_info,
+    "query_ensembl_api": query_ensembl_api,
 }
 
 if __name__ == "__main__":

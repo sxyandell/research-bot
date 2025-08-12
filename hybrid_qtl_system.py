@@ -1136,7 +1136,7 @@ class HybridQTLSystem:
                     "stream": False,
                     "format": "json"  # Request JSON output
                 },
-                timeout=300
+                timeout=60
             )
             response.raise_for_status()
             data = response.json()
@@ -1169,8 +1169,7 @@ class HybridQTLSystem:
         # 1. Build the prompt for the LLM
         tools_json_str = self._format_tools_for_prompt()
         system_prompt = f"""
-You are an expert at routing user questions to the correct tool for a bioinformatics QTL database.
-Your goal is to choose the single best tool to answer the user's question based on the tool descriptions and return ONLY the corresponding JSON object.
+You route bioinformatics QTL database queries to the best tool. Return ONLY: {{"tool_name": "...", "arguments": {{...}} }}
 
 **DATABASE CONTEXT:**
 - The database contains Quantitative Trait Loci (QTL) data.
@@ -1206,15 +1205,14 @@ Your goal is to choose the single best tool to answer the user's question based 
 7.  If it is a broad biological concept queries use 'semantic_search'
 8.  Default to `semantic_search` if no tool fits.
 
-**Available Tools:**
-{tools_json_str}
+**Tools:** {tools_json_str}
 """
         
         user_prompt = f"""
 **User Query:**
 "{query}"
 
-**Your JSON response:**
+**Your JSON response (be concise):**
 """
 
         # 2. Call Ollama to get the tool choice
@@ -1288,7 +1286,7 @@ Your goal is to choose the single best tool to answer the user's question based 
                     "prompt": prompt,
                     "stream": False
                 },
-                timeout=300
+                timeout=60
             )
 
             response.raise_for_status()
@@ -1346,6 +1344,12 @@ You are a specialized bioinformatics research assistant. Your task is to provide
     - If the context is from a semantic search, summarize the information accurately.
 4.  **Cite Sources:** If helpful, you can briefly mention the source of the information (e.g., "from the gene summary" or "from the analytical query").
 5.  **Handle Missing Information:** If the context does not contain the answer, you MUST state that clearly (e.g., "The database does not contain information about..."). Do not invent answers.
+6.  **RESPONSE STYLE:**
+    - Be extremely concise and direct
+    - Use bullet points when possible
+    - Avoid verbose explanations
+    - Focus on key facts only
+    - Keep responses under 3 sentences when possible
 
 **User's Question:** "{query}"
 

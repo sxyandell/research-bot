@@ -1,10 +1,15 @@
 #TODO: Implement model class
 
-from data_types import Message
+from rag.data_types import Message
 from typing import List
-from ollama import chat, ChatResponse
 
-
+try:
+    from ollama import chat, ChatResponse  # type: ignore
+    _OLLAMA_AVAILABLE = True
+except Exception:
+    chat = None  # type: ignore
+    ChatResponse = dict  # type: ignore
+    _OLLAMA_AVAILABLE = False
 
 
 class Model:
@@ -12,6 +17,8 @@ class Model:
         self.model_name = model_name
 
     def chat(self, messages: List[Message], tools: dict = None):
+        if not _OLLAMA_AVAILABLE:
+            raise RuntimeError("Ollama Python client is not installed. Install with: pip install ollama, and ensure 'ollama serve' is running.")
         response: ChatResponse = chat(model=self.model_name, messages=messages, tools=tools, think=False)
         return response.message
 

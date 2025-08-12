@@ -1,12 +1,14 @@
 #TOOLS
 #from db import connector
 try:
-    from rag.helpers import _impc_fetch_significant_phenotypes
+    from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local
 except ImportError:  # fallback when running inside rag/ directly
-    from helpers import _impc_fetch_significant_phenotypes
-import pandas as pd
+    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local
 from pathlib import Path
 from typing import Dict, Any, List
+from functools import lru_cache
+from typing import Tuple, Optional
+import os
 
 
 def add_numbers(num1: int, num2: int):
@@ -19,12 +21,15 @@ def add_numbers(num1: int, num2: int):
 
 
 def convert_mouse_to_human_gene(gene_symbol: str):
-    """
-    Given a mouse gene symbol, return its human homolog(s) by
-    looking up Homologene groups in a local JAX report.
+      """
+    Finds human homolog(s) for a given mouse gene symbol.
 
-    Case-insensitive. Handles 1:many mappings.
+    This tool queries a local JAX homology report (`HOM_MouseHumanSequence.rpt`)
+    to map a mouse gene to its corresponding human gene(s) based on a shared
+    HomoloGene ID. The search is case-insensitive. It correctly handles cases
+    where one mouse gene maps to multiple human homologs.
     """
+    import pandas as pd  # lazy import
     mapping_file = Path(__file__).resolve().parent.parent / "HOM_MouseHumanSequence.rpt"
     # read only cols we care about
     df = pd.read_csv(
@@ -73,12 +78,16 @@ def convert_mouse_to_human_gene(gene_symbol: str):
 
 
 def convert_mouse_to_human_ortholog_info(gene_symbol: str):
-    """
-    Given a mouse gene symbol, return its human homolog(s) plus
-    chromosome-band and genome‐coordinate info from the local JAX report.
+    """"
+    Finds human ortholog(s) for a mouse gene and returns detailed location info.
 
-    Case‐insensitive. Handles 1:many mappings.
+    This tool queries a local JAX homology report (`HOM_MouseHumanSequence.rpt`)
+    to find human orthologs. For each human ortholog identified, it returns the
+    gene symbol, its chromosome band location, and its genomic coordinates based
+    on the GRCh38 assembly. The search is case-insensitive and handles
+    one-to-many mappings.
     """
+    import pandas as pd  # lazy import
     mapping_file = Path(__file__).resolve().parent.parent / "HOM_MouseHumanSequence.rpt"
     
     # 1) Read only the columns we need
@@ -148,12 +157,20 @@ def convert_mouse_to_human_ortholog_info(gene_symbol: str):
 
 def get_impc_knockout_status(gene_symbol: str) -> str:
     """
-    Return the IMPC knockout status for a gene as a concise string.
+    Returns a concise summary of a gene's knockout phenotyping status from IMPC.
+    Ideal for simple "yes/no" questions about whether knockout data exists.
 
     Args:
         gene_symbol: Official mouse gene symbol (e.g., "Trp53").
     """
-    result = _impc_fetch_significant_phenotypes(gene_symbol)
+    def _normalize_mouse_gene_symbol_case(symbol: str) -> str:
+        s = (symbol or "").strip()
+        if not s:
+            return s
+        return s[0].upper() + s[1:].lower()
+
+    normalized_symbol = _normalize_mouse_gene_symbol_case(gene_symbol)
+    result = _impc_fetch_significant_phenotypes(normalized_symbol)
     marker = result.get("gene", gene_symbol)
     status = result.get("impc_knockout")
     if result.get("error"):
@@ -165,12 +182,20 @@ def get_impc_knockout_status(gene_symbol: str) -> str:
 
 def get_impc_significant_phenotypes(gene_symbol: str) -> str:
     """
-    Return a human-readable list of significant IMPC phenotypes for a gene.
+    Returns a formatted list of significant phenotypes for a gene knockout from IMPC.
+    Best for when a user asks 'what' or 'which' phenotypes from IMPC were reported.
 
     Args:
         gene_symbol: Official mouse gene symbol (e.g., "Trp53").
     """
-    result = _impc_fetch_significant_phenotypes(gene_symbol)
+    def _normalize_mouse_gene_symbol_case(symbol: str) -> str:
+        s = (symbol or "").strip()
+        if not s:
+            return s
+        return s[0].upper() + s[1:].lower()
+
+    normalized_symbol = _normalize_mouse_gene_symbol_case(gene_symbol)
+    result = _impc_fetch_significant_phenotypes(normalized_symbol)
     marker = result.get("gene", gene_symbol)
     if result.get("error"):
         return f"Error for {marker}: {result['error']}"
@@ -184,12 +209,20 @@ def get_impc_significant_phenotypes(gene_symbol: str) -> str:
 
 def get_impc_gene_summary(gene_symbol: str) -> str:
     """
-    Return a compact summary containing both knockout status and significant phenotypes.
+    Returns a comprehensive, formatted summary of a gene's IMPC knockout status and phenotypes.
+    This is the best general-purpose tool for a full overview of a gene.
 
     Args:
         gene_symbol: Official mouse gene symbol (e.g., "Trp53").
     """
-    result = _impc_fetch_significant_phenotypes(gene_symbol)
+    def _normalize_mouse_gene_symbol_case(symbol: str) -> str:
+        s = (symbol or "").strip()
+        if not s:
+            return s
+        return s[0].upper() + s[1:].lower()
+
+    normalized_symbol = _normalize_mouse_gene_symbol_case(gene_symbol)
+    result = _impc_fetch_significant_phenotypes(normalized_symbol)
     marker = result.get("gene", gene_symbol)
     if result.get("error"):
         return f"Error for {marker}: {result['error']}"
@@ -202,6 +235,250 @@ def get_impc_gene_summary(gene_symbol: str) -> str:
     more = "" if len(phenos) <= 10 else f" (+{len(phenos) - 10} more)"
     return f"Gene: {marker}\nIMPC knockout: {status_text}\nSignificant phenotypes: {preview}{more}"
 
+# --------------------- New: GTEx + Tabula Muris expression tool ---------------------
+
+_TABULA_MURIS_PATH = Path(os.getenv("TABULA_MURIS_H5AD", str(Path(__file__).resolve().parent.parent / "data" / "tabula-muris.h5ad")))
+
+
+def _gtex_resolve_gencode_id(gene_symbol: str) -> Optional[str]:
+    """Resolve a gene symbol or Ensembl ID to a canonical Ensembl/GENCODE ID for GTEx.
+
+    Returns an ID like 'ENSG00000141510' (no version) if possible.
+    """
+    import requests  # lazy import
+    sym = (gene_symbol or "").strip()
+    if not sym:
+        return None
+    # If already looks like Ensembl gene id, strip version and return
+    if sym.upper().startswith("ENSG"):
+        return sym.split(".")[0]
+
+    # Try a few reference endpoints/params
+    base = "https://gtexportal.org/rest/v2/reference/gene"
+    attempts = [
+        {"geneSymbol": sym, "genomeBuild": "GRCh38"},
+        {"geneId": sym, "genomeBuild": "GRCh38"},
+        {"searchTerm": sym, "genomeBuild": "GRCh38"},
+    ]
+    for params in attempts:
+        try:
+            r = requests.get(base, params=params, timeout=15)
+            if r.status_code != 200:
+                continue
+            data = r.json() or {}
+            genes = data.get("gene") or data.get("genes") or data.get("data") or []
+            if isinstance(genes, dict):
+                genes = [genes]
+            for g in genes:
+                gid = g.get("gencodeId") or g.get("geneId") or g.get("id")
+                if gid and str(gid).upper().startswith("ENSG"):
+                    return str(gid).split(".")[0]
+        except Exception:
+            continue
+    return None
+
+
+def _fetch_gtex_expression(gene_symbol: str) -> List[Tuple[str, float]]:
+    """Fetch top expressed tissues for a gene from GTEx.
+
+    Uses the v1 medianGeneExpression endpoint with datasetId=gtex_v8 when possible.
+    Returns list of (tissue_name, median_tpm), sorted by median TPM desc, up to 10.
+    """
+    import requests  # lazy import
+    symbol = (gene_symbol or "").strip()
+    if not symbol:
+        return []
+
+    # First: try local GTEx v10 file if available
+    local = _fetch_gtex_expression_local(symbol)
+    if local:
+        return local
+
+    
+    # Resolve to Ensembl gene ID
+    gencode = _gtex_resolve_gencode_id(symbol) or symbol
+
+    # Preferred: v1 medianGeneExpression per tissue
+    try:
+        url_v1 = "https://gtexportal.org/rest/v1/expression/medianGeneExpression"
+        # Try with gencodeId first
+        for params_v1 in (
+            {"gencodeId": gencode, "datasetId": "gtex_v8", "format": "json"},
+            {"geneSymbol": symbol, "datasetId": "gtex_v8", "format": "json"},
+        ):
+            r = requests.get(url_v1, params=params_v1, timeout=20)
+            if r.status_code != 200:
+                continue
+            data = (r.json() or {}).get("medianGeneExpression", [])
+            if not data:
+                continue
+            results: List[Tuple[str, float]] = []
+            for item in data:
+                tissue_raw = item.get("tissueSiteDetailId") or item.get("tissueSiteDetail") or item.get("tissue") or item.get("tissueSite") or "Unknown"
+                tissue_name = str(tissue_raw).replace("_", " - ")
+                median_tpm = float(item.get("median", 0.0) or 0.0)
+                results.append((tissue_name, median_tpm))
+            results.sort(key=lambda x: x[1], reverse=True)
+            return results[:10]
+    except Exception:
+        pass
+
+    # Fallback: v2 topExpressedGene attempts
+    base_url_v2 = "https://gtexportal.org/rest/v2/expression/topExpressedGene"
+    param_attempts: List[Dict[str, Any]] = [
+        {"gencodeId": gencode, "pageSize": 10, "sortBy": "median", "sortDirection": "desc", "format": "json"},
+        {"gencodeId": symbol, "pageSize": 10, "sortBy": "median", "sortDirection": "desc", "format": "json"},
+        {"geneSymbol": symbol, "pageSize": 10, "sortBy": "median", "sortDirection": "desc", "format": "json"},
+    ]
+    for params in param_attempts:
+        try:
+            resp = requests.get(base_url_v2, params=params, timeout=20)
+            if resp.status_code != 200:
+                continue
+            data = (resp.json() or {}).get("topExpressedGene", [])
+            if not data:
+                continue
+            results: List[Tuple[str, float]] = []
+            for item in data:
+                tissue_raw = item.get("tissueSiteDetailId") or item.get("tissueSiteDetail") or item.get("tissueSite") or "Unknown"
+                tissue_name = str(tissue_raw).replace("_", " - ")
+                median_tpm = float(item.get("median", 0.0) or 0.0)
+                results.append((tissue_name, median_tpm))
+            return results
+        except Exception:
+            continue
+    return []
+
+
+@lru_cache(maxsize=1)
+def _load_tabula_muris_data():
+    """Load the Tabula Muris AnnData file, caching in memory. Returns None on failure."""
+    try:
+        import scanpy as sc  # imported lazily to avoid hard dependency at import time
+    except Exception:
+        return None
+    try:
+        return sc.read_h5ad(str(_TABULA_MURIS_PATH))
+    except Exception:
+        return None
+
+
+def _select_obs_tissue_key(adata) -> Optional[str]:
+    """Pick a reasonable obs column to represent tissue/organ labels."""
+    if adata is None:
+        return None
+    candidate_keys = [
+        "tissue",
+        "organ",
+        "tissue_general",
+        "tissue_ontology_term",
+        "tissue_ontology_term_id",
+    ]
+    for key in candidate_keys:
+        if key in adata.obs.columns:
+            return key
+    # fallback to any obs column containing the word "tissue"
+    for key in adata.obs.columns:
+        if "tissue" in str(key).lower():
+            return key
+    return None
+
+
+def _to_numpy(matrix):
+    """Safely convert AnnData .X slice to a dense numpy array."""
+    try:
+        # scipy sparse
+        return matrix.toarray()
+    except Exception:
+        return matrix
+
+
+def _fetch_tabula_muris_expression(gene_symbol: str) -> List[Tuple[str, float]]:
+    """Compute top tissues by mean expression for a gene from local Tabula Muris data."""
+    adata = _load_tabula_muris_data()
+    if adata is None:
+        # Add a print statement here for debugging if the file doesn't load
+        print("Debug: Tabula Muris data file not loaded. Check path.")
+        return []
+
+    import pandas as pd  # lazy import
+    gene = (gene_symbol or "").strip()
+    
+    # --- ADD THIS BLOCK ---
+    # Make gene matching more robust: check original, capitalized, and lowercase
+    if gene not in adata.var_names:
+        capitalized_gene = gene.capitalize()
+        if capitalized_gene in adata.var_names:
+            gene = capitalized_gene
+        elif gene.lower() in adata.var_names:
+            gene = gene.lower()
+        else:
+            return [] # Gene not found even with variations
+    # --- END BLOCK ---
+    
+    # The rest of the function remains the same...
+    tissue_key = _select_obs_tissue_key(adata)
+    if not tissue_key:
+        return []
+
+    # Build DataFrame of expression and tissue annotations
+    gene_expr = _to_numpy(adata[:, gene].X)
+    try:
+        import numpy as np
+    except Exception:  # numpy should be present, but guard anyway
+        return []
+    expr_series = pd.Series(np.asarray(gene_expr).ravel(), index=adata.obs_names, name=gene)
+    df = pd.DataFrame({gene: expr_series, "tissue": adata.obs[tissue_key].astype(str).values})
+
+    mean_by_tissue = df.groupby("tissue")[gene].mean().sort_values(ascending=False).head(10)
+    return list(mean_by_tissue.items())
+
+
+def get_top_tissue_expression(gene_symbol: str) -> str:
+    """
+    Fetches and lists the top 10 tissues with the highest expression for a given gene
+    in both human (GTEx) and mouse (Tabula Muris). It automatically handles ortholog conversion.
+    """
+    input_symbol = (gene_symbol or "").strip()
+    if not input_symbol:
+        return "Error: Gene symbol cannot be empty."
+
+    # --- Step 1: Resolve ortholog pair (human_symbol, mouse_symbol) ---
+    human_symbol, mouse_symbol = _resolve_ortholog_pair(input_symbol)
+    
+    # --- Step 2: Fetch data using the correct symbols ---
+    human_tissues = []
+    if human_symbol:
+        human_tissues = _fetch_gtex_expression(human_symbol)
+    
+    # Temporarily disable mouse (Tabula Muris) expression
+    # mouse_tissues = []
+    # if mouse_symbol:
+    #     mouse_tissues = _fetch_tabula_muris_expression(mouse_symbol)
+    mouse_tissues = []
+
+    # --- Step 3: Format the output ---
+    summary_title = f"**Expression Summary for {input_symbol}**"
+    if human_symbol and mouse_symbol and input_symbol not in [human_symbol, mouse_symbol]:
+         summary_title = f"**Expression Summary for {input_symbol} (Human: {human_symbol} | Mouse: {mouse_symbol})**"
+
+    if human_tissues:
+        human_list = [f"- **{name}:** {tpm:.2f} TPM" for name, tpm in human_tissues]
+        human_output = f"### 👤 Human ({human_symbol})\n" + "\n".join(human_list)
+    else:
+        human_output = f"### 👤 Human ({human_symbol or input_symbol})\n- No expression data found."
+
+    if mouse_tissues:
+        mouse_list = [f"- **{name}:** {value:.2f} (mean expression)" for name, value in mouse_tissues]
+        mouse_output = f"### 🐭 Mouse ({mouse_symbol})\n" + "\n".join(mouse_list)
+    else:
+        mouse_output = f"### 🐭 Mouse ({mouse_symbol or input_symbol})\n- Mouse expression temporarily disabled."
+
+    return (
+        f"{summary_title}\n\n"
+        f"{human_output}\n\n"
+        f"{mouse_output}"
+    )
 
 # Update your tool registry:
 tool_dict = {
@@ -211,4 +488,34 @@ tool_dict = {
     "get_impc_knockout_status": get_impc_knockout_status,
     "get_impc_significant_phenotypes": get_impc_significant_phenotypes,
     "get_impc_gene_summary": get_impc_gene_summary,
+    "get_top_tissue_expression": get_top_tissue_expression,
 }
+
+# --------------------- Manual testing entrypoint ---------------------
+if __name__ == "__main__":
+    import sys
+
+    default_gene = ""
+    gene_arg = sys.argv[1] if len(sys.argv) > 1 else default_gene
+
+    print(f"Running quick tests for gene: {gene_arg}\n")
+
+    # Test GTEx + Tabula Muris expression summary
+    try:
+        print(get_top_tissue_expression(gene_arg))
+    except Exception as exc:
+        print(f"Error in get_top_tissue_expression: {exc}")
+
+    # Test IMPC helpers (mouse gene symbols expected, e.g., Trp53)
+    mouse_gene = "Trp5" if gene_arg.upper() == "Trp5" else gene_arg
+    print("\n---\n")
+    try:
+        print(get_impc_knockout_status(mouse_gene))
+    except Exception as exc:
+        print(f"Error in get_impc_knockout_status: {exc}")
+
+    print("\n---\n")
+    try:
+        print(get_impc_significant_phenotypes(mouse_gene))
+    except Exception as exc:
+        print(f"Error in get_impc_significant_phenotypes: {exc}")

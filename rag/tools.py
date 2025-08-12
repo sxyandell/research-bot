@@ -5,7 +5,6 @@ from collections import defaultdict
 import pandas as pd
 from pathlib import Path
 import os
-from datetime import datetime
 
 def _resolve_mgi_path(default_filename: str = "HOM_MouseHumanSequence.rpt") -> Path:
     """Resolve the path to the MGI ortholog report with robust fallbacks.
@@ -329,42 +328,28 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: str = "mus_mus
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
 
-def query_gwas_api(endpoint: str, params: dict = None, method: str = "GET"):
+def query_gwas_api(endpoint: str, method: str = "GET", params: dict = None) -> dict:
     """
-    Generic GWAS Catalog API query tool for RAG chatbot.
-    
-    Fetch Genome-Wide Association Study (GWAS) data from the GWAS Catalog API
-    to retrieve genetic associations between variants and traits, diseases, or phenotypes.
+    Query the GWAS Catalog REST API and return raw results.
     
     Args:
-        endpoint: GWAS Catalog API path (excluding base URL)
-        params: Optional query parameters
-        method: HTTP method - GET or POST (default GET)
+        endpoint: API endpoint (e.g., "/associations", "/genes", "/studies", "/traits")
+        method: HTTP method ("GET" or "POST")
+        params: Query parameters
     
     Returns:
-        JSON response from GWAS Catalog API with source attribution and formatted results
+        Raw API response data
     """
-    # Use the working alternative download API endpoint
-    base_url = "https://www.ebi.ac.uk/gwas/api"
+    base_url = "https://www.ebi.ac.uk/gwas/rest/api"
     
-    # Map common endpoints to working URLs
-    endpoint_mapping = {
-        "/associations": "/search/downloads/alternative",
-        "/genes": "/search/downloads/alternative", 
-        "/studies": "/search/downloads/alternative",
-        "/traits": "/search/downloads/alternative",
-        "/search": "/search/downloads/alternative"
-    }
+    # Build the full URL
+    url = f"{base_url}{endpoint}"
     
-    # Use mapped endpoint if available, otherwise use the original
-    mapped_endpoint = endpoint_mapping.get(endpoint, endpoint)
-    url = f"{base_url}{mapped_endpoint}"
-    
-    headers = {"Content-Type": "application/json"}
+    headers = {"Accept": "application/json"}
     
     try:
         if method.upper() == "GET":
-            resp = requests.get(url, params=params, headers=headers, timeout=60)  # Increased timeout for large file
+            resp = requests.get(url, params=params, headers=headers, timeout=60)
         elif method.upper() == "POST":
             resp = requests.post(url, params=params, headers=headers, timeout=60)
         else:
@@ -373,274 +358,13 @@ def query_gwas_api(endpoint: str, params: dict = None, method: str = "GET"):
         if resp.status_code != 200:
             return {"error": f"GWAS Catalog API returned {resp.status_code}", "details": resp.text}
 
-        # For the alternative download endpoint, we get TSV data, not JSON
-        if mapped_endpoint == "/search/downloads/alternative":
-            # Parse TSV data and convert to structured format
-            try:
-                import pandas as pd
-                from io import StringIO
-                
-                # Read TSV data
-                tsv_data = StringIO(resp.text)
-                df = pd.read_csv(tsv_data, sep='\t', low_memory=False)
-                
-                # Filter by parameters if provided
-                if params:
-                    if 'trait' in params:
-                        trait_filter = df['DISEASE/TRAIT'].str.contains(params['trait'], case=False, na=False)
-                        df = df[trait_filter]
-                    
-                    if 'gene' in params:
-                        gene_filter = df['REPORTED GENE(S)'].str.contains(params['gene'], case=False, na=False)
-                        df = df[gene_filter]
-                    
-                    if 'size' in params:
-                        df = df.head(int(params['size']))
-                
-                # Convert to records for easier processing
-                records = df.to_dict('records')
-                
-                formatted_response = {
-                    "_source": f"Data from GWAS Catalog Alternative API (accessed {datetime.now().strftime('%Y-%m-%d')})",
-                    "raw_data": records,
-                    "total_records": len(records),
-                    "columns": list(df.columns)
-                }
-                
-                # Add summary based on endpoint type
-                if "associations" in endpoint or "search" in endpoint:
-                    formatted_response["summary"] = _format_gwas_associations_tsv(records)
-                elif "genes" in endpoint:
-                    formatted_response["summary"] = _format_gwas_gene_data_tsv(records)
-                elif "studies" in endpoint:
-                    formatted_response["summary"] = _format_gwas_study_data_tsv(records)
-                elif "traits" in endpoint:
-                    formatted_response["summary"] = _format_gwas_trait_data_tsv(records)
-                
-                return formatted_response
-                
-            except Exception as e:
-                return {"error": f"Failed to parse TSV data: {str(e)}", "raw_response": resp.text[:1000]}
-        else:
-            # Handle JSON responses for other endpoints
-            response_data = resp.json()
-            
-            # Add source attribution
-            formatted_response = {
-                "_source": f"Data from GWAS Catalog API (accessed {datetime.now().strftime('%Y-%m-%d')})",
-                "raw_data": response_data
-            }
-            
-            # Extract and format relevant fields for common endpoints
-            if "associations" in endpoint or "singleNucleotidePolymorphisms" in endpoint:
-                formatted_response["summary"] = _format_gwas_associations(response_data)
-            elif "genes" in endpoint:
-                formatted_response["summary"] = _format_gwas_gene_data(response_data)
-            elif "studies" in endpoint:
-                formatted_response["summary"] = _format_gwas_study_data(response_data)
-            elif "traits" in endpoint:
-                formatted_response["summary"] = _format_gwas_trait_data(response_data)
-            
-            return formatted_response
+        # Return JSON response directly
+        return resp.json()
         
     except requests.RequestException as e:
         return {"error": "Failed to connect to GWAS Catalog API", "details": str(e)}
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
-
-def _format_gwas_associations(data):
-    """Format GWAS association data for user consumption."""
-    if not data or not isinstance(data, dict):
-        return "No association data found"
-    
-    # Handle different response structures
-    associations = data.get("associations", [])
-    if not associations and isinstance(data, list):
-        associations = data
-    
-    if not associations:
-        return "No associations found"
-    
-    # Limit to top 5 most significant results
-    top_associations = associations[:5]
-    
-    formatted = []
-    for assoc in top_associations:
-        if isinstance(assoc, dict):
-            trait = assoc.get("trait", {}).get("trait", "Unknown trait")
-            p_value = assoc.get("pvalue", "N/A")
-            odds_ratio = assoc.get("oddsRatio", "N/A")
-            gene = assoc.get("loci", [{}])[0].get("gene", {}).get("geneName", "N/A") if assoc.get("loci") else "N/A"
-            study = assoc.get("study", {}).get("accessionId", "N/A")
-            
-            formatted.append(f"Trait: {trait}, Gene: {gene}, P-value: {p_value}, OR: {odds_ratio}, Study: {study}")
-    
-    return formatted if formatted else "No association data available"
-
-def _format_gwas_gene_data(data):
-    """Format GWAS gene data for user consumption."""
-    if not data or not isinstance(data, dict):
-        return "No gene data found"
-    
-    gene_name = data.get("name", "Unknown gene")
-    associations = data.get("associations", [])
-    
-    if not associations:
-        return f"No GWAS associations found for gene {gene_name}"
-    
-    # Limit to top 5 most significant results
-    top_associations = associations[:5]
-    
-    formatted = [f"Gene: {gene_name}"]
-    for assoc in top_associations:
-        if isinstance(assoc, dict):
-            trait = assoc.get("trait", {}).get("trait", "Unknown trait")
-            p_value = assoc.get("pvalue", "N/A")
-            study = assoc.get("study", {}).get("accessionId", "N/A")
-            formatted.append(f"  - {trait}: P-value {p_value}, Study {study}")
-    
-    return formatted
-
-def _format_gwas_study_data(data):
-    """Format GWAS study data for user consumption."""
-    if not data or not isinstance(data, dict):
-        return "No study data found"
-    
-    studies = data.get("studies", [])
-    if not studies and isinstance(data, list):
-        studies = data
-    
-    if not studies:
-        return "No studies found"
-    
-    # Limit to top 5 results
-    top_studies = studies[:5]
-    
-    formatted = []
-    for study in top_studies:
-        if isinstance(study, dict):
-            accession = study.get("accessionId", "Unknown")
-            title = study.get("title", "No title")
-            trait = study.get("trait", "Unknown trait")
-            sample_size = study.get("initialSampleSize", "Unknown")
-            
-            formatted.append(f"Study {accession}: {title} | Trait: {trait} | Sample: {sample_size}")
-    
-    return formatted if formatted else "No study data available"
-
-def _format_gwas_trait_data(data):
-    """Format GWAS trait data for user consumption."""
-    if not data or not isinstance(data, dict):
-        return "No trait data found"
-    
-    trait_name = data.get("trait", "Unknown trait")
-    associations = data.get("associations", [])
-    
-    if not associations:
-        return f"No GWAS associations found for trait {trait_name}"
-    
-    # Limit to top 5 most significant results
-    top_associations = associations[:5]
-    
-    formatted = [f"Trait: {trait_name}"]
-    for assoc in top_associations:
-        if isinstance(assoc, dict):
-            gene = assoc.get("loci", [{}])[0].get("gene", {}).get("geneName", "N/A") if assoc.get("loci") else "N/A"
-            p_value = assoc.get("pvalue", "N/A")
-            study = assoc.get("study", {}).get("accessionId", "N/A")
-            formatted.append(f"  - Gene: {gene}, P-value: {p_value}, Study: {study}")
-    
-    return formatted
-
-def _format_gwas_associations_tsv(records):
-    """Format GWAS association data from TSV format for user consumption."""
-    if not records:
-        return "No association data found"
-    
-    # Limit to top 5 most significant results
-    top_records = records[:5]
-    
-    formatted = []
-    for record in top_records:
-        trait = record.get('DISEASE/TRAIT', 'Unknown trait')
-        p_value = record.get('P-VALUE', 'N/A')
-        gene = record.get('REPORTED GENE(S)', 'N/A')
-        study = record.get('STUDY', 'N/A')
-        snp = record.get('STRONGEST SNP-RISK ALLELE', 'N/A')
-        
-        formatted.append(f"Trait: {trait}, Gene: {gene}, P-value: {p_value}, SNP: {snp}, Study: {study}")
-    
-    return formatted if formatted else "No association data available"
-
-def _format_gwas_gene_data_tsv(records):
-    """Format GWAS gene data from TSV format for user consumption."""
-    if not records:
-        return "No gene data found"
-    
-    # Group by gene and show associations
-    gene_groups = {}
-    for record in records:
-        genes = str(record.get('REPORTED GENE(S)', '')).split(',')
-        for gene in genes:
-            gene = gene.strip()
-            if gene and gene != 'NR':
-                if gene not in gene_groups:
-                    gene_groups[gene] = []
-                gene_groups[gene].append(record)
-    
-    formatted = []
-    for gene, associations in list(gene_groups.items())[:5]:  # Top 5 genes
-        trait = associations[0].get('DISEASE/TRAIT', 'Unknown trait')
-        p_value = associations[0].get('P-VALUE', 'N/A')
-        formatted.append(f"Gene: {gene} - {trait} (P-value: {p_value})")
-    
-    return formatted if formatted else "No gene data available"
-
-def _format_gwas_study_data_tsv(records):
-    """Format GWAS study data from TSV format for user consumption."""
-    if not records:
-        return "No study data found"
-    
-    # Group by study and show unique studies
-    studies = {}
-    for record in records:
-        study = record.get('STUDY', 'Unknown')
-        if study not in studies:
-            studies[study] = {
-                'trait': record.get('DISEASE/TRAIT', 'Unknown'),
-                'sample_size': record.get('INITIAL SAMPLE SIZE', 'Unknown'),
-                'journal': record.get('JOURNAL', 'Unknown')
-            }
-    
-    formatted = []
-    for study_name, study_info in list(studies.items())[:5]:  # Top 5 studies
-        formatted.append(f"Study: {study_name} | Trait: {study_info['trait']} | Sample: {study_info['sample_size']}")
-    
-    return formatted if formatted else "No study data available"
-
-def _format_gwas_trait_data_tsv(records):
-    """Format GWAS trait data from TSV format for user consumption."""
-    if not records:
-        return "No trait data found"
-    
-    # Group by trait and show unique traits
-    traits = {}
-    for record in records:
-        trait = record.get('DISEASE/TRAIT', 'Unknown')
-        if trait not in traits:
-            traits[trait] = {
-                'gene_count': 0,
-                'studies': set()
-            }
-        traits[trait]['gene_count'] += 1
-        traits[trait]['studies'].add(record.get('STUDY', 'Unknown'))
-    
-    formatted = []
-    for trait, trait_info in list(traits.items())[:5]:  # Top 5 traits
-        study_count = len(trait_info['studies'])
-        formatted.append(f"Trait: {trait} | Genes: {trait_info['gene_count']} | Studies: {study_count}")
-    
-    return formatted if formatted else "No trait data available"
 
 # Update your tool registry:
 tool_dict = {

@@ -30,3 +30,4 @@ langchain-text-splitters
 pypdf
 requests
 pandas
+impc-api

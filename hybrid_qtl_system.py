@@ -26,6 +26,7 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from google.generativeai.protos import Tool, FunctionDeclaration, Part
 import requests
 import inspect
+import os
 
 from itertools import groupby
 
@@ -256,9 +257,33 @@ class OrthologMatcher:
     Handles downloading and parsing the MGI ortholog file to reliably map
     human gene symbols to mouse gene symbols locally.
     """
-    def __init__(self):
+    def __init__(self, local_path: Optional[str] = None):
         self.file_url = "https://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt"
-        self.local_path = Path("./HOM_MouseHumanSequence.rpt")
+        # Resolve the MGI file robustly with multiple fallbacks
+        script_dir = Path(__file__).parent.resolve()
+        env_path = os.getenv("MGI_ORTHOLOG_PATH")
+        candidate_paths = []
+        if local_path:
+            candidate_paths.append(Path(local_path).expanduser())
+        if env_path:
+            candidate_paths.append(Path(env_path).expanduser())
+        candidate_paths.extend([
+            script_dir / "HOM_MouseHumanSequence.rpt",
+            Path.cwd() / "HOM_MouseHumanSequence.rpt",
+        ])
+        # Pick the first existing path; otherwise default to script_dir target
+        chosen = None
+        for p in candidate_paths:
+            try:
+                if p.exists():
+                    chosen = p
+                    break
+            except Exception:
+                continue
+        if chosen is None:
+            chosen = script_dir / "HOM_MouseHumanSequence.rpt"
+        self.local_path = chosen.resolve()
+        logger.info(f"Using MGI ortholog file path: {self.local_path}")
         self.human_to_mouse_map = None
 
     def _download_file(self, force=False):
@@ -269,6 +294,8 @@ class OrthologMatcher:
 
         logger.info(f"Downloading MGI ortholog file from {self.file_url}...")
         try:
+            # Ensure directory exists
+            self.local_path.parent.mkdir(parents=True, exist_ok=True)
             with requests.get(self.file_url, stream=True) as r:
                 r.raise_for_status()
                 with open(self.local_path, 'wb') as f:
@@ -287,7 +314,8 @@ class OrthologMatcher:
         self.human_to_mouse_map = {}
         
         try:
-            with open(self.local_path, 'r') as f:
+            logger.info(f"Opening MGI ortholog file at: {self.local_path}")
+            with open(self.local_path, 'r', encoding='utf-8', errors='ignore') as f:
                 # This function defines the data lines, skipping the header.
                 def data_lines(f_handle):
                     next(f_handle) # Skip header line
@@ -315,8 +343,17 @@ class OrthologMatcher:
                     if human_symbol and mouse_symbol:
                         self.human_to_mouse_map[human_symbol.upper()] = mouse_symbol
 
+        except FileNotFoundError as e:
+            logger.error(f"❌ Ortholog file not found at {self.local_path}: {e}")
+            # Attempt a final fallback to CWD
+            fallback_path = (Path.cwd() / "HOM_MouseHumanSequence.rpt").resolve()
+            if fallback_path.exists():
+                logger.info(f"Retrying with fallback path: {fallback_path}")
+                self.local_path = fallback_path
+                return self._build_map()
+            raise
         except Exception as e:
-            logger.error(f"❌ Failed to parse MGI ortholog file: {e}")
+            logger.error(f"❌ Failed to parse MGI ortholog file at {self.local_path}: {e}")
             raise
 
         logger.info(f"✅ Built ortholog map with {len(self.human_to_mouse_map)} entries.")
@@ -408,13 +445,16 @@ def fetch_gene_context(gene_symbol: str) -> Dict[str, Any]:
 
 class HybridQTLSystem:
     """
-    Hybrid 2-layer QTL analysis system:
-    Layer 1: Vector store with embedded summary docs (~10k-20k docs)
+    Raw QTL Data Analysis System:
+    Layer 1: Vector store with ONLY original, unaltered QTL source data
     Layer 2: Relational store with raw rows for exact queries/analytics
     Layer 3: GWAS integration for human-mouse cross-species analysis
+    
+    This system stores and searches ONLY the original experimental data
+    without any summaries, interpretations, or external enrichments.
     """
     
-    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "phi3:mini", ollama_tool_model: str = "phi3:mini", **kwargs):
+    def __init__(self, csv_file_path: str, chroma_db_path: str = "./hybrid_chroma_db", ollama_url: str = "http://127.0.0.1:11434/api/generate", ollama_model: str = "qwen3:8b", ollama_tool_model: str = "qwen3:8b", ortholog_path: Optional[str] = None, **kwargs):
 
         self.csv_file = csv_file_path
         self.chroma_db_path = chroma_db_path
@@ -441,7 +481,7 @@ class HybridQTLSystem:
         if GWAS_AVAILABLE:
             # This client now manages its own data loading.
             self.gwas_client = GWASCatalogClient()
-            self.ortholog_matcher = OrthologMatcher()
+            self.ortholog_matcher = OrthologMatcher(local_path=ortholog_path)
         
         # Initialize Ensembl API client
         self.ensembl_client = None
@@ -605,167 +645,84 @@ class HybridQTLSystem:
     
     def generate_all_document_types(self) -> List[Dict[str, Any]]:
         """
-        Generate all document types for a hybrid RAG strategy:
-        1. Enriched Gene Summaries (with external biological context)
-        2. Chromosome Summaries
-        3. LOD Score Tier Summaries
-        4. Per-Peak Granular Documents
+        Generate documents containing ONLY original, unaltered QTL source data.
+        No summaries, interpretations, or external enrichments are included.
         """
         all_docs = []
         
-        # NEW: Fetch all gene contexts in one efficient batch operation
-        logger.info("Pre-fetching all gene contexts in batches for efficiency...")
-        gene_context_map = self._fetch_all_gene_contexts_batch()
+        # ONLY PER-PEAK RAW DATA DOCUMENTS (no gene summaries)
+        logger.info(f"Generating raw QTL peak documents for all {len(self.raw_data)} records...")
         
-        # 1. GENE-LEVEL SUMMARIES (ENRICHED)
-        logger.info("Generating enriched gene-level summaries...")
-        gene_groups = self.raw_data.groupby('gene_symbol')
-        
-        for gene_symbol, gene_data in gene_groups:
-            if pd.isna(gene_symbol) or gene_symbol == 'nan':
-                continue
-                
-            qtl_count = len(gene_data)
-            max_lod = gene_data['qtl_lod'].max()
-            chromosomes = gene_data['qtl_chr'].unique().tolist()
-            cis_count = (gene_data['cis'] == 'TRUE').sum()
-            trans_count = qtl_count - cis_count
-            
-            # Use the pre-fetched context instead of calling the API one-by-one
-            context = gene_context_map.get(gene_symbol, {})
-            
-            summary_text = f"""
-            Gene Summary for {gene_symbol} (Full Name: {context.get('name', 'N/A')})
-            Function: {context.get('summary', 'No summary available.')}
-            QTL Profile: This gene has {qtl_count} QTL peaks with a maximum LOD score of {max_lod:.2f}. 
-            Genetic regulation appears to be primarily {'local (cis)' if cis_count > trans_count else 'distant (trans)'}.
-            Biological Pathways (KEGG): {', '.join(context.get('kegg_pathways', ['N/A']))}
-            Gene Ontology (Biological Process): {', '.join(context.get('go_terms_bp', ['N/A'])[:5])}
-            """
-            
-            all_docs.append({
-                'id': f'gene_{gene_symbol}',
-                'content': summary_text.strip(),
-                'metadata': {
-                    'type': 'gene_summary',
-                    'gene_symbol': gene_symbol,
-                    'max_lod': float(max_lod),
-                    'qtl_count': int(qtl_count),
-                    'pathways': json.dumps(context.get('kegg_pathways', [])),
-                    'go_terms': json.dumps(context.get('go_terms_bp', []))
-                }
-            })
-
-        # 2. CHROMOSOME-LEVEL SUMMARIES
-        logger.info("Generating chromosome-level summaries...")
-        chr_groups = self.raw_data.groupby('qtl_chr')
-        
-        for chr_name, chr_data in chr_groups:
-            qtl_count = len(chr_data)
-            unique_genes = chr_data['gene_symbol'].nunique()
-            max_lod = chr_data['qtl_lod'].max()
-            top_genes = chr_data.nlargest(5, 'qtl_lod')['gene_symbol'].tolist()
-            
-            summary_text = f"""
-            Chromosome {chr_name} Summary: This chromosome contains {qtl_count} significant QTL peaks affecting {unique_genes} unique genes.
-            The maximum LOD score is {max_lod:.2f}. The most strongly associated genes include {', '.join(map(str, top_genes[:3]))}.
-            This indicates {'high' if qtl_count > 1000 else 'moderate'} regulatory activity across the chromosome.
-            """
-            
-            all_docs.append({
-                'id': f'chr_{chr_name}',
-                'content': summary_text.strip(),
-                'metadata': {
-                    'type': 'chromosome_summary',
-                    'chromosome': str(chr_name),
-                    'qtl_count': int(qtl_count),
-                    'unique_genes': int(unique_genes),
-                    'max_lod': float(max_lod),
-                    'top_genes': ', '.join(map(str, top_genes))
-                }
-            })
-
-        # 3. LOD SCORE TIER SUMMARIES
-        logger.info("Generating significance tier summaries...")
-        lod_tiers = [(100, 'extremely_high'), (50, 'very_high'), (20, 'high')]
-        
-        for min_lod, tier_name in lod_tiers:
-            tier_data = self.raw_data[self.raw_data['qtl_lod'] >= min_lod]
-            if len(tier_data) == 0: continue
-            
-            qtl_count = len(tier_data)
-            unique_genes = tier_data['gene_symbol'].nunique()
-            
-            summary_text = f"""
-            Significance Tier Summary ({tier_name}, LOD > {min_lod}):
-            There are {qtl_count} QTLs with {tier_name.replace('_', ' ')} evidence of association, affecting {unique_genes} genes.
-            These peaks represent the highest-confidence genetic signals in the dataset, suitable for detailed validation studies.
-            """
-            
-            all_docs.append({
-                'id': f'lod_tier_{tier_name}',
-                'content': summary_text.strip(),
-                'metadata': {
-                    'type': 'significance_summary',
-                    'min_lod': min_lod, 
-                    'qtl_count': qtl_count
-                }
-            })
-
-        # 4. PER-PEAK GRANULAR DOCUMENTS
-        logger.info(f"Generating per-peak document for all {len(self.raw_data)} records...")
         for index, row in self.raw_data.iterrows():
-            content = (
-                f"A quantitative trait locus (QTL) for the phenotype '{row.get('phenotype', 'N/A')}' "
-                f"was identified on chromosome {row['qtl_chr']} at position {row['qtl_pos']:.2f} Mb. "
-                f"It has a LOD score of {row['qtl_lod']:.2f}. "
-                f"This QTL is associated with the gene '{row['gene_symbol']}' and is a {'cis-acting' if row.get('cis') == 'TRUE' else 'trans-acting'} regulator."
-            )
-            
+            # Create document ID using original data identifiers
             doc_id = f"peak_{index}_{row['gene_symbol']}_{row['qtl_chr']}_{row['qtl_pos']}"
+            
+            # Store ONLY the original raw data values as structured content
+            # No narrative text, no interpretations, no external enrichments
+            raw_data_content = {
+                'gene_symbol': str(row['gene_symbol']) if pd.notna(row['gene_symbol']) else 'N/A',
+                'gene_id': str(row.get('gene_id', 'N/A')) if pd.notna(row.get('gene_id')) else 'N/A',
+                'qtl_chr': str(row['qtl_chr']) if pd.notna(row['qtl_chr']) else 'N/A',
+                'qtl_pos': float(row['qtl_pos']) if pd.notna(row['qtl_pos']) else 0.0,
+                'qtl_lod': float(row['qtl_lod']) if pd.notna(row['qtl_lod']) else 0.0,
+                'cis': str(row.get('cis', 'N/A')) if pd.notna(row.get('cis')) else 'N/A',
+                'phenotype': str(row.get('phenotype', 'N/A')) if pd.notna(row.get('phenotype')) else 'N/A'
+            }
+            
+            # Convert to JSON string for vector storage (preserves exact original values)
+            content = json.dumps(raw_data_content, sort_keys=True)
             
             all_docs.append({
                 'id': doc_id,
                 'content': content,
                 'metadata': {
-                    'type': 'qtl_peak',
-                    'gene_symbol': row['gene_symbol'],
-                    'phenotype': row.get('phenotype', 'N/A'),
-                    'chromosome': str(row['qtl_chr']),
-                    'position_mb': float(row['qtl_pos']),
-                    'lod_score': float(row['qtl_lod']),
-                    'cis': True if row.get('cis') == 'TRUE' else False,
-                    'gene_id': row.get('gene_id', 'N/A')
+                    'type': 'raw_qtl_peak',
+                    'gene_symbol': raw_data_content['gene_symbol'],
+                    'gene_id': raw_data_content['gene_id'],
+                    'chromosome': raw_data_content['qtl_chr'],
+                    'position_mb': raw_data_content['qtl_pos'],
+                    'lod_score': raw_data_content['qtl_lod'],
+                    'cis': raw_data_content['cis'],
+                    'phenotype': raw_data_content['phenotype'],
+                    'source_row_index': int(index)
                 }
             })
             
         self.summary_docs = all_docs
-        logger.info(f"✅ Generated a total of {len(all_docs)} documents of all types")
+        logger.info(f"✅ Generated {len(all_docs)} raw QTL data documents (no summaries or enrichments)")
         return all_docs
     
     def setup_vector_store(self, use_google_embeddings: bool = True):
-        """Setup ChromaDB vector store with all document types."""
+        """Setup ChromaDB vector store with ONLY original QTL source data."""
         try:
-            self.chroma_client = chromadb.PersistentClient(
-                path=self.chroma_db_path,
-                settings=Settings(anonymized_telemetry=False)
-            )
+            # Use local on-disk Chroma client (no server / host required)
+            try:
+                self.chroma_client = chromadb.PersistentClient(path=self.chroma_db_path)
+            except Exception as e:
+                msg = str(e)
+                if "http-only client mode" in msg or "chroma_api_impl" in msg:
+                    raise RuntimeError(
+                        "Chroma is in HTTP-only client mode. For in-process PersistentClient, uninstall 'chromadb-client' "
+                        "and install the full 'chromadb' package.\n"
+                        "Run: python3 -m pip uninstall -y chromadb-client && python3 -m pip install -U chromadb"
+                    ) from e
+                raise
             
-            collection_name = "qtl_hybrid_store"
+            collection_name = "qtl_raw_data_store"
             self.vector_collection = self.chroma_client.get_or_create_collection(
                 name=collection_name,
-                metadata={"description": "Hybrid store with summaries and per-peak documents"}
+                metadata={"description": "Vector store containing ONLY original, unaltered QTL source data"}
             )
             logger.info(f"✅ Ensured collection '{collection_name}' exists.")
 
             if self.vector_collection.count() > 0:
-                logger.info(f"Collection already contains {self.vector_collection.count()} documents. Skipping population.")
+                logger.info(f"Collection already contains {self.vector_collection.count()} raw QTL documents. Skipping population.")
                 return
 
-            logger.info("Collection is empty. Generating documents and populating vector store...")
+            logger.info("Collection is empty. Generating raw QTL data documents and populating vector store...")
             self.generate_all_document_types()
             
-            logger.info(f"Adding {len(self.summary_docs)} documents to vector store...")
+            logger.info(f"Adding {len(self.summary_docs)} raw QTL data documents to vector store...")
             
             ids = [doc['id'] for doc in self.summary_docs]
             documents = [doc['content'] for doc in self.summary_docs]
@@ -822,8 +779,8 @@ class HybridQTLSystem:
     
     def semantic_search(self, query: str, n_results: int = 5, where_filter: Optional[Dict] = None) -> List[Dict]:
         """
-        Layer 1: Semantic search on all document types.
-        Can be filtered by document type (e.g., 'gene_summary', 'qtl_peak').
+        Layer 1: Semantic search on raw QTL data documents.
+        Can be filtered by metadata fields (e.g., 'gene_symbol', 'chromosome', 'cis').
         """
         if not self.vector_collection:
             raise ValueError("Vector store not initialized. Call setup_vector_store() first.")
@@ -1096,6 +1053,19 @@ class HybridQTLSystem:
                     },
                 ),
                 FunctionDeclaration(
+                    name="query_ensembl_api",
+                    description="Query Ensembl's REST API for genomic data (gene info, orthologs, variants, gene function). Use this for questions about gene annotations, variants, orthologs, or detailed genomic information from Ensembl.",
+                    parameters={
+                        "type": "OBJECT",
+                        "properties": {
+                            "gene_symbol": {"type": "STRING", "description": "Gene symbol to query (e.g., 'Apoe', 'Gnai3')"},
+                            "query_type": {"type": "STRING", "description": "Type of query: 'gene_info', 'variants', 'orthologs', 'gene_function'"},
+                            "species": {"type": "STRING", "description": "Species identifier (default: mus_musculus, can be homo_sapiens for human)"}
+                        },
+                        "required": ["gene_symbol", "query_type"],
+                    },
+                ),
+                FunctionDeclaration(
                     name="semantic_search",
                     description="Use for broad, conceptual, or vague questions that are not about a specific gene or chromosome, or that involve biological concepts like pathways or functions. This is the fallback tool.",
                     parameters={
@@ -1166,7 +1136,7 @@ class HybridQTLSystem:
                     "stream": False,
                     "format": "json"  # Request JSON output
                 },
-                timeout=300
+                timeout=60
             )
             response.raise_for_status()
             data = response.json()
@@ -1199,8 +1169,7 @@ class HybridQTLSystem:
         # 1. Build the prompt for the LLM
         tools_json_str = self._format_tools_for_prompt()
         system_prompt = f"""
-You are an expert at routing user questions to the correct tool for a bioinformatics QTL database.
-Your goal is to choose the single best tool to answer the user's question based on the tool descriptions and return ONLY the corresponding JSON object.
+You route bioinformatics QTL database queries to the best tool. Return ONLY: {{"tool_name": "...", "arguments": {{...}} }}
 
 **DATABASE CONTEXT:**
 - The database contains Quantitative Trait Loci (QTL) data.
@@ -1222,21 +1191,28 @@ Your goal is to choose the single best tool to answer the user's question based 
     - For comprehensive gene analysis with Ensemble API data (variants, detailed annotations), use `get_enhanced_gene_details`.
     - For cross-species analysis (human orthologs, comparative studies), use `get_cross_species_gene_info`.
 5.  **Ensembl API Integration:**
+    - Use `query_ensembl_api` for genomic data queries: gene sequences, variants, orthologs, phenotypes, regulatory elements
+    - For "transcript isoforms" or "transcripts" use `query_ensembl_api` with query_type='transcripts' (gets transcript data)
+    - For "variants" or "genetic variations" use `query_ensembl_api` with query_type='variants'
+    - For "orthologs" or "cross-species" use `query_ensembl_api` with query_type='orthologs'
+    - For "gene function" or "GO terms" use `query_ensembl_api` with query_type='gene_info' (includes gene function data)
+    - For "DNA sequence" or "nucleotide sequence" use `query_ensembl_api` with query_type='sequence'
+    - For "phenotype associations" or "disease associations" use `query_ensembl_api` with query_type='phenotype'
+    - For "regulatory elements" or "binding sites" use `query_ensembl_api` with query_type='regulation'
     - Use `get_enhanced_gene_details` when users ask for "Ensembl data", "variants", or "comprehensive" gene information.
     - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
 6.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
 7.  If it is a broad biological concept queries use 'semantic_search'
 8.  Default to `semantic_search` if no tool fits.
 
-**Available Tools:**
-{tools_json_str}
+**Tools:** {tools_json_str}
 """
         
         user_prompt = f"""
 **User Query:**
 "{query}"
 
-**Your JSON response:**
+**Your JSON response (be concise):**
 """
 
         # 2. Call Ollama to get the tool choice
@@ -1310,7 +1286,7 @@ Your goal is to choose the single best tool to answer the user's question based 
                     "prompt": prompt,
                     "stream": False
                 },
-                timeout=300
+                timeout=60
             )
 
             response.raise_for_status()
@@ -1368,6 +1344,12 @@ You are a specialized bioinformatics research assistant. Your task is to provide
     - If the context is from a semantic search, summarize the information accurately.
 4.  **Cite Sources:** If helpful, you can briefly mention the source of the information (e.g., "from the gene summary" or "from the analytical query").
 5.  **Handle Missing Information:** If the context does not contain the answer, you MUST state that clearly (e.g., "The database does not contain information about..."). Do not invent answers.
+6.  **RESPONSE STYLE:**
+    - Be extremely concise and direct
+    - Use bullet points when possible
+    - Avoid verbose explanations
+    - Focus on key facts only
+    - Keep responses under 3 sentences when possible
 
 **User's Question:** "{query}"
 
@@ -1398,13 +1380,13 @@ Based *only* on the context above, provide your concise and direct answer.
         return search_results
 
     def save_summary_docs(self, output_file: str):
-        """Save generated summary documents to JSON."""
+        """Save generated raw QTL data documents to JSON."""
         if not self.summary_docs:
             self.generate_all_document_types()
         
         with open(output_file, 'w') as f:
             json.dump(self.summary_docs, f, indent=2, default=str)
-        logger.info(f"✅ Saved {len(self.summary_docs)} summary docs to {output_file}")
+        logger.info(f"✅ Saved {len(self.summary_docs)} raw QTL data documents to {output_file}")
 
     def get_gwas_genes_for_trait_class(self, trait_class: str, p_value_threshold: float = 5e-8) -> Set[str]:
         """
@@ -1814,9 +1796,9 @@ Based *only* on the context above, provide your concise and direct answer.
             logger.info("🔬 Testing Ensembl API connection...")
             
             # First test basic API connectivity
-            info_url = f"{self.base_url}/info/species"
+            info_url = f"{self.ensembl_client.base_url}/info/species"
             logger.info(f"🔍 Testing basic API connectivity: {info_url}")
-            response = requests.get(info_url, headers=self.headers)
+            response = requests.get(info_url, headers=self.ensembl_client.headers)
             
             if response.status_code != 200:
                 logger.error(f"❌ Basic API connectivity failed: {response.status_code}")
@@ -1832,17 +1814,17 @@ Based *only* on the context above, provide your concise and direct answer.
                 
                 # Try different endpoints using correct API
                 endpoints = [
-                    f"{self.base_url}/lookup/symbol/mus_musculus/{gene}",
-                    f"{self.base_url}/xrefs/symbol/mus_musculus/{gene}"
+                    f"{self.ensembl_client.base_url}/lookup/symbol/mus_musculus/{gene}",
+                    f"{self.ensembl_client.base_url}/xrefs/symbol/mus_musculus/{gene}"
                 ]
                 
                 for endpoint in endpoints:
                     logger.debug(f"🔍 Trying endpoint: {endpoint}")
-                    response = requests.get(endpoint, headers=self.headers)
+                    response = requests.get(endpoint, headers=self.ensembl_client.headers)
                     
                     if response.status_code == 200:
                         data = response.json()
-                        if data:
+                        if response.status_code == 200:
                             logger.info(f"✅ Successfully found {gene} via {endpoint}")
                             logger.debug(f"Gene info: {data}")
                             return True
@@ -1855,6 +1837,44 @@ Based *only* on the context above, provide your concise and direct answer.
         except Exception as e:
             logger.error(f"❌ Ensembl API connection test failed: {e}")
             return False
+
+    def test_ensembl_api_tool(self) -> Dict[str, Any]:
+        """
+        Test the new Ensembl API tool functionality.
+        
+        Returns:
+            Dictionary with test results
+        """
+        logger.info("🧪 Testing Ensembl API tool functionality...")
+        
+        test_results = {}
+        
+        if not self.ensembl_client:
+            return {"error": "Ensembl client not available"}
+        
+        # Test different query types
+        test_cases = [
+            {"gene": "Apoe", "query_type": "gene_info", "species": "mus_musculus"},
+            {"gene": "Gnai3", "query_type": "variants", "species": "mus_musculus"},
+            {"gene": "Actb", "query_type": "orthologs", "species": "mus_musculus"},
+            {"gene": "Gapdh", "query_type": "gene_function", "species": "mus_musculus"}
+        ]
+        
+        for test_case in test_cases:
+            logger.info(f"🔬 Testing: {test_case['gene']} - {test_case['query_type']}")
+            try:
+                result = self.query_ensembl_api(
+                    test_case['gene'], 
+                    test_case['query_type'], 
+                    test_case['species']
+                )
+                test_results[f"{test_case['gene']}_{test_case['query_type']}"] = result
+                logger.info(f"✅ {test_case['gene']} {test_case['query_type']}: {'Success' if 'error' not in result else 'Failed'}")
+            except Exception as e:
+                test_results[f"{test_case['gene']}_{test_case['query_type']}"] = {"error": str(e)}
+                logger.error(f"❌ {test_case['gene']} {test_case['query_type']}: {e}")
+        
+        return test_results
     
     def get_available_ensembl_genes(self, limit: int = 10) -> List[str]:
         """
@@ -1928,6 +1948,169 @@ Based *only* on the context above, provide your concise and direct answer.
             'qtl_matches': qtl_matches['gene_symbol_normalized'].tolist() if len(qtl_matches) > 0 else []
         }
 
+    def query_ensembl_api(self, gene_symbol: str, query_type: str, species: str = "mus_musculus") -> Dict[str, Any]:
+        """
+        Query Ensembl's REST API for genomic data using the correct, working endpoints.
+        
+        Args:
+            gene_symbol: Gene symbol to query
+            query_type: Type of query ('gene_info', 'variants', 'orthologs', 'transcripts', 'sequence', 'phenotype', 'regulation')
+            species: Species identifier (default: mus_musculus)
+        
+        Returns:
+            Dictionary with Ensembl API results
+        """
+        try:
+            logger.info(f"🔬 Querying Ensembl API for {gene_symbol} ({query_type}) in {species}")
+            
+            # Use the correct, working Ensembl REST API endpoints
+            if query_type == "gene_info":
+                # Basic gene information - use the working endpoint
+                result = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                
+            elif query_type == "variants":
+                # Get gene info first, then variants
+                gene_info = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                if gene_info and 'id' in gene_info:
+                    gene_id = gene_info['id']
+                    result = self._call_ensembl_endpoint(f"/overlap/id/{gene_id}?feature=variation")
+                    # Filter for variation features
+                    if isinstance(result, list):
+                        result = [v for v in result if v.get('feature_type') == 'variation']
+                else:
+                    result = None
+                    
+            elif query_type == "orthologs":
+                # Get gene info first, then orthologs
+                gene_info = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                if gene_info and 'id' in gene_info:
+                    gene_id = gene_info['id']
+                    # Use homology endpoint for orthologs
+                    result = self._call_ensembl_endpoint(f"/homology/id/{gene_id}?target_species=homo_sapiens")
+                else:
+                    result = None
+                    
+            elif query_type == "transcripts":
+                # Get gene info first, then transcripts
+                gene_info = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                if gene_info and 'id' in gene_info:
+                    gene_id = gene_info['id']
+                    result = self._call_ensembl_endpoint(f"/overlap/id/{gene_id}?feature=transcript")
+                    # Filter for transcript features
+                    if isinstance(result, list):
+                        result = [t for t in result if t.get('feature_type') == 'transcript']
+                else:
+                    result = None
+                    
+            elif query_type == "sequence":
+                # Get gene info first, then sequence
+                gene_info = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                if gene_info and 'id' in gene_info:
+                    gene_id = gene_info['id']
+                    result = self._call_ensembl_endpoint(f"/sequence/id/{gene_id}")
+                else:
+                    result = None
+                    
+            elif query_type == "phenotype":
+                # Direct phenotype endpoint
+                result = self._call_ensembl_endpoint(f"/phenotype/gene/{species}/{gene_symbol}")
+                
+            elif query_type == "regulation":
+                # Get gene info first, then regulatory elements
+                gene_info = self._call_ensembl_endpoint(f"/lookup/symbol/{species}/{gene_symbol}")
+                if gene_info and 'id' in gene_info:
+                    gene_id = gene_info['id']
+                    result = self._call_ensembl_endpoint(f"/overlap/id/{gene_id}?feature=regulatory")
+                else:
+                    result = None
+                    
+            else:
+                return {"error": f"Unknown query type: {query_type}. Use: gene_info, variants, orthologs, transcripts, sequence, phenotype, or regulation"}
+            
+            # Check if we got valid results
+            if not result:
+                return {
+                    "gene_symbol": gene_symbol,
+                    "query_type": query_type,
+                    "species": species,
+                    "result": None,
+                    "warning": "No data returned from Ensembl API"
+                }
+            
+            # Print the raw Ensembl API response for transparency
+            print(f"\n🔬 ENSEMBL API RESPONSE for {gene_symbol} ({query_type}):")
+            print("=" * 60)
+            print(f"Query: {query_type} for {gene_symbol} in {species}")
+            print(f"Result type: {type(result).__name__}")
+            
+            if isinstance(result, dict):
+                print(f"Data fields: {list(result.keys())}")
+                # Show key data points
+                for key, value in result.items():
+                    if key in ['id', 'display_name', 'seq_region_name', 'start', 'end', 'strand']:
+                        print(f"  {key}: {value}")
+                    elif key == 'description' and isinstance(value, list) and len(value) > 0:
+                        print(f"  {key}: {len(value)} description entries")
+                    elif isinstance(value, list) and len(value) > 0:
+                        print(f"  {key}: {len(value)} items")
+                    elif isinstance(value, dict):
+                        print(f"  {key}: {len(value)} sub-fields")
+            elif isinstance(result, list):
+                print(f"Result count: {len(result)}")
+                if len(result) > 0:
+                    print(f"First item keys: {list(result[0].keys()) if isinstance(result[0], dict) else 'N/A'}")
+            
+            print("=" * 60)
+            
+            return {
+                "gene_symbol": gene_symbol,
+                "query_type": query_type,
+                "species": species,
+                "result": result,
+                "endpoint_used": self._get_endpoint_info(query_type, gene_symbol, species)
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Ensembl API query failed: {e}")
+            return {"error": str(e)}
+    
+    def _call_ensembl_endpoint(self, endpoint: str) -> Any:
+        """Make a direct call to an Ensembl REST API endpoint."""
+        try:
+            base_url = "https://rest.ensembl.org"
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+            
+            url = f"{base_url}{endpoint}"
+            logger.debug(f"🔍 Calling Ensembl endpoint: {url}")
+            
+            response = requests.get(url, headers=headers, timeout=30)
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                logger.warning(f"⚠️ Ensembl API call failed: {response.status_code} for {endpoint}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"❌ Error calling Ensembl endpoint {endpoint}: {e}")
+            return None
+    
+    def _get_endpoint_info(self, query_type: str, gene_symbol: str, species: str) -> str:
+        """Get information about which Ensembl endpoint was used."""
+        endpoint_map = {
+            "gene_info": f"/lookup/symbol/{species}/{gene_symbol}",
+            "variants": f"/overlap/id/{{gene_id}}?feature=variation",
+            "orthologs": f"/homology/id/{{gene_id}}?target_species=homo_sapiens",
+            "transcripts": f"/overlap/id/{{gene_id}}?feature=transcript",
+            "sequence": f"/sequence/id/{{gene_id}}",
+            "phenotype": f"/phenotype/gene/{species}/{gene_symbol}",
+            "regulation": f"/overlap/id/{{gene_id}}?feature=regulatory"
+        }
+        return endpoint_map.get(query_type, "Unknown endpoint")
+
     def test_gene_matching(self):
         """
         Test gene matching between orthologs and QTL database to identify the issue.
@@ -1970,56 +2153,53 @@ Based *only* on the context above, provide your concise and direct answer.
 # Example usage and testing
 if __name__ == "__main__":
     system = HybridQTLSystem("/data/dev/miniViewer_3.0/DO1200_liver_genes_all_mice_additive_peaks.csv")
-    print("Setting up hybrid system with both summary and granular documents...")
+    print("Setting up system with ONLY original QTL source data...")
     system.setup_vector_store(use_google_embeddings=False)
     
-    print(f"\n✅ Hybrid QTL System Ready!")
-    print(f"📊 Layer 1: {system.vector_collection.count()} total documents in vector store")
+    print(f"\n✅ Raw QTL Data System Ready!")
+    print(f"📊 Layer 1: {system.vector_collection.count()} raw QTL documents in vector store")
     print(f"🗃️ Layer 2: {len(system.raw_data)} raw QTL records in DuckDB")
     
     print("\n" + "="*50)
-    print("DEMO 1: Broad, conceptual query (answered by Gene Summary)")
+    print("DEMO 1: Search for specific gene data")
     print("="*50)
     results = system.semantic_search(
-        "Tell me about the biological function of the gene Gnai3",
-        n_results=1,
-        where_filter={"type": {"$eq": "gene_summary"}}
+        "Find QTL data for gene Gnai3",
+        n_results=3,
+        where_filter={"gene_symbol": {"$eq": "Gnai3"}}
     )
     for result in results:
         print(f"Found Doc ID: {result['id']} (Distance: {result['distance']:.4f})")
-        print(f"Content: {result['content']}")
+        print(f"Raw Data: {result['content']}")
     
     print("\n" + "="*50)
-    print("DEMO 2: Chromosome-level query (answered by Chromosome Summary)")
+    print("DEMO 2: Search by chromosome")
     print("="*50)
     results = system.semantic_search(
-        "What biological pathways are most affected by QTLs on chromosome 2?",
-        n_results=1,
-        where_filter={"$and": [
-            {"type": {"$eq": "chromosome_summary"}},
-            {"chromosome": {"$eq": "2"}}
-        ]}
+        "Find QTLs on chromosome 2",
+        n_results=3,
+        where_filter={"chromosome": {"$eq": "2"}}
     )
     for result in results:
-        print(f"Found Doc ID: {result['id']} (Distance: {result['distance']:.4f})")
-        print(f"Content: {result['content']}")
+        meta = result['metadata']
+        print(f"Found Peak on Chr {meta['chromosome']} at {meta['position_mb']:.2f} Mb (LOD: {meta['lod_score']:.2f})")
+        print(f"  Raw Data: {result['content']}")
 
     print("\n" + "="*50)
-    print("DEMO 3: Granular, specific query (answered by QTL Peak documents)")
+    print("DEMO 3: Search for cis-QTLs")
     print("="*50)
     results = system.semantic_search(
-        "Find specific cis-QTLs for the gene Apoe",
+        "Find cis-QTLs for gene Apoe",
         n_results=3,
         where_filter={"$and": [
-            {"type": {"$eq": "qtl_peak"}},
             {"gene_symbol": {"$eq": "Apoe"}},
-            {"cis": {"$eq": True}}
+            {"cis": {"$eq": "TRUE"}}
         ]}
     )
     for result in results:
         meta = result['metadata']
         print(f"Found Peak on Chr {meta['chromosome']} at {meta['position_mb']:.2f} Mb (LOD: {meta['lod_score']:.2f})")
-        print(f"  Content: {result['content']}")
+        print(f"  Raw Data: {result['content']}")
 
     print("\n" + "="*50)
     print("DEMO 4: Analytical Query (Layer 2)")
@@ -2028,7 +2208,29 @@ if __name__ == "__main__":
     print("Top 5 genes by maximum LOD score:")
     print(top_genes.to_string(index=False))
     
-    system.save_summary_docs("qtl_hybrid_docs.json")
+    print("\n" + "="*50)
+    print("DEMO 5: Testing Ensembl API Tool")
+    print("="*50)
+    if system.ensembl_client:
+        print("Testing Ensembl API tool functionality...")
+        test_results = system.test_ensembl_api_tool()
+        print("Ensembl API Tool Test Results:")
+        for test_name, result in test_results.items():
+            if 'error' in result:
+                print(f"  ❌ {test_name}: {result['error']}")
+            else:
+                print(f"  ✅ {test_name}: Success")
+                # Show a snippet of the result
+                if 'result' in result and result['result']:
+                    if isinstance(result['result'], dict):
+                        keys = list(result['result'].keys())[:3]
+                        print(f"    Data keys: {keys}")
+                    elif isinstance(result['result'], list):
+                        print(f"    Result count: {len(result['result'])}")
+    else:
+        print("⚠️ Ensembl client not available")
     
-    print(f"\n🎉 Hybrid system demonstration complete!")
-    print(f"💡 Use semantic_search() for conceptual queries and analytical_query() for exact analysis.") 
+    system.save_summary_docs("qtl_raw_data_docs.json")
+    
+    print(f"\n🎉 Raw QTL data system demonstration complete!")
+    print(f"💡 Use semantic_search() for raw data queries, analytical_query() for exact analysis, and query_ensembl_api() for genomic data.") 

@@ -350,8 +350,6 @@ def query_gwas_api(endpoint: str, method: str = "GET", params: dict = None) -> d
     try:
         if method.upper() == "GET":
             resp = requests.get(url, params=params, headers=headers, timeout=60)
-        elif method.upper() == "POST":
-            resp = requests.post(url, params=params, headers=headers, timeout=60)
         else:
             return {"error": f"Unsupported HTTP method: {method}"}
 

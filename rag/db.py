@@ -1,3 +1,6 @@
+#create new column that says phenotype for all gene sybols, liver lipids, etc
+#want addcovar and intcovar
+#want qtl lod, gene_ID(if there), cis, ABCDEFGH, phnenotype_class, numb_mice, gene_chr, qtl_chr, gene_type, human_hom_gene_symbol, marker 
 import argparse
 import os
 import re

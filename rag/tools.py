@@ -1,5 +1,7 @@
 #TOOLS
 #from db import connector
+
+
 try:
     from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local
 except ImportError:  # fallback when running inside rag/ directly
@@ -9,51 +11,9 @@ from typing import Dict, Any, List
 from functools import lru_cache
 from typing import Tuple, Optional
 import os
-import requests
-from collections import defaultdict
 import pandas as pd
-from datetime import datetime
+import requests
 
-def _resolve_mgi_path(default_filename: str = "HOM_MouseHumanSequence.rpt") -> Path:
-    """Resolve the path to the MGI ortholog report with robust fallbacks.
-
-    Order of precedence:
-    1) MGI_ORTHOLOG_PATH environment variable (absolute or relative)
-    2) Project root (parent of this file's directory) joined with default filename
-    3) This file's directory (rag/) joined with default filename
-    4) Current working directory joined with default filename
-    """
-    env_path = os.getenv("MGI_ORTHOLOG_PATH")
-    if env_path:
-        p = Path(env_path).expanduser()
-        if p.exists():
-            return p.resolve()
-
-    script_dir = Path(__file__).parent.resolve()
-    project_root = script_dir.parent
-    candidate_root = (project_root / default_filename)
-    if candidate_root.exists():
-        return candidate_root.resolve()
-
-    candidate_script = (script_dir / default_filename)
-    if candidate_script.exists():
-        return candidate_script.resolve()
-
-    candidate_cwd = (Path.cwd() / default_filename)
-    if candidate_cwd.exists():
-        return candidate_cwd.resolve()
-
-    # None found: raise a clear error listing tried locations
-    tried = [
-        env_path or "<MGI_ORTHOLOG_PATH unset>",
-        str(candidate_root),
-        str(candidate_script),
-        str(candidate_cwd),
-    ]
-    raise FileNotFoundError(
-        "HOM_MouseHumanSequence.rpt not found. Set MGI_ORTHOLOG_PATH or place the file in one of: "
-        + "; ".join(tried)
-    )
 
 
 def add_numbers(num1: int, num2: int):
@@ -74,7 +34,7 @@ def convert_mouse_to_human_gene(gene_symbol: str):
     HomoloGene ID. The search is case-insensitive. It correctly handles cases
     where one mouse gene maps to multiple human homologs.
     """
-    mapping_path = _resolve_mgi_path()
+    mapping_path = Path("/home/syandell@ad.wisc.edu/research-bot/HOM_MouseHumanSequence.rpt")
     # read only cols we care about
     df = pd.read_csv(
         str(mapping_path),
@@ -131,7 +91,7 @@ def convert_mouse_to_human_ortholog_info(gene_symbol: str):
     on the GRCh38 assembly. The search is case-insensitive and handles
     one-to-many mappings.
     """
-    mapping_path = _resolve_mgi_path()
+    mapping_path = Path("/home/syandell@ad.wisc.edu/research-bot/HOM_MouseHumanSequence.rpt")
     
     # 1) Read only the columns we need
     df = pd.read_csv(
@@ -538,6 +498,9 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: str = "mus_mus
     Returns:
         JSON response from Ensembl API with source attribution
     """
+    # Lazy imports to satisfy linter/runtime without hard global deps
+    import requests
+    from datetime import datetime
     base_url = "https://rest.ensembl.org"
     headers = {"Content-Type": "application/json"}
     
@@ -668,41 +631,50 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: str = "mus_mus
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
 
-def query_gwas_api(endpoint: str, method: str = "GET", params: dict = None) -> dict:
+
+def query_gwas_api (association_id: str) -> dict:
     """
-    Query the GWAS Catalog REST API and return raw results.
-    
+    Retrieve a single association from the NHGRI-EBI GWAS Catalog.
+
+    Uses the documented endpoint: /gwas/rest/api/associations/{association_id}
+
     Args:
-        endpoint: API endpoint (e.g., "/associations", "/genes", "/studies", "/traits")
-        method: HTTP method ("GET" or "POST")
-        params: Query parameters
-    
+        association_id: The GWAS Catalog association id (e.g., "16510553").
+
     Returns:
-        Raw API response data
+        JSON payload from the GWAS Catalog API or a dict with an "error" key on failure.
     """
+    import requests
+
+    association_id_str = str(association_id).strip()
+    if not association_id_str:
+        return {"error": "association_id is required"}
+
     base_url = "https://www.ebi.ac.uk/gwas/rest/api"
-    
-    # Build the full URL
-    url = f"{base_url}{endpoint}"
-    
+    url = f"{base_url}/associations/{association_id_str}"
     headers = {"Accept": "application/json"}
-    
+
     try:
-        if method.upper() == "GET":
-            resp = requests.get(url, params=params, headers=headers, timeout=60)
-        else:
-            return {"error": f"Unsupported HTTP method: {method}"}
-
+        resp = requests.get(url, headers=headers, timeout=60)
         if resp.status_code != 200:
-            return {"error": f"GWAS Catalog API returned {resp.status_code}", "details": resp.text}
-
-        # Return JSON response directly
-        return resp.json()
-        
+            return {
+                "error": f"GWAS Catalog API returned {resp.status_code}",
+                "details": resp.text,
+                "url": url,
+            }
+        data = resp.json()
+        # Attach minimal provenance for downstream consumers
+        if isinstance(data, dict):
+            data.setdefault("_query_info", {})
+            data["_query_info"].update({
+                "association_id": association_id_str,
+                "endpoint": "/associations/{association_id}",
+            })
+        return data
     except requests.RequestException as e:
-        return {"error": "Failed to connect to GWAS Catalog API", "details": str(e)}
+        return {"error": "Failed to connect to GWAS Catalog API", "details": str(e), "url": url}
     except Exception as e:
-        return {"error": f"Unexpected error: {str(e)}"}
+        return {"error": f"Unexpected error: {str(e)}", "url": url}
 
 # Update your tool registry:
 tool_dict = {

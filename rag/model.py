@@ -4,6 +4,13 @@ from data_types import Message
 from typing import List
 from ollama import Client
 
+try:
+    from ollama import chat, ChatResponse  # type: ignore
+    _OLLAMA_AVAILABLE = True
+except Exception:
+    chat = None  # type: ignore
+    ChatResponse = dict  # type: ignore
+    _OLLAMA_AVAILABLE = False
 
 class Model:
     def __init__(self, model_name: str):
@@ -11,31 +18,9 @@ class Model:
         self.client = Client()
 
     def chat(self, messages: List[Message], tools: dict = None):
-
-        # Convert messages to the format expected by Ollama 0.5.1
-        formatted_messages = []
-        for msg in messages:
-            if isinstance(msg, dict):
-                formatted_messages.append(msg)
-            else:
-                # Handle Message objects if they exist
-                formatted_messages.append({
-                    "role": getattr(msg, 'role', 'user'),
-                    "content": getattr(msg, 'content', str(msg))
-                })
-        
-        # Prepare the chat request
-        chat_request = {
-            "model": self.model_name,
-            "messages": formatted_messages
-        }
-        
-        # Add tools if provided
-        if tools:
-            chat_request["tools"] = tools
-        
-        # Make the chat request
-        response = self.client.chat(**chat_request)
+        if not _OLLAMA_AVAILABLE:
+            raise RuntimeError("Ollama Python client is not installed. Install with: pip install ollama, and ensure 'ollama serve' is running.")
+        response: ChatResponse = chat(model=self.model_name, messages=messages, tools=tools, think=False)
         return response.message
 
 

@@ -125,18 +125,22 @@ def add_missing_columns(con: duckdb.DuckDBPyConnection, table: str, missing: Lis
 		con.execute(f"ALTER TABLE {quote_ident(table)} ADD COLUMN {quote_ident(col)} VARCHAR;")
 
 
+EXACT_EXCLUDED_COLUMNS: Set[str] = {"Which_mice,"}
+
+
 def read_csv_columns_sample(con: duckdb.DuckDBPyConnection, csv_path: str) -> List[str]:
 	# Read a tiny sample to get columns reliably without loading the entire file
 	query = (
 		"SELECT * FROM read_csv_auto(?, header=true, all_varchar=true, filename=true) LIMIT 0"
 	)
 	res = con.execute(query, [csv_path])
-	return [d[0] for d in res.description]
+	cols = [d[0] for d in res.description]
+	return [c for c in cols if c not in EXACT_EXCLUDED_COLUMNS]
 
 
 def build_insert_sql(table: str, csv_path: str, file_columns: List[str], target_columns: List[str], metadata: Dict[str, str]) -> Tuple[str, List[str]]:
 	# Exclude auto filename column from data projection
-	data_cols = [c for c in file_columns if c.lower() != "filename"]
+	data_cols = [c for c in file_columns if c.lower() != "filename" and c not in EXACT_EXCLUDED_COLUMNS]
 	# Determine overlap between file columns and target table columns
 	target_set = {c.lower() for c in target_columns}
 	present_cols = [c for c in data_cols if c.lower() in target_set]
@@ -192,7 +196,7 @@ def ingest_files(db_path: str, table: str, globs: List[str], dry_run_limit: int 
 		# Sample columns from this file
 		file_cols = read_csv_columns_sample(con, path)
 		# Remove the auto 'filename' column from consideration when diffing schema
-		file_cols_wo_filename = [c for c in file_cols if c.lower() != "filename"]
+		file_cols_wo_filename = [c for c in file_cols if c.lower() != "filename" and c not in EXACT_EXCLUDED_COLUMNS]
 
 		existing_cols = get_existing_columns(con, table)
 		existing_set_lower: Set[str] = {c.lower() for c in existing_cols}

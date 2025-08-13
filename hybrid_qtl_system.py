@@ -586,6 +586,17 @@ class HybridQTLSystem:
         try:
             logger.info(f"Loading raw data from {self.csv_file}")
             self.raw_data = pd.read_csv(self.csv_file)
+            try:
+                logger.info(
+                    f"📑 Columns in {self.csv_file}: "
+                    + ", ".join([str(c) for c in self.raw_data.columns])
+                )
+            except Exception:
+                logger.info(f"📑 Columns in {self.csv_file}: {list(self.raw_data.columns)}")
+            # Drop excluded column if present
+            if 'Which_mice,' in self.raw_data.columns:
+                self.raw_data = self.raw_data.drop(columns=['Which_mice,'])
+                logger.info("🧹 Dropped excluded column 'Which_mice,' from raw data before DuckDB load")
             logger.info(f"✅ Loaded {len(self.raw_data)} QTL records")
             
             # Normalize gene symbols to lowercase for consistent matching

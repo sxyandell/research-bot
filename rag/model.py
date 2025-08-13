@@ -1,6 +1,6 @@
 #TODO: Implement model class
 
-from rag.data_types import Message
+from data_types import Message
 from typing import List
 from ollama import Client
 
@@ -11,10 +11,6 @@ class Model:
         self.client = Client()
 
     def chat(self, messages: List[Message], tools: dict = None):
-
-        if not _OLLAMA_AVAILABLE:
-            raise RuntimeError("Ollama Python client is not installed. Install with: pip install ollama, and ensure 'ollama serve' is running.")
-        response: ChatResponse = chat(model=self.model_name, messages=messages, tools=tools, think=False)
 
         # Convert messages to the format expected by Ollama 0.5.1
         formatted_messages = []

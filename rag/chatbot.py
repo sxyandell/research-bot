@@ -1,8 +1,8 @@
-from rag.prompts import SYSTEM_PROMPT
+from prompts import SYSTEM_PROMPT
 from typing import Callable, List
-from rag.tools import tool_dict
-from rag.model import Model
-from rag.data_types import Message, ToolCall
+from tools import tool_dict
+from model import Model
+from data_types import Message, ToolCall
 
 
 class Chatbot:

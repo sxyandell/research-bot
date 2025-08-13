@@ -21,7 +21,7 @@ def add_numbers(num1: int, num2: int):
 
 
 def convert_mouse_to_human_gene(gene_symbol: str):
-      """
+    """
     Finds human homolog(s) for a given mouse gene symbol.
 
     This tool queries a local JAX homology report (`HOM_MouseHumanSequence.rpt`)
@@ -78,7 +78,7 @@ def convert_mouse_to_human_gene(gene_symbol: str):
 
 
 def convert_mouse_to_human_ortholog_info(gene_symbol: str):
-    """"
+    """
     Finds human ortholog(s) for a mouse gene and returns detailed location info.
 
     This tool queries a local JAX homology report (`HOM_MouseHumanSequence.rpt`)

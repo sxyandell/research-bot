@@ -1,3 +1,1 @@
-"""used later for web development"""
-
-import FastAPI
+"""reserved for future API components; FastAPI app is in server.py"""

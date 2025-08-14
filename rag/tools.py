@@ -34,7 +34,7 @@ def convert_mouse_to_human_gene(gene_symbol: str):
     HomoloGene ID. The search is case-insensitive. It correctly handles cases
     where one mouse gene maps to multiple human homologs.
     """
-    mapping_path = Path("/home/syandell@ad.wisc.edu/research-bot/HOM_MouseHumanSequence.rpt")
+    mapping_path = Path(os.getenv("HOM_HUMAN_MOUSE_RPT", str(Path(__file__).resolve().parent.parent / "HOM_MouseHumanSequence.rpt")))
     # read only cols we care about
     df = pd.read_csv(
         str(mapping_path),
@@ -91,7 +91,7 @@ def convert_mouse_to_human_ortholog_info(gene_symbol: str):
     on the GRCh38 assembly. The search is case-insensitive and handles
     one-to-many mappings.
     """
-    mapping_path = Path("/home/syandell@ad.wisc.edu/research-bot/HOM_MouseHumanSequence.rpt")
+    mapping_path = Path(os.getenv("HOM_HUMAN_MOUSE_RPT", str(Path(__file__).resolve().parent.parent / "HOM_MouseHumanSequence.rpt")))
     
     # 1) Read only the columns we need
     df = pd.read_csv(

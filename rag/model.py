@@ -1,6 +1,6 @@
 #TODO: Implement model class
 
-from data_types import Message
+from .data_types import Message
 from typing import List
 from ollama import Client
 

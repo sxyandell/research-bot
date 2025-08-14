@@ -13,6 +13,7 @@ from typing import Tuple, Optional
 import os
 import pandas as pd
 import requests
+from datetime import datetime
 
 
 
@@ -487,18 +488,17 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] 
     """
     Query Ensembl's REST API for genomic data using the correct, working endpoints.
     
-    Access Ensembl's REST API to retrieve genomic data such as gene coordinates, 
-    sequences, transcript info, orthologs, variant annotations, phenotype data, and more.
+    Access Ensembl's REST API to retrieve genomic data such as gene coordinates,
+    transcript info, variant annotations, phenotype data, and regulatory features.
     
     Args:
         gene_symbol: Gene symbol to query (e.g., 'Apoe', 'Gnai3')
-        query_type: Type of query ('gene_info', 'variants', 'orthologs', 'transcripts', 'sequence', 'phenotype', 'regulation')
+        query_type: Type of query ('gene_info', 'variants', 'transcripts', 'phenotype', 'regulation')
         species: Optional species identifier (accepts 'mus_musculus'/'mouse' or 'homo_sapiens'/'human'). If None or unrecognized, inferred from gene.
     
     Returns:
         JSON response from Ensembl API with source attribution
     """
-    from datetime import datetime
 
     sym = (gene_symbol or "").strip()
     if not sym:
@@ -513,7 +513,7 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] 
         if query_type == "gene_info":
             data = _ensembl_request(f"/lookup/symbol/{sp}/{sym}")
 
-        elif query_type in ("variants", "transcripts", "sequence", "regulation", "orthologs"):
+        elif query_type in ("variants", "transcripts", "regulation"):
             gene_id = _ensembl_lookup_gene_id(sp, sym)
             if not gene_id:
                 return {"error": "No gene ID found"}
@@ -521,18 +521,14 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] 
                 data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "variation"})
             elif query_type == "transcripts":
                 data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "transcript"})
-            elif query_type == "sequence":
-                data = _ensembl_request(f"/sequence/id/{gene_id}")
             elif query_type == "regulation":
                 data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "regulatory"})
-            else:  # orthologs
-                data = _ensembl_request(f"/homology/id/{gene_id}", params={"target_species": "homo_sapiens" if sp == "mus_musculus" else "mus_musculus", "type": "orthologues"})
 
         elif query_type == "phenotype":
             data = _ensembl_request(f"/phenotype/gene/{sp}/{sym}")
 
         else:
-            return {"error": f"Unknown query type: {query_type}. Use: gene_info, variants, orthologs, transcripts, sequence, phenotype, or regulation"}
+            return {"error": f"Unknown query type: {query_type}. Use: gene_info, variants, transcripts, phenotype, or regulation"}
 
         if data is None:
             return {"error": "Ensembl API request failed"}

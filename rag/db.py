@@ -23,6 +23,22 @@ DATA_CATEGORIES = [
 BIOSPECIMENS = ["liver", "plasma"]
 SUBSETS = ["all_mice", "hc_mice", "hf_mice", "female_mice", "male_mice"]
 
+# Columns we do NOT want to store in the unified table (case-insensitive)
+EXCLUDED_COLUMNS_LOWER: Set[str] = {
+	"which_mice",
+	"which_mice.x",
+	"which_mice.y",
+	"sex",
+	"sexes",
+	"n_genes",
+	"id_code",
+	"covars_additive",
+	"covars_interactive",
+	"lodindex",
+	"marker.id",
+	"strand",
+}
+
 
 def _find_first_token(name_lc: str, tokens: List[str]) -> str:
 	for tok in tokens:
@@ -122,6 +138,9 @@ def ensure_metadata_columns(con: duckdb.DuckDBPyConnection, table: str) -> None:
 
 def add_missing_columns(con: duckdb.DuckDBPyConnection, table: str, missing: List[str]) -> None:
 	for col in missing:
+		# Skip excluded columns entirely
+		if col.lower() in EXCLUDED_COLUMNS_LOWER:
+			continue
 		con.execute(f"ALTER TABLE {quote_ident(table)} ADD COLUMN {quote_ident(col)} VARCHAR;")
 
 
@@ -137,9 +156,11 @@ def read_csv_columns_sample(con: duckdb.DuckDBPyConnection, csv_path: str) -> Li
 def build_insert_sql(table: str, csv_path: str, file_columns: List[str], target_columns: List[str], metadata: Dict[str, str]) -> Tuple[str, List[str]]:
 	# Exclude auto filename column from data projection
 	data_cols = [c for c in file_columns if c.lower() != "filename"]
+	# Exclude any unwanted columns
+	data_cols = [c for c in data_cols if c.lower() not in EXCLUDED_COLUMNS_LOWER]
 	# Determine overlap between file columns and target table columns
 	target_set = {c.lower() for c in target_columns}
-	present_cols = [c for c in data_cols if c.lower() in target_set]
+	present_cols = [c for c in data_cols if c.lower() in target_set and c.lower() not in EXCLUDED_COLUMNS_LOWER]
 
 	# Build target column list: metadata first, then present file columns
 	insert_cols = [
@@ -193,6 +214,8 @@ def ingest_files(db_path: str, table: str, globs: List[str], dry_run_limit: int 
 		file_cols = read_csv_columns_sample(con, path)
 		# Remove the auto 'filename' column from consideration when diffing schema
 		file_cols_wo_filename = [c for c in file_cols if c.lower() != "filename"]
+		# Remove excluded columns from consideration when diffing schema
+		file_cols_wo_filename = [c for c in file_cols_wo_filename if c.lower() not in EXCLUDED_COLUMNS_LOWER]
 
 		existing_cols = get_existing_columns(con, table)
 		existing_set_lower: Set[str] = {c.lower() for c in existing_cols}

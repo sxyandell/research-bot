@@ -207,3 +207,108 @@ def _fetch_gtex_expression_local(gene_symbol: str) -> List[Tuple[str, float]]:
             continue
     values.sort(key=lambda x: x[1], reverse=True)
     return values[:10]
+
+
+# ---------------- Ensembl REST helpers (used by tools) ----------------
+_ENSEMBL_BASE = os.getenv("ENSEMBL_REST_BASE", "https://rest.ensembl.org")
+
+
+def _ensembl_request(path: str, params: Optional[Dict[str, Any]] = None, timeout: int = 30) -> Optional[Any]:
+    """Perform a GET to Ensembl REST with retries and proper headers.
+
+    Returns parsed JSON (dict or list) or None on failure.
+    """
+    try:
+        import time
+        import requests  # type: ignore
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+
+        session = requests.Session()
+        retries = Retry(
+            total=3,
+            backoff_factor=0.5,
+            status_forcelist=(429, 500, 502, 503, 504),
+            allowed_methods=("GET",),
+            raise_on_status=False,
+        )
+        session.mount("https://", HTTPAdapter(max_retries=retries))
+        session.mount("http://", HTTPAdapter(max_retries=retries))
+
+        headers = {
+            "Accept": "application/json",
+            "User-Agent": os.getenv("HTTP_USER_AGENT", "research-bot/1.0 (Ensembl client)"),
+        }
+        url = f"{_ENSEMBL_BASE.rstrip('/')}/{path.lstrip('/')}"
+        resp = session.get(url, params=params or {}, headers=headers, timeout=timeout)
+        # Handle 429 with explicit sleep if Retry-After provided
+        if resp.status_code == 429:
+            try:
+                retry_after = float(resp.headers.get("Retry-After", "1"))
+                time.sleep(min(2.0, max(0.0, retry_after)))
+                resp = session.get(url, params=params or {}, headers=headers, timeout=timeout)
+            except Exception:
+                pass
+        if resp.status_code != 200:
+            return None
+        try:
+            return resp.json()
+        except Exception:
+            return None
+    except Exception:
+        return None
+
+
+@lru_cache(maxsize=512)
+def _ensembl_lookup_gene_id(species: str, gene_symbol: str) -> Optional[str]:
+    """Resolve a gene symbol to Ensembl stable ID via /lookup/symbol.
+    Cached for performance.
+    """
+    sp = (species or "").strip() or "mus_musculus"
+    sym = (gene_symbol or "").strip()
+    if not sym:
+        return None
+    data = _ensembl_request(f"/lookup/symbol/{sp}/{sym}")
+    if isinstance(data, dict):
+        gid = data.get("id") or data.get("stable_id")
+        return str(gid) if gid else None
+    return None
+
+# Species helpers
+_SPECIES_ALIASES = {
+    "mus_musculus": {"mouse", "mus_musculus", "mus", "mm", "mmusculus", "m_musculus"},
+    "homo_sapiens": {"human", "homo_sapiens", "hs", "hsa", "h_sapiens", "homo sapiens"},
+}
+
+
+def _normalize_species(species: Optional[str]) -> Optional[str]:
+    """Normalize species names/aliases to Ensembl identifiers.
+    Returns 'mus_musculus', 'homo_sapiens', or None if unknown.
+    """
+    if not species:
+        return None
+    val = species.strip().lower().replace("-", "_").replace(" ", "_")
+    for key, aliases in _SPECIES_ALIASES.items():
+        if val == key or val in aliases:
+            return key
+    return None
+
+
+def _infer_species_from_gene(gene_symbol: str) -> Optional[str]:
+    """Infer species from common patterns.
+    - ENSG* ⇒ human
+    - ENSMUSG* ⇒ mouse
+    - Heuristic: ALLCAPS likely human symbols; TitleCase likely mouse.
+    """
+    sym = (gene_symbol or "").strip()
+    if not sym:
+        return None
+    u = sym.upper()
+    if u.startswith("ENSG"):
+        return "homo_sapiens"
+    if u.startswith("ENSMUSG"):
+        return "mus_musculus"
+    if sym.isupper() and u != sym.lower():
+        return "homo_sapiens"
+    # default heuristic: treat as mouse-like symbol
+    return "mus_musculus"

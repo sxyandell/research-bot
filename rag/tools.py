@@ -3,9 +3,9 @@
 
 
 try:
-    from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local
+    from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
 except ImportError:  # fallback when running inside rag/ directly
-    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local
+    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
 from pathlib import Path
 from typing import Dict, Any, List
 from functools import lru_cache
@@ -483,7 +483,7 @@ def get_top_tissue_expression(gene_symbol: str) -> str:
         f"{mouse_output}"
     )
 
-def query_ensembl_api(gene_symbol: str, query_type: str, species: str = "mus_musculus"):
+def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] = None):
     """
     Query Ensembl's REST API for genomic data using the correct, working endpoints.
     
@@ -493,141 +493,71 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: str = "mus_mus
     Args:
         gene_symbol: Gene symbol to query (e.g., 'Apoe', 'Gnai3')
         query_type: Type of query ('gene_info', 'variants', 'orthologs', 'transcripts', 'sequence', 'phenotype', 'regulation')
-        species: Species identifier (default: mus_musculus, can be homo_sapiens for human)
+        species: Optional species identifier (accepts 'mus_musculus'/'mouse' or 'homo_sapiens'/'human'). If None or unrecognized, inferred from gene.
     
     Returns:
         JSON response from Ensembl API with source attribution
     """
-    # Lazy imports to satisfy linter/runtime without hard global deps
-    import requests
     from datetime import datetime
-    base_url = "https://rest.ensembl.org"
-    headers = {"Content-Type": "application/json"}
-    
+
+    sym = (gene_symbol or "").strip()
+    if not sym:
+        return {"error": "gene_symbol is required"}
+
+    # Normalize species or infer from gene symbol if not provided/unknown
+    sp = _normalize_species(species)
+    if not sp:
+        sp = _infer_species_from_gene(sym)
+
     try:
-        # Use the correct, working Ensembl REST API endpoints
         if query_type == "gene_info":
-            # Basic gene information - use the working endpoint
-            url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
-        elif query_type == "variants":
-            # Get gene info first, then variants
-            gene_url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            gene_resp = requests.get(gene_url, headers=headers, timeout=30)
-            
-            if gene_resp.status_code != 200:
-                return {"error": f"Failed to get gene info: {gene_resp.status_code}"}
-            
-            gene_info = gene_resp.json()
-            if not gene_info or 'id' not in gene_info:
+            data = _ensembl_request(f"/lookup/symbol/{sp}/{sym}")
+
+        elif query_type in ("variants", "transcripts", "sequence", "regulation", "orthologs"):
+            gene_id = _ensembl_lookup_gene_id(sp, sym)
+            if not gene_id:
                 return {"error": "No gene ID found"}
-            
-            gene_id = gene_info['id']
-            url = f"{base_url}/overlap/id/{gene_id}?feature=variation"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
-        elif query_type == "orthologs":
-            # Get gene info first, then orthologs
-            gene_url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            gene_resp = requests.get(gene_url, headers=headers, timeout=30)
-            
-            if gene_resp.status_code != 200:
-                return {"error": f"Failed to get gene info: {gene_resp.status_code}"}
-            
-            gene_info = gene_resp.json()
-            if not gene_info or 'id' not in gene_info:
-                return {"error": "No gene ID found"}
-            
-            gene_id = gene_info['id']
-            url = f"{base_url}/homology/id/{gene_id}?target_species=homo_sapiens"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
-        elif query_type == "transcripts":
-            # Get gene info first, then transcripts
-            gene_url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            gene_resp = requests.get(gene_url, headers=headers, timeout=30)
-            
-            if gene_resp.status_code != 200:
-                return {"error": f"Failed to get gene info: {gene_resp.status_code}"}
-            
-            gene_info = gene_resp.json()
-            if not gene_info or 'id' not in gene_info:
-                return {"error": "No gene ID found"}
-            
-            gene_id = gene_info['id']
-            url = f"{base_url}/overlap/id/{gene_id}?feature=transcript"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
-        elif query_type == "sequence":
-            # Get gene info first, then sequence
-            gene_url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            gene_resp = requests.get(gene_url, headers=headers, timeout=30)
-            
-            if gene_resp.status_code != 200:
-                return {"error": f"Failed to get gene info: {gene_resp.status_code}"}
-            
-            gene_info = gene_resp.json()
-            if not gene_info or 'id' not in gene_info:
-                return {"error": "No gene ID found"}
-            
-            gene_id = gene_info['id']
-            url = f"{base_url}/sequence/id/{gene_id}"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
+            if query_type == "variants":
+                data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "variation"})
+            elif query_type == "transcripts":
+                data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "transcript"})
+            elif query_type == "sequence":
+                data = _ensembl_request(f"/sequence/id/{gene_id}")
+            elif query_type == "regulation":
+                data = _ensembl_request(f"/overlap/id/{gene_id}", params={"feature": "regulatory"})
+            else:  # orthologs
+                data = _ensembl_request(f"/homology/id/{gene_id}", params={"target_species": "homo_sapiens" if sp == "mus_musculus" else "mus_musculus", "type": "orthologues"})
+
         elif query_type == "phenotype":
-            # Direct phenotype endpoint
-            url = f"{base_url}/phenotype/gene/{species}/{gene_symbol}"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
-        elif query_type == "regulation":
-            # Get gene info first, then regulatory elements
-            gene_url = f"{base_url}/lookup/symbol/{species}/{gene_symbol}"
-            gene_resp = requests.get(gene_url, headers=headers, timeout=30)
-            
-            if gene_resp.status_code != 200:
-                return {"error": f"Failed to get gene info: {gene_resp.status_code}"}
-            
-            gene_info = gene_resp.json()
-            if not gene_info or 'id' not in gene_info:
-                return {"error": "No gene ID found"}
-            
-            gene_id = gene_info['id']
-            url = f"{base_url}/overlap/id/{gene_id}?feature=regulatory"
-            resp = requests.get(url, headers=headers, timeout=30)
-            
+            data = _ensembl_request(f"/phenotype/gene/{sp}/{sym}")
+
         else:
             return {"error": f"Unknown query type: {query_type}. Use: gene_info, variants, orthologs, transcripts, sequence, phenotype, or regulation"}
 
-        if resp.status_code != 200:
-            return {"error": f"Ensembl API returned {resp.status_code}", "details": resp.text}
+        if data is None:
+            return {"error": "Ensembl API request failed"}
 
         # Add source attribution to the response
-        response_data = resp.json()
-        if isinstance(response_data, dict):
-            response_data["_source"] = f"Data from Ensembl REST API (accessed {datetime.now().strftime('%Y-%m-%d')})"
-            response_data["_query_info"] = {
-                "gene_symbol": gene_symbol,
+        if isinstance(data, dict):
+            data.setdefault("_source", f"Data from Ensembl REST API (accessed {datetime.now().strftime('%Y-%m-%d')})")
+            data.setdefault("_query_info", {})
+            data["_query_info"].update({
+                "gene_symbol": sym,
                 "query_type": query_type,
-                "species": species,
-                "endpoint_used": url.replace(base_url, "")
-            }
-        elif isinstance(response_data, list):
-            response_data = {
-                "data": response_data,
+                "species": sp,
+            })
+        elif isinstance(data, list):
+            data = {
+                "data": data,
                 "_source": f"Data from Ensembl REST API (accessed {datetime.now().strftime('%Y-%m-%d')})",
                 "_query_info": {
-                    "gene_symbol": gene_symbol,
+                    "gene_symbol": sym,
                     "query_type": query_type,
-                    "species": species,
-                    "endpoint_used": url.replace(base_url, "")
+                    "species": sp,
                 }
             }
-        
-        return response_data
-        
-    except requests.RequestException as e:
-        return {"error": "Failed to connect to Ensembl API", "details": str(e)}
+        return data
+
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
 

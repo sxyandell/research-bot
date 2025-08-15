@@ -6,6 +6,16 @@ from typing import Tuple, Optional
 import os
 _IMPC_SOLR_BASE = "https://www.ebi.ac.uk/mi/impc/solr"
 
+__all__ = [
+    "_impc_fetch_significant_phenotypes",
+    "_resolve_ortholog_pair",
+    "_fetch_gtex_expression_local",
+    "_ensembl_request",
+    "_ensembl_lookup_gene_id",
+    "_normalize_species",
+    "_infer_species_from_gene"
+]
+
 
 def _impc_solr_select(core: str, params: Dict[str, Any]) -> Dict[str, Any]:
     """Perform a SOLR select query against the IMPC endpoint for a given core."""

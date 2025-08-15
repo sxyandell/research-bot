@@ -5,7 +5,7 @@
 try:
     from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
 except ImportError:  # fallback when running inside rag/ directly
-    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
+    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_speci
 from pathlib import Path
 from typing import Dict, Any, List
 from functools import lru_cache
@@ -14,6 +14,8 @@ import os
 import pandas as pd
 import requests
 from datetime import datetime
+import re
+from gwas_integration import GWASCatalog
 
 
 
@@ -484,20 +486,21 @@ def get_top_tissue_expression(gene_symbol: str) -> str:
         f"{mouse_output}"
     )
 
-def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] = None):
+def get_ensembl_info(gene_symbol: str, query_type: str, species: Optional[str] = None):
     """
-    Query Ensembl's REST API for genomic data using the correct, working endpoints.
-    
-    Access Ensembl's REST API to retrieve genomic data such as gene coordinates,
-    transcript info, variant annotations, phenotype data, and regulatory features.
-    
+    Retrieves various types of genomic information for a specific gene from the Ensembl database.
+
+    Use this tool to find details about a gene when you have its symbol. You can specify what kind of information you need.
+
     Args:
-        gene_symbol: Gene symbol to query (e.g., 'Apoe', 'Gnai3')
-        query_type: Type of query ('gene_info', 'variants', 'transcripts', 'phenotype', 'regulation')
-        species: Optional species identifier (accepts 'mus_musculus'/'mouse' or 'homo_sapiens'/'human'). If None or unrecognized, inferred from gene.
-    
-    Returns:
-        JSON response from Ensembl API with source attribution
+        gene_symbol: The official symbol of the gene to look up (e.g., 'APOE', 'Gnai3').
+        query_type: The type of information to retrieve. Options are:
+                    - 'gene_info': For core details like chromosome location and gene ID.
+                    - 'variants': To find genetic variations (SNPs) within the gene.
+                    - 'transcripts': To get the different RNA versions of the gene.
+                    - 'phenotype': To find known physical traits or diseases linked to the gene.
+                    - 'regulation': To identify elements that control the gene's activity.
+        species: The species, such as 'human' or 'mouse'. If omitted, the tool will infer it from the gene symbol.
     """
 
     sym = (gene_symbol or "").strip()
@@ -558,49 +561,22 @@ def query_ensembl_api(gene_symbol: str, query_type: str, species: Optional[str] 
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-def query_gwas_api (association_id: str) -> dict:
+def get_gwas_genes_by_trait_class(trait_class: str, p_value_threshold: float = 5e-8) -> Dict[str, Any]:
     """
-    Retrieve a single association from the NHGRI-EBI GWAS Catalog.
-
-    Uses the documented endpoint: /gwas/rest/api/associations/{association_id}
-
-    Args:
-        association_id: The GWAS Catalog association id (e.g., "16510553").
-
-    Returns:
-        JSON payload from the GWAS Catalog API or a dict with an "error" key on failure.
+    Return significant GWAS genes for a given trait class using the local curated file approach.
     """
-    import requests
-
-    association_id_str = str(association_id).strip()
-    if not association_id_str:
-        return {"error": "association_id is required"}
-
-    base_url = "https://www.ebi.ac.uk/gwas/rest/api"
-    url = f"{base_url}/associations/{association_id_str}"
-    headers = {"Accept": "application/json"}
-
     try:
-        resp = requests.get(url, headers=headers, timeout=60)
-        if resp.status_code != 200:
-            return {
-                "error": f"GWAS Catalog API returned {resp.status_code}",
-                "details": resp.text,
-                "url": url,
-            }
-        data = resp.json()
-        # Attach minimal provenance for downstream consumers
-        if isinstance(data, dict):
-            data.setdefault("_query_info", {})
-            data["_query_info"].update({
-                "association_id": association_id_str,
-                "endpoint": "/associations/{association_id}",
-            })
-        return data
-    except requests.RequestException as e:
-        return {"error": "Failed to connect to GWAS Catalog API", "details": str(e), "url": url}
-    except Exception as e:
-        return {"error": f"Unexpected error: {str(e)}", "url": url}
+        client = GWASCatalog()
+        genes = client.get_genes_for_trait_class(trait_class, p_value_threshold=p_value_threshold)
+        gene_list = sorted(list(genes))
+        return {
+            "trait_class": trait_class,
+            "n_unique_genes": len(gene_list),
+            "genes": gene_list,
+        }
+    except Exception as exc:
+        return {"error": f"GWAS lookup failed: {exc}"}
+
 
 # Update your tool registry:
 tool_dict = {
@@ -611,35 +587,25 @@ tool_dict = {
     "get_impc_significant_phenotypes": get_impc_significant_phenotypes,
     "get_impc_gene_summary": get_impc_gene_summary,
     "get_top_tissue_expression": get_top_tissue_expression,
-    "query_ensembl_api": query_ensembl_api,
-    "query_gwas_api": query_gwas_api,
+    "get_ensembl_info": get_ensembl_info,
+    "get_gwas_genes_by_trait_class": get_gwas_genes_by_trait_class,
 }
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":
-    import sys
-
-    default_gene = ""
-    gene_arg = sys.argv[1] if len(sys.argv) > 1 else default_gene
-
-    print(f"Running quick tests for gene: {gene_arg}\n")
-
-    # Test GTEx + Tabula Muris expression summary
-    try:
-        print(get_top_tissue_expression(gene_arg))
-    except Exception as exc:
-        print(f"Error in get_top_tissue_expression: {exc}")
-
-    # Test IMPC helpers (mouse gene symbols expected, e.g., Trp53)
-    mouse_gene = "Trp5" if gene_arg.upper() == "Trp5" else gene_arg
-    print("\n---\n")
-    try:
-        print(get_impc_knockout_status(mouse_gene))
-    except Exception as exc:
-        print(f"Error in get_impc_knockout_status: {exc}")
-
-    print("\n---\n")
-    try:
-        print(get_impc_significant_phenotypes(mouse_gene))
-    except Exception as exc:
-        print(f"Error in get_impc_significant_phenotypes: {exc}")
+	import sys, json, os
+	trait_class = sys.argv[1] if len(sys.argv) > 1 else "glycemic"
+	print(f"Running GWAS trait-class test for: {trait_class}\n")
+	try:
+		result = get_gwas_genes_by_trait_class(trait_class)
+		genes = result.get("genes") or []
+		n = result.get("n_unique_genes") or len(genes)
+		print(f"Unique genes: {n}")
+		if genes:
+			preview = ", ".join(genes[:50])
+			more = f" (+{len(genes)-50} more)" if len(genes) > 50 else ""
+			print(f"Genes (up to 50): {preview}{more}")
+		print("\nFull result JSON:\n")
+		print(json.dumps(result, indent=2, sort_keys=True))
+	except Exception as exc:
+		print(f"Error testing GWAS tool: {exc}")

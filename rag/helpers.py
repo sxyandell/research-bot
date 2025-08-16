@@ -6,16 +6,6 @@ from typing import Tuple, Optional
 import os
 _IMPC_SOLR_BASE = "https://www.ebi.ac.uk/mi/impc/solr"
 
-__all__ = [
-    "_impc_fetch_significant_phenotypes",
-    "_resolve_ortholog_pair",
-    "_fetch_gtex_expression_local",
-    "_ensembl_request",
-    "_ensembl_lookup_gene_id",
-    "_normalize_species",
-    "_infer_species_from_gene"
-]
-
 
 def _impc_solr_select(core: str, params: Dict[str, Any]) -> Dict[str, Any]:
     """Perform a SOLR select query against the IMPC endpoint for a given core."""
@@ -322,3 +312,64 @@ def _infer_species_from_gene(gene_symbol: str) -> Optional[str]:
         return "homo_sapiens"
     # default heuristic: treat as mouse-like symbol
     return "mus_musculus"
+
+# ---------------- BioPlex helpers (used by tools) ----------------
+@lru_cache(maxsize=8)
+def _bioplex_fetch_interactions(cell_line: str):
+    """Fetch BioPlex interactions for a given cell line with version fallback.
+
+    Returns a pandas DataFrame with standardized columns ['SymbolA','SymbolB']
+    and symbols uppercased. Returns None if unavailable.
+    """
+    try:
+        import pandas as pd  # type: ignore
+        from bioplexpy import getBioPlex as _getBioPlex  # type: ignore
+    except Exception:
+        return None
+
+    try:
+        interactions_df = None
+        versions = ("3.0", "2.0", "1.0") if str(cell_line).upper() == "293T" else ("1.0",)
+        for v in versions:
+            try:
+                df = _getBioPlex(str(cell_line), v)
+                if df is not None:
+                    interactions_df = df
+                    break
+            except Exception:
+                continue
+        if interactions_df is None:
+            return None
+
+        cols = {c.lower(): c for c in interactions_df.columns}
+        a = cols.get('symbola') or cols.get('sym_a') or cols.get('genea')
+        b = cols.get('symbolb') or cols.get('sym_b') or cols.get('geneb')
+        if not a or not b:
+            return None
+        df2 = interactions_df.rename(columns={a: 'SymbolA', b: 'SymbolB'})[['SymbolA', 'SymbolB']].copy()
+        df2['SymbolA'] = df2['SymbolA'].astype(str).str.upper()
+        df2['SymbolB'] = df2['SymbolB'].astype(str).str.upper()
+        return df2
+    except Exception:
+        return None
+
+
+def _bioplex_interactors_for_symbol(interactions_df, symbol: str) -> List[str]:
+    """Given standardized BioPlex interactions DataFrame, return unique interactors for symbol."""
+    try:
+        import pandas as pd  # type: ignore
+    except Exception:
+        return []
+    if interactions_df is None:
+        return []
+    sym = (symbol or "").strip().upper()
+    if not sym:
+        return []
+    try:
+        series = pd.concat([
+            interactions_df.loc[interactions_df['SymbolA'] == sym, 'SymbolB'],
+            interactions_df.loc[interactions_df['SymbolB'] == sym, 'SymbolA']
+        ])
+        return series.dropna().astype(str).unique().tolist()
+    except Exception:
+        return []

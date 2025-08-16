@@ -16,6 +16,12 @@ import requests
 from datetime import datetime
 import re
 from gwas_integration import GWASCatalog
+try:
+    # Import BioPlex helpers (they handle lazy imports internally)
+    from rag.helpers import _bioplex_fetch_interactions, _bioplex_interactors_for_symbol
+except ImportError:  # fallback when running inside rag/ directly
+    from helpers import _bioplex_fetch_interactions, _bioplex_interactors_for_symbol
+
 
 
 
@@ -561,21 +567,56 @@ def get_ensembl_info(gene_symbol: str, query_type: str, species: Optional[str] =
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-def get_gwas_genes_by_trait_class(trait_class: str, p_value_threshold: float = 5e-8) -> Dict[str, Any]:
+def get_protein_interactions(gene_symbol: str) -> str:
     """
-    Return significant GWAS genes for a given trait class using the local curated file approach.
+    Finds and lists known physical protein interactors for a human gene of interest.
+    Queries the BioPlex database for interactions in both HEK293T and HCT116 humancell lines.
+    
+    Args:
+        gene_symbol: The official human gene symbol for the protein of interest (e.g., "EGFR").
     """
+    # Ensure BioPlex deps are available via helper
+    interactions_293t_df = _bioplex_fetch_interactions("293T")
+    interactions_hct116_df = _bioplex_fetch_interactions("HCT116")
+    if interactions_293t_df is None or interactions_hct116_df is None:
+        return (
+            "Error: BioPlex data could not be loaded. Ensure 'bioplexpy' and its dependencies are installed (e.g., "
+            "'pip install --no-cache-dir --upgrade numpy scipy anndata bioplexpy')."
+        )
+
+    symbol = (gene_symbol or "").strip().upper()
+    if not symbol:
+        return "Error: Gene symbol cannot be empty."
+
     try:
-        client = GWASCatalog()
-        genes = client.get_genes_for_trait_class(trait_class, p_value_threshold=p_value_threshold)
-        gene_list = sorted(list(genes))
-        return {
-            "trait_class": trait_class,
-            "n_unique_genes": len(gene_list),
-            "genes": gene_list,
-        }
-    except Exception as exc:
-        return {"error": f"GWAS lookup failed: {exc}"}
+        interactors_293t = _bioplex_interactors_for_symbol(interactions_293t_df, symbol)
+        interactors_hct116 = _bioplex_interactors_for_symbol(interactions_hct116_df, symbol)
+    except Exception as e:
+        return f"Error: Could not compute interactors. Details: {e}"
+    
+    # --- Format the output for the RAG system ---
+    summary_title = f"**BioPlex Interaction Summary for {symbol}**"
+    
+    output_293t = f"###  HEK293T Cells ({len(interactors_293t)} interactors found)"
+    if len(interactors_293t) > 0:
+        preview = ", ".join(interactors_293t[:15])
+        more = f" *(+{len(interactors_293t) - 15} more)*" if len(interactors_293t) > 15 else ""
+        output_293t += f"\n- **Top Interactors:** {preview}{more}"
+    else:
+        output_293t += "\n- No significant interactions found in this cell line."
+
+    output_hct116 = f"### HCT116 Cells ({len(interactors_hct116)} interactors found)"
+    if len(interactors_hct116) > 0:
+        preview = ", ".join(interactors_hct116[:15])
+        more = f" *(+{len(interactors_hct116) - 15} more)*" if len(interactors_hct116) > 15 else ""
+        output_hct116 += f"\n- **Top Interactors:** {preview}{more}"
+    else:
+        output_hct116 += "\n- No significant interactions found in this cell line."
+        
+    if not interactors_293t and not interactors_hct116:
+        return f"{summary_title}\n\n- No physical interactors found for {symbol} in the BioPlex database."
+
+    return f"{summary_title}\n\n{output_293t}\n\n{output_hct116}"
 
 
 # Update your tool registry:
@@ -588,24 +629,9 @@ tool_dict = {
     "get_impc_gene_summary": get_impc_gene_summary,
     "get_top_tissue_expression": get_top_tissue_expression,
     "get_ensembl_info": get_ensembl_info,
-    "get_gwas_genes_by_trait_class": get_gwas_genes_by_trait_class,
+    "get_protein_interactions" : get_protein_interactions
 }
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":
-	import sys, json, os
-	trait_class = sys.argv[1] if len(sys.argv) > 1 else "glycemic"
-	print(f"Running GWAS trait-class test for: {trait_class}\n")
-	try:
-		result = get_gwas_genes_by_trait_class(trait_class)
-		genes = result.get("genes") or []
-		n = result.get("n_unique_genes") or len(genes)
-		print(f"Unique genes: {n}")
-		if genes:
-			preview = ", ".join(genes[:50])
-			more = f" (+{len(genes)-50} more)" if len(genes) > 50 else ""
-			print(f"Genes (up to 50): {preview}{more}")
-		print("\nFull result JSON:\n")
-		print(json.dumps(result, indent=2, sort_keys=True))
-	except Exception as exc:
-		print(f"Error testing GWAS tool: {exc}")
+	print(get_protein_interactions("APOE"))

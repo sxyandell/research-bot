@@ -885,4 +885,4 @@ tool_dict = {
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":
-	print(search_qtl_peaks("Tdpoz2"))
+	print(get_top_tissue_expression("Tdpoz2"))

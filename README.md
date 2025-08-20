@@ -164,3 +164,8 @@ python rag/tools.py
 - Set up Jira to monitor progress and stay on-track
 
 ### Sarah
+- Built and integrated the orginal chatbot system
+- Implemented embeddings and vector store infrastructure for semantic search
+- Developed Ensembl REST API integration tools for genomic data queries
+- Created GWAS Catalog integration tools for human genetic association studies
+- Built testing infrastructure for tools and functions

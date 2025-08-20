@@ -27,9 +27,9 @@ except ImportError:  # fallback when running inside rag/ directly
 
 # Import DuckDB display helpers
 try:
-    from rag.duckdbhelpers import pick_gene_or_phenotype, is_empty_value
+    from rag.duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr
 except ImportError:  # fallback for running inside rag/
-    from duckdbhelpers import pick_gene_or_phenotype, is_empty_value
+    from duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr
 
 
 
@@ -685,14 +685,10 @@ def get_top_lod_peaks(limit: int = 10) -> str:
             return None
 
         # Determine LOD-like columns present
-        lod_candidates = ["lod_diff", "qtl_lod", "lod_add", "lod_int", "lod"]
-        lod_present = [name_by_lower[c] for c in [lc for lc in lod_candidates if lc in name_by_lower]]
-        if not lod_present:
+        available_cols = list(name_by_lower.keys())
+        lod_expr, lod_source_expr = build_lod_value_and_source_expr(available_columns=available_cols)
+        if not lod_expr:
             return "Error: No LOD-like columns found (expected one of: lod_diff, qtl_lod, lod)."
-
-        # Build COALESCE expression in priority order
-        lod_try_casts = [f'TRY_CAST("{name_by_lower[c]}" AS DOUBLE)' for c in lod_candidates if c in name_by_lower]
-        lod_expr = f"COALESCE({', '.join(lod_try_casts)})"
 
         # Gene symbol selection (best-effort)
         gene_candidates = [
@@ -714,7 +710,8 @@ def get_top_lod_peaks(limit: int = 10) -> str:
         source_expr = f'"{source_col}"'
 
         sql = (
-            f"SELECT {source_expr} AS source, {gene_expr} AS gene_symbol, {phenotype_expr} AS phenotype, {lod_expr} AS lod_value "
+            f"SELECT {source_expr} AS source, {gene_expr} AS gene_symbol, {phenotype_expr} AS phenotype, "
+            f"{lod_expr} AS lod_value, {lod_source_expr} AS lod_source "
             f"FROM \"{table_name}\" "
             f"WHERE {lod_expr} IS NOT NULL "
             f"ORDER BY lod_value DESC "
@@ -732,7 +729,7 @@ def get_top_lod_peaks(limit: int = 10) -> str:
         )
         lines: list[str] = []
 
-        for idx, (source, gene_symbol, phenotype, lod_value) in enumerate(rows, start=1):
+        for idx, (source, gene_symbol, phenotype, lod_value, lod_source) in enumerate(rows, start=1):
             try:
                 lod_num = float(lod_value) if lod_value is not None else float('nan')
             except Exception:
@@ -740,8 +737,9 @@ def get_top_lod_peaks(limit: int = 10) -> str:
 
             src_txt = str(source) if source not in (None, "") else "Unknown source"
             chosen = pick_gene_or_phenotype(src_txt, gene_symbol, phenotype) or "Unknown"
+            lod_from = lod_source or "unknown"
 
-            lines.append(f"{idx}. LOD {lod_num:.3f} — {chosen} — Source: {src_txt}")
+            lines.append(f"{idx}. LOD {lod_num:.3f} ({lod_from}) — {chosen} — Source: {src_txt}")
 
         return header + "\n" + "\n".join(lines)
 
@@ -804,16 +802,11 @@ def search_qtl_peaks(query: str, limit: int = 200) -> str:
         if missing:
             return f"Error: Required columns missing in '{table_name}': {', '.join(missing)}"
 
-        # LOD-like expression
-        # Use exact names only; they may or may not exist
+        # LOD-like expression using helpers
         col_names_lower = {str(r[1]).lower(): str(r[1]) for r in schema_rows}
-        lod_try_casts = []
-        for cname in ["lod_diff", "qtl_lod", "lod_add", "lod_int", "lod"]:
-            if cname in col_names_lower:
-                lod_try_casts.append(f'TRY_CAST("{col_names_lower[cname]}" AS DOUBLE)')
-        if not lod_try_casts:
+        lod_expr, lod_source_expr = build_lod_value_and_source_expr(available_columns=list(col_names_lower.keys()))
+        if not lod_expr:
             return "Error: No LOD-like columns found (expected one of: lod_diff, qtl_lod, lod)."
-        lod_expr = f"COALESCE({', '.join(lod_try_casts)})"
 
         # Gene-like query detection
         q = (query or "").strip()
@@ -835,7 +828,7 @@ def search_qtl_peaks(query: str, limit: int = 200) -> str:
 
         sql = (
             f"SELECT \"Source\" AS source, \"gene_symbol\" AS gene_symbol, \"phenotype\" AS phenotype, "
-            f"{lod_expr} AS lod_value "
+            f"{lod_expr} AS lod_value, {lod_source_expr} AS lod_source "
             f"FROM \"{table_name}\" "
             f"WHERE ({where_clause}) AND {lod_expr} IS NOT NULL "
             f"ORDER BY lod_value DESC "
@@ -857,14 +850,15 @@ def search_qtl_peaks(query: str, limit: int = 200) -> str:
             f"Data source: {db_path} — table: {table_name}"
         )
         lines: list[str] = []
-        for idx, (source, gene_symbol, phenotype, lod_value) in enumerate(rows, start=1):
+        for idx, (source, gene_symbol, phenotype, lod_value, lod_source) in enumerate(rows, start=1):
             try:
                 lod_num = float(lod_value) if lod_value is not None else float('nan')
             except Exception:
                 lod_num = float('nan')
             src_txt = str(source) if source not in (None, "") else "Unknown source"
             label = pick_gene_or_phenotype(src_txt, gene_symbol, phenotype) or "Unknown"
-            lines.append(f"{idx}. LOD {lod_num:.3f} — {label} — Source: {src_txt}")
+            lod_from = lod_source or "unknown"
+            lines.append(f"{idx}. LOD {lod_num:.3f} ({lod_from}) — {label} — Source: {src_txt}")
 
         return header + "\n" + "\n".join(lines)
 
@@ -891,4 +885,4 @@ tool_dict = {
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":
-	print(search_qtl_peaks("ratio_Cer_to_HexCer"))
+	print(search_qtl_peaks("Tdpoz2"))

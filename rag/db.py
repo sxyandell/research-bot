@@ -1,271 +1,191 @@
-#create new column that says phenotype for all gene sybols, liver lipids, etc
-#want addcovar and intcovar
-#want qtl lod, gene_ID(if there), cis, ABCDEFGH, phnenotype_class, numb_mice, gene_chr, qtl_chr, gene_type, human_hom_gene_symbol, marker 
-import argparse
+#!/usr/bin/env python3
+"""
+Build a unified DuckDB table from multiple CSV files with overlapping schemas.
+
+- Discovers CSVs using a configurable glob pattern
+- Loads data via DuckDB's read_csv_auto with union_by_name=True to align columns by name
+- Creates or replaces a persistent table in a DuckDB file
+- Prints verification info: table schema and total row count
+
+This script is intended for building a wide table for RAG indexing from heterogeneous
+QTL peak CSVs (genes, lipids, clinical traits, etc.). Missing columns in a CSV will
+be NULL in the final table.
+"""
+
+from __future__ import annotations
+
 import os
-import re
 import sys
 import glob
-from typing import List, Dict, Set, Tuple
+from typing import List
 
 import duckdb
 
 
-# Token sets used for filename parsing
-DATA_CATEGORIES = [
-	"clinical_traits",
-	"splice_juncs",
-	"genes",
-	"isoforms",
-	"lipids",
-	"metabolites",
-]
-BIOSPECIMENS = ["liver", "plasma"]
-SUBSETS = ["all_mice", "hc_mice", "hf_mice", "female_mice", "male_mice"]
+# =========================
+# Configuration (edit here)
+# =========================
+# Glob pattern for input CSV files (edit to match your dataset location)
+INPUT_FILE_GLOB: str = "/data/dev/miniViewer_3.0/DO1200_*peaks.csv"
 
-# Columns we do NOT want to store in the unified table (case-insensitive)
-EXCLUDED_COLUMNS_LOWER: Set[str] = {
-	"which_mice",
-	"which_mice.x",
-	"which_mice.y",
-	"sex",
-	"sexes",
-	"n_genes",
-	"id_code",
-	"covars_additive",
-	"covars_interactive",
-	"lodindex",
-	"marker.id",
-	"strand",
-}
+# Path to persistent DuckDB database file
+DUCKDB_FILE_PATH: str = "data/qtl_database.duckdb"
+
+# Target table name to create or replace
+TARGET_TABLE_NAME: str = "qtl_peaks"
+
+# CSV inference options
+# - Set SAMPLE_SIZE to -1 to scan all rows for robust type inference (slower on very large data)
+# - Set to a positive integer for faster ingestion with sampling-based inference
+SAMPLE_SIZE: int = -1
+
+# When True, DuckDB will not try to infer types and will load everything as VARCHAR.
+# For typed analytics, keep this False. If your CSVs are messy and type inference causes issues,
+# you can set this to True and cast downstream as needed.
+ALL_VARCHAR: bool = False
+
+# If True, also include a column with the filename of each row's source CSV
+INCLUDE_FILENAME_COLUMN: bool = True
 
 
-def _find_first_token(name_lc: str, tokens: List[str]) -> str:
-	for tok in tokens:
-		if name_lc.startswith(f"{tok}_") or f"_{tok}_" in name_lc or name_lc.endswith(f"_{tok}.csv") or name_lc.endswith(f"_{tok}_peaks.csv") or f"_peaks_in_{tok}_" in name_lc:
-			return tok
-	return None
+def _quote_sql_identifier(identifier: str) -> str:
+    """Quote an SQL identifier with double quotes, escaping any embedded quotes."""
+    return '"' + identifier.replace('"', '""') + '"'
 
 
-def parse_metadata_from_path(path: str) -> Dict[str, str]:
-	basename = os.path.basename(path)
-	name_lc = basename.lower()
+def _to_sql_string_list(values: List[str]) -> str:
+    """Convert a list of Python strings to a DuckDB SQL string list literal.
 
-	biospecimen = _find_first_token(name_lc, BIOSPECIMENS)
-	data_category = _find_first_token(name_lc, DATA_CATEGORIES)
-	subset = _find_first_token(name_lc, SUBSETS)
-
-	# analysis_type: additive vs interactive
-	analysis_type = None
-	if "additive" in name_lc:
-		analysis_type = "additive"
-	elif "interactive" in name_lc or "qtlx" in name_lc:
-		analysis_type = "interactive"
-
-	# interaction_axis: diet, sex, sexbydiet
-	interaction_axis = None
-	if "qtlxsexbydiet" in name_lc or "sexbydiet" in name_lc:
-		interaction_axis = "sexbydiet"
-	elif "qtlxsex" in name_lc or "sex_interactive" in name_lc:
-		interaction_axis = "sex"
-	elif "qtlxdiet" in name_lc or "diet_interactive" in name_lc:
-		interaction_axis = "diet"
-
-	return {
-		"biospecimen": biospecimen,
-		"data_category": data_category,
-		"subset": subset,
-		"analysis_type": analysis_type,
-		"interaction_axis": interaction_axis,
-		"source_file": basename,
-		"source_path": path,
-	}
+    Example: ["a", "b"] -> ['a','b']
+    """
+    escaped = ["'" + v.replace("'", "''") + "'" for v in values]
+    return "[" + ",".join(escaped) + "]"
 
 
-def ensure_db_dir(db_path: str) -> None:
-	dirname = os.path.dirname(db_path)
-	if dirname and not os.path.exists(dirname):
-		os.makedirs(dirname, exist_ok=True)
+def discover_csv_files(pattern: str) -> List[str]:
+    """Discover CSV files using a glob pattern, returning a sorted absolute-path list."""
+    matched = glob.glob(pattern)
+    # Convert to absolute paths for stability and clarity
+    absolute_paths = [os.path.abspath(p) for p in matched]
+    # Sort deterministically for reproducibility
+    absolute_paths.sort()
+    return absolute_paths
 
 
-def quote_ident(name: str) -> str:
-	return '"' + name.replace('"', '""') + '"'
+def build_create_table_sql(
+    files: List[str],
+    table_name: str,
+    sample_size: int,
+    all_varchar: bool,
+    include_filename: bool,
+) -> str:
+    """Construct a CREATE OR REPLACE TABLE ... AS SELECT ... SQL statement.
+
+    Uses read_csv_auto with union_by_name=True and additional ingestion options.
+    """
+    if not files:
+        raise ValueError("No input files provided to build_create_table_sql().")
+
+    if not include_filename:
+        raise ValueError(
+            "INCLUDE_FILENAME_COLUMN must be True to compute Split-by Scan from filenames."
+        )
+
+    files_list_sql = _to_sql_string_list(files)
+
+    # Parameters for read_csv_auto
+    params = [
+        f"union_by_name=true",
+        f"sample_size={sample_size}",
+        f"all_varchar={'true' if all_varchar else 'false'}",
+        f"filename={'true' if include_filename else 'false'}",
+    ]
+    params_sql = ", ".join(params)
+
+    # Build conditions for scan-type detection
+    # QTL by Covar: lod_diff present and non-null
+    qtl_by_covar_cond = "lod_diff IS NOT NULL"
+
+    # Split-by: filename indicates split-by sex or diet, e.g., ..._peaks_in_{female|male|HC|HF}_mice_...
+    split_by_cond = "lower(filename) LIKE '%_peaks_in_%_mice_%'"
+
+    # Compute Source = basename(filename)
+    source_expr = "regexp_extract(filename, '([^/\\\\]+)$', 1)"
+
+    # Compose the full SQL using CTEs so we can add computed columns and control order
+    table_ident = _quote_sql_identifier(table_name)
+    sql = (
+        f"CREATE OR REPLACE TABLE {table_ident} AS\n"
+        f"WITH base AS (\n"
+        f"  SELECT * FROM read_csv_auto({files_list_sql}, {params_sql})\n"
+        f"),\n"
+        f"shaped AS (\n"
+        f"  SELECT\n"
+        f"    {source_expr} AS \"Source\",\n"
+        f"    base.* EXCLUDE (\"Which_mice\")\n"
+        f"  FROM base\n"
+        f")\n"
+        f"SELECT\n"
+        f"  shaped.*,\n"
+        f"  CASE WHEN {qtl_by_covar_cond} THEN TRUE ELSE FALSE END AS \"QTL by Covar Scan\",\n"
+        f"  CASE WHEN (NOT ({qtl_by_covar_cond})) AND ({split_by_cond}) THEN TRUE ELSE FALSE END AS \"Split-by Scan\",\n"
+        f"  CASE WHEN (NOT ({qtl_by_covar_cond}) AND NOT ({split_by_cond})) THEN TRUE ELSE FALSE END AS \"Full Scan\"\n"
+        f"FROM shaped;"
+    )
+    return sql
 
 
-def sql_str(value: str) -> str:
-	if value is None:
-		return "NULL"
-	return "'" + value.replace("'", "''") + "'"
+def main() -> None:
+    print("[INFO] Discovering input CSV files ...")
+    csv_files = discover_csv_files(INPUT_FILE_GLOB)
 
+    if not csv_files:
+        print(f"[ERROR] No files matched the pattern: {INPUT_FILE_GLOB}")
+        sys.exit(1)
 
-def get_existing_columns(con: duckdb.DuckDBPyConnection, table: str) -> List[str]:
-	rows = con.execute(f"PRAGMA table_info({quote_ident(table)});").fetchall()
-	# rows: [cid, name, type, notnull, dflt_value, pk]
-	return [r[1] for r in rows]
+    print(f"[INFO] Found {len(csv_files)} files.")
+    for path in csv_files:
+        print(f"  - {path}")
 
+    db_path_abs = os.path.abspath(DUCKDB_FILE_PATH)
+    print(f"[INFO] Connecting to DuckDB database: {db_path_abs}")
 
-def create_table_if_needed(con: duckdb.DuckDBPyConnection, table: str) -> None:
-	con.execute(
-		f"""
-		CREATE TABLE IF NOT EXISTS {quote_ident(table)} (
-			biospecimen VARCHAR,
-			data_category VARCHAR,
-			subset VARCHAR,
-			analysis_type VARCHAR,
-			interaction_axis VARCHAR,
-			source_file VARCHAR,
-			source_path VARCHAR
-		);
-		"""
-	)
+    # Ensure containing directory exists
+    os.makedirs(os.path.dirname(db_path_abs) or ".", exist_ok=True)
 
+    con = duckdb.connect(db_path_abs)
 
-def ensure_metadata_columns(con: duckdb.DuckDBPyConnection, table: str) -> None:
-	required = [
-		"biospecimen",
-		"data_category",
-		"subset",
-		"analysis_type",
-		"interaction_axis",
-		"source_file",
-		"source_path",
-	]
-	existing = get_existing_columns(con, table)
-	missing = [c for c in required if c not in existing]
-	if missing:
-		add_missing_columns(con, table, missing)
+    try:
+        print(f"[INFO] Creating or replacing table '{TARGET_TABLE_NAME}' via read_csv_auto(union_by_name=true) ...")
+        create_sql = build_create_table_sql(
+            files=csv_files,
+            table_name=TARGET_TABLE_NAME,
+            sample_size=SAMPLE_SIZE,
+            all_varchar=ALL_VARCHAR,
+            include_filename=INCLUDE_FILENAME_COLUMN,
+        )
+        con.execute(create_sql)
+        print("[INFO] Table creation completed.")
 
+        # Verification 1: Print schema
+        print(f"\n[VERIFY] Schema for table '{TARGET_TABLE_NAME}':")
+        describe_result = con.execute(f"DESCRIBE {_quote_sql_identifier(TARGET_TABLE_NAME)}").fetchall()
+        # Pretty-print schema rows: column_name, type, null, key, default, extra
+        # DuckDB returns: column_name, column_type, null, key, default, extra
+        for row in describe_result:
+            # Use a concise, readable format
+            col_name, col_type = row[0], row[1]
+            print(f"  - {col_name}: {col_type}")
 
-def add_missing_columns(con: duckdb.DuckDBPyConnection, table: str, missing: List[str]) -> None:
-	for col in missing:
-		# Skip excluded columns entirely
-		if col.lower() in EXCLUDED_COLUMNS_LOWER:
-			continue
-		con.execute(f"ALTER TABLE {quote_ident(table)} ADD COLUMN {quote_ident(col)} VARCHAR;")
+        # Verification 2: Print total row count
+        count_result = con.execute(f"SELECT COUNT(*) FROM {_quote_sql_identifier(TARGET_TABLE_NAME)}").fetchone()
+        total_rows = count_result[0] if count_result else 0
+        print(f"\n[VERIFY] Total rows in '{TARGET_TABLE_NAME}': {total_rows}")
 
-
-def read_csv_columns_sample(con: duckdb.DuckDBPyConnection, csv_path: str) -> List[str]:
-	# Read a tiny sample to get columns reliably without loading the entire file
-	query = (
-		"SELECT * FROM read_csv_auto(?, header=true, all_varchar=true, filename=true) LIMIT 0"
-	)
-	res = con.execute(query, [csv_path])
-	return [d[0] for d in res.description]
-
-
-def build_insert_sql(table: str, csv_path: str, file_columns: List[str], target_columns: List[str], metadata: Dict[str, str]) -> Tuple[str, List[str]]:
-	# Exclude auto filename column from data projection
-	data_cols = [c for c in file_columns if c.lower() != "filename"]
-	# Exclude any unwanted columns
-	data_cols = [c for c in data_cols if c.lower() not in EXCLUDED_COLUMNS_LOWER]
-	# Determine overlap between file columns and target table columns
-	target_set = {c.lower() for c in target_columns}
-	present_cols = [c for c in data_cols if c.lower() in target_set and c.lower() not in EXCLUDED_COLUMNS_LOWER]
-
-	# Build target column list: metadata first, then present file columns
-	insert_cols = [
-		"biospecimen",
-		"data_category",
-		"subset",
-		"analysis_type",
-		"interaction_axis",
-		"source_file",
-		"source_path",
-	] + present_cols
-
-	# Build SELECT list with metadata literals and then file columns
-	select_exprs = [
-		f"{sql_str(metadata['biospecimen'])} AS biospecimen",
-		f"{sql_str(metadata['data_category'])} AS data_category",
-		f"{sql_str(metadata['subset'])} AS subset",
-		f"{sql_str(metadata['analysis_type'])} AS analysis_type",
-		f"{sql_str(metadata['interaction_axis'])} AS interaction_axis",
-		f"COALESCE(NULLIF(regexp_extract(filename, '.*/([^/]+)$', 1), ''), filename) AS source_file",
-		f"filename AS source_path",
-	]
-	select_exprs.extend([quote_ident(c) for c in present_cols])
-
-	sql = f"""
-	INSERT INTO {quote_ident(table)} ({', '.join(quote_ident(c) for c in insert_cols)})
-	SELECT {', '.join(select_exprs)}
-	FROM read_csv_auto({sql_str(csv_path)}, header=true, all_varchar=true, filename=true);
-	"""
-	return sql, present_cols
-
-
-def ingest_files(db_path: str, table: str, globs: List[str], dry_run_limit: int = 0) -> None:
-	ensure_db_dir(db_path)
-	con = duckdb.connect(db_path)
-	con.execute("PRAGMA threads=4;")
-	create_table_if_needed(con, table)
-	ensure_metadata_columns(con, table)
-
-	# Expand globs to a unique, sorted list of files
-	files: List[str] = []
-	for g in globs:
-		files.extend(glob.glob(g))
-	files = sorted(f for f in set(files) if os.path.isfile(f))
-	if not files:
-		raise SystemExit(f"No files matched: {globs}")
-
-	for idx, path in enumerate(files, start=1):
-		meta = parse_metadata_from_path(path)
-		# Sample columns from this file
-		file_cols = read_csv_columns_sample(con, path)
-		# Remove the auto 'filename' column from consideration when diffing schema
-		file_cols_wo_filename = [c for c in file_cols if c.lower() != "filename"]
-		# Remove excluded columns from consideration when diffing schema
-		file_cols_wo_filename = [c for c in file_cols_wo_filename if c.lower() not in EXCLUDED_COLUMNS_LOWER]
-
-		existing_cols = get_existing_columns(con, table)
-		existing_set_lower: Set[str] = {c.lower() for c in existing_cols}
-
-		# Add any new columns found in the file that are not yet in the target table
-		missing_cols = [c for c in file_cols_wo_filename if c.lower() not in existing_set_lower]
-		if missing_cols:
-			add_missing_columns(con, table, missing_cols)
-			existing_cols = get_existing_columns(con, table)
-
-		# Perform the insert
-		sql, present_cols = build_insert_sql(table, path, file_cols, existing_cols, meta)
-		if dry_run_limit > 0:
-			# Append LIMIT directly to the SELECT
-			limited_sql = sql.rstrip(";\n \t") + f" LIMIT {int(dry_run_limit)};"
-			con.execute(limited_sql)
-		else:
-			con.execute(sql)
-
-		print(f"[{idx}/{len(files)}] Ingested: {os.path.basename(path)} | added_cols={len(missing_cols)} present_cols={len(present_cols)}")
-
-	con.close()
-
-
-def build_default_globs(data_dir: str) -> List[str]:
-	# Broaden to include files like '*_peaks.csv' and '*_peaks_in_*_additive.csv'
-	return [
-		os.path.join(data_dir, "*peaks*.csv"),
-	]
-
-
-def main(argv: List[str]) -> None:
-	parser = argparse.ArgumentParser(description="Build a unified DuckDB for RAG from CSV peaks files with filename-derived metadata.")
-	parser.add_argument("--db", dest="db_path", default=os.path.join(os.getcwd(), "data", "qtl.duckdb"), help="Path to DuckDB database file to create/update.")
-	parser.add_argument("--dir", dest="data_dir", default="/data/dev/miniViewer_3.0", help="Directory containing CSV files.")
-	parser.add_argument("--glob", dest="globs", action="append", default=None, help="Glob pattern(s) of files to ingest. Can be passed multiple times. Defaults to '*peaks*.csv' under --dir.")
-	parser.add_argument("--table", dest="table", default="qtl_data", help="Target table name.")
-	parser.add_argument("--dry-run", dest="dry_run", type=int, default=0, help="If > 0, ingest only this many rows per file for a quick sanity check.")
-	args = parser.parse_args(argv)
-
-	globs = args.globs if args.globs else build_default_globs(args.data_dir)
-
-	print(f"DB: {args.db_path}")
-	print(f"Table: {args.table}")
-	print(f"Globs: {globs}")
-	print(f"Dry-run rows per file: {args.dry_run}")
-
-	ingest_files(args.db_path, args.table, globs, dry_run_limit=args.dry_run)
-	print("Done.")
+    finally:
+        con.close()
+        print("[INFO] Connection closed.")
 
 
 if __name__ == "__main__":
-	main(sys.argv[1:])
+    main() 

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Iterable, Tuple
+from typing import Any, Optional, Iterable, Tuple, List, Dict
+
+import re
 
 
 def is_empty_value(value: Any) -> bool:
@@ -48,29 +50,36 @@ def build_gene_or_phenotype_case_expr(source_col: str, gene_col: Optional[str], 
     for each row: gene symbol for gene-level sources, else phenotype. If the
     preferred value is empty, falls back to the other.
 
-    The emptiness checks here only handle NULL and empty string. If you need to
-    treat 'NA'/'nan' strings as empty at SQL-level, do a surrounding NULLIF/replace.
+    The emptiness checks here handle NULL, empty string, and common NA markers
+    ('NA', 'N/A', 'nan' case-insensitively).
     """
     # Quote identifiers
     src = f'"{source_col}"'
     gene = f'"{gene_col}"' if gene_col else 'NULL'
     phen = f'"{phenotype_col}"' if phenotype_col else 'NULL'
 
+    # Create cleaned versions that coerce NA-like and empty values to NULL
+    gene_clean = (
+        f"CASE WHEN {gene} IS NULL OR {gene} = '' OR lower({gene}) IN ('na','n/a','nan') THEN NULL ELSE {gene} END"
+    )
+    phen_clean = (
+        f"CASE WHEN {phen} IS NULL OR {phen} = '' OR lower({phen}) IN ('na','n/a','nan') THEN NULL ELSE {phen} END"
+    )
+
     # Gene-level detection using filename: contains 'genes' and not 'isoform'
     cond_gene = f"(lower({src}) LIKE '%genes%' AND lower({src}) NOT LIKE '%isoform%')"
 
-    # Prefer gene on gene rows, else phenotype; fall back if empty
-    # DuckDB handles empty string checks with = '' and NULL checks with IS NULL
+    # Prefer gene on gene rows, else phenotype; fall back if empty (after cleaning)
     expr = (
         "CASE\n"
         f"  WHEN {cond_gene} THEN CASE\n"
-        f"    WHEN {gene} IS NOT NULL AND {gene} <> '' THEN {gene}\n"
-        f"    WHEN {phen} IS NOT NULL AND {phen} <> '' THEN {phen}\n"
+        f"    WHEN {gene_clean} IS NOT NULL THEN {gene_clean}\n"
+        f"    WHEN {phen_clean} IS NOT NULL THEN {phen_clean}\n"
         f"    ELSE NULL\n"
         f"  END\n"
         f"  ELSE CASE\n"
-        f"    WHEN {phen} IS NOT NULL AND {phen} <> '' THEN {phen}\n"
-        f"    WHEN {gene} IS NOT NULL AND {gene} <> '' THEN {gene}\n"
+        f"    WHEN {phen_clean} IS NOT NULL THEN {phen_clean}\n"
+        f"    WHEN {gene_clean} IS NOT NULL THEN {gene_clean}\n"
         f"    ELSE NULL\n"
         f"  END\n"
         f"END"
@@ -126,4 +135,57 @@ def pick_lod_source_from_row(row: dict[str, Any], prefer_order: Iterable[str] = 
             return col
         except Exception:
             continue
-    return None 
+    return None
+
+
+# ---------------- Position/Chromosome helpers ----------------
+
+
+def build_position_mb_expr(lower_to_orig: Dict[str, str], original_names: List[str]) -> Optional[str]:
+    """
+    Return a SQL expression that yields position in megabases.
+    - If 'qtl_pos' exists, cast it to DOUBLE.
+    - Else coalesce across MB/BP/generic position-like columns, converting BP to MB.
+    """
+    if "qtl_pos" in lower_to_orig:
+        return f'TRY_CAST("{lower_to_orig["qtl_pos"]}" AS DOUBLE)'
+
+    pos_mb_terms: List[str] = []
+    pos_bp_terms: List[str] = []
+    pos_generic_terms: List[str] = []
+
+    for name in original_names:
+        ln = name.lower()
+        if "lod" in ln:
+            continue
+        if "mb" in ln:
+            pos_mb_terms.append(name)
+        elif re.search(r"\bbp\b", ln) or ln.endswith("_bp") or "(bp)" in ln:
+            pos_bp_terms.append(name)
+        elif ("position" in ln) or re.search(r"\bpos\b", ln) or ln.endswith("_pos") or ln.endswith("_position"):
+            pos_generic_terms.append(name)
+
+    parts: List[str] = []
+    for col in pos_mb_terms:
+        parts.append(f'TRY_CAST("{col}" AS DOUBLE)')
+    for col in pos_bp_terms:
+        parts.append(f'(TRY_CAST("{col}" AS DOUBLE) / 1000000.0)')
+    for col in pos_generic_terms:
+        parts.append(f'TRY_CAST("{col}" AS DOUBLE)')
+
+    if not parts:
+        return None
+    return f"COALESCE({', '.join(parts)})"
+
+
+def build_normalized_chromosome_expr(chrom_col: str) -> str:
+    """
+    Normalize a chromosome column to lowercase and strip a leading 'chr'.
+    """
+    chrom_txt_expr = f'lower(CAST("{chrom_col}" AS VARCHAR))'
+    return f"regexp_replace({chrom_txt_expr}, '^chr', '')"
+
+
+def sanitize_sql_literal(value: str) -> str:
+    """Escape single quotes for safe SQL literal insertion."""
+    return (value or "").replace("'", "''") 

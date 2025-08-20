@@ -27,9 +27,14 @@ except ImportError:  # fallback when running inside rag/ directly
 
 # Import DuckDB display helpers
 try:
-    from rag.duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr
+    from rag.duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr, build_gene_or_phenotype_case_expr, build_position_mb_expr, build_normalized_chromosome_expr, sanitize_sql_literal
 except ImportError:  # fallback for running inside rag/
-    from duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr
+    from duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr, build_gene_or_phenotype_case_expr, build_position_mb_expr, build_normalized_chromosome_expr, sanitize_sql_literal
+
+try:
+    from rag.duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_liver_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
+except ImportError:
+    from duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_liver_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
 
 
 
@@ -628,245 +633,9 @@ def get_protein_interactions(gene_symbol: str) -> str:
     return f"{summary_title}\n\n{output_293t}\n\n{output_hct116}"
 
 
-def get_top_lod_peaks(limit: int = 10) -> str:
-    """
-    Returns the top rows by LOD-like value from the unified DuckDB table, including
-    the source and either a gene symbol (for gene-level results) or a phenotype
-    for other result types (clinical traits, liver lipids, isoforms, etc.).
+# moved to rag/duckdbtools.py
 
-    Selection rules per row:
-    - If the Source indicates a gene-level file (contains 'genes' but not 'isoform'),
-      display the gene symbol
-    - Otherwise, display the phenotype
-
-    Notes:
-    - Coalesces among columns if present: lod_diff, qtl_lod, lod
-    - Gene symbol column is chosen from common candidates (gene_symbol, gene, symbol, gene_name)
-    - Phenotype column is chosen from common candidates (phenotype, trait, trait_name, trait_description)
-    - Database path can be overridden via env var QTL_DUCKDB_PATH or QTL_DUCKDB_FILE
-    - Table name can be overridden via env var QTL_DUCKDB_TABLE (default: qtl_peaks)
-    """
-    try:
-        import duckdb  # imported lazily
-    except Exception:
-        return "Error: duckdb is not installed. Install with 'pip install duckdb'."
-
-    db_path = (
-        os.getenv("QTL_DUCKDB_PATH")
-        or os.getenv("QTL_DUCKDB_FILE")
-        or str(Path(__file__).resolve().parent.parent / "data" / "qtl_database.duckdb")
-    )
-    table_name = os.getenv("QTL_DUCKDB_TABLE", "qtl_peaks")
-
-    if not os.path.exists(db_path):
-        return f"Error: DuckDB database not found at {db_path}"
-
-    try:
-        con = duckdb.connect(db_path, read_only=True)
-    except Exception as e:
-        return f"Error: Could not open DuckDB database at {db_path}. Details: {e}"
-
-    try:
-        # Inspect columns and build a case-insensitive lookup
-        try:
-            schema_rows = con.execute(f"PRAGMA table_info('{table_name}')").fetchall()
-        except Exception as e:
-            return f"Error: Could not inspect table '{table_name}'. Details: {e}"
-        if not schema_rows:
-            return f"Error: Table '{table_name}' not found in database {db_path}"
-
-        # DuckDB PRAGMA table_info returns rows: (cid, name, type, notnull, dflt_value, pk)
-        name_by_lower = {str(r[1]).lower(): str(r[1]) for r in schema_rows}
-
-        def find_first(candidates: list[str]) -> str | None:
-            for cand in candidates:
-                if cand.lower() in name_by_lower:
-                    return name_by_lower[cand.lower()]
-            return None
-
-        # Determine LOD-like columns present
-        available_cols = list(name_by_lower.keys())
-        lod_expr, lod_source_expr = build_lod_value_and_source_expr(available_columns=available_cols)
-        if not lod_expr:
-            return "Error: No LOD-like columns found (expected one of: lod_diff, qtl_lod, lod)."
-
-        # Gene symbol selection (best-effort)
-        gene_candidates = [
-            "gene_symbol", "GeneSymbol", "gene", "Gene", "symbol", "Symbol",
-            "gene_name", "Gene_Name", "GeneName",
-        ]
-        gene_col = find_first(gene_candidates)
-        gene_expr = f'"{gene_col}"' if gene_col else "NULL"
-
-        # Phenotype selection (best-effort)
-        phenotype_candidates = [
-            "phenotype", "Phenotype", "trait", "Trait", "trait_name", "trait_label", "trait_description",
-        ]
-        phenotype_col = find_first(phenotype_candidates)
-        phenotype_expr = f'"{phenotype_col}"' if phenotype_col else "NULL"
-
-        # Source column (created by the builder)
-        source_col = find_first(["Source", "source", "filename", "file"]) or "Source"
-        source_expr = f'"{source_col}"'
-
-        sql = (
-            f"SELECT {source_expr} AS source, {gene_expr} AS gene_symbol, {phenotype_expr} AS phenotype, "
-            f"{lod_expr} AS lod_value, {lod_source_expr} AS lod_source "
-            f"FROM \"{table_name}\" "
-            f"WHERE {lod_expr} IS NOT NULL "
-            f"ORDER BY lod_value DESC "
-            f"LIMIT {int(limit)}"
-        )
-
-        rows = con.execute(sql).fetchall() or []
-        if not rows:
-            return "No rows with non-null LOD-like values were found."
-
-        # Format output
-        header = (
-            f"**Top {min(len(rows), int(limit))} LOD-like Peaks**\n\n"
-            f"Data source: {db_path} — table: {table_name}"
-        )
-        lines: list[str] = []
-
-        for idx, (source, gene_symbol, phenotype, lod_value, lod_source) in enumerate(rows, start=1):
-            try:
-                lod_num = float(lod_value) if lod_value is not None else float('nan')
-            except Exception:
-                lod_num = float('nan')
-
-            src_txt = str(source) if source not in (None, "") else "Unknown source"
-            chosen = pick_gene_or_phenotype(src_txt, gene_symbol, phenotype) or "Unknown"
-            lod_from = lod_source or "unknown"
-
-            lines.append(f"{idx}. LOD {lod_num:.3f} ({lod_from}) — {chosen} — Source: {src_txt}")
-
-        return header + "\n" + "\n".join(lines)
-
-    finally:
-        try:
-            con.close()
-        except Exception:
-            pass
-
-
-def search_qtl_peaks(query: str, limit: int = 200) -> str:
-    """
-    Search the DuckDB `qtl_peaks` table for a given term and return matching peaks
-    from all files with source and LOD.
-
-    Rules:
-    - If the query looks like a gene, search ONLY the `gene_symbol` column.
-    - Otherwise, search ONLY the `phenotype` column.
-    - Results ordered by best available LOD-like value (lod_diff, qtl_lod, lod).
-
-    Environment overrides:
-    - QTL_DUCKDB_PATH or QTL_DUCKDB_FILE: DuckDB path (default data/qtl_database.duckdb)
-    - QTL_DUCKDB_TABLE: table name (default qtl_peaks)
-    """
-    if not (query or "").strip():
-        return "Error: query cannot be empty."
-
-    try:
-        import duckdb
-    except Exception:
-        return "Error: duckdb is not installed. Install with 'pip install duckdb'."
-
-    db_path = (
-        os.getenv("QTL_DUCKDB_PATH")
-        or os.getenv("QTL_DUCKDB_FILE")
-        or str(Path(__file__).resolve().parent.parent / "data" / "qtl_database.duckdb")
-    )
-    table_name = os.getenv("QTL_DUCKDB_TABLE", "qtl_peaks")
-
-    if not os.path.exists(db_path):
-        return f"Error: DuckDB database not found at {db_path}"
-
-    try:
-        con = duckdb.connect(db_path, read_only=True)
-    except Exception as e:
-        return f"Error: Could not open DuckDB database at {db_path}. Details: {e}"
-
-    try:
-        # Verify required columns exist
-        try:
-            schema_rows = con.execute(f"PRAGMA table_info('{table_name}')").fetchall()
-        except Exception as e:
-            return f"Error: Could not inspect table '{table_name}'. Details: {e}"
-        if not schema_rows:
-            return f"Error: Table '{table_name}' not found in database {db_path}"
-
-        present_cols = {str(r[1]) for r in schema_rows}
-        required = {"Source", "gene_symbol", "phenotype"}
-        missing = [c for c in required if c not in present_cols]
-        if missing:
-            return f"Error: Required columns missing in '{table_name}': {', '.join(missing)}"
-
-        # LOD-like expression using helpers
-        col_names_lower = {str(r[1]).lower(): str(r[1]) for r in schema_rows}
-        lod_expr, lod_source_expr = build_lod_value_and_source_expr(available_columns=list(col_names_lower.keys()))
-        if not lod_expr:
-            return "Error: No LOD-like columns found (expected one of: lod_diff, qtl_lod, lod)."
-
-        # Gene-like query detection
-        q = (query or "").strip()
-        # Simple heuristic: gene-like only if no underscores and no spaces
-        is_gene_like = ("_" not in q) and (" " not in q)
-
-        q_esc = q.lower().replace("'", "''")
-        if is_gene_like:
-            gene_filters = [
-                f"lower(CAST(\"gene_symbol\" AS VARCHAR)) LIKE '%{q_esc}%'",
-                "lower(\"Source\") LIKE '%genes%'",
-                "lower(\"Source\") NOT LIKE '%isoform%'",
-                "lower(\"Source\") NOT LIKE '%splice%'",
-                "lower(\"Source\") NOT LIKE '%junc%'",
-            ]
-            where_clause = " AND ".join(gene_filters)
-        else:
-            where_clause = f"lower(CAST(\"phenotype\" AS VARCHAR)) LIKE '%{q_esc}%'"
-
-        sql = (
-            f"SELECT \"Source\" AS source, \"gene_symbol\" AS gene_symbol, \"phenotype\" AS phenotype, "
-            f"{lod_expr} AS lod_value, {lod_source_expr} AS lod_source "
-            f"FROM \"{table_name}\" "
-            f"WHERE ({where_clause}) AND {lod_expr} IS NOT NULL "
-            f"ORDER BY lod_value DESC "
-            f"LIMIT {int(limit)}"
-        )
-
-        # DEBUG: print SQL to diagnose matching
-        try:
-            print("[DEBUG search_qtl_peaks SQL]", sql)
-        except Exception:
-            pass
-
-        rows = con.execute(sql).fetchall() or []
-        if not rows:
-            return f"No peaks found matching '{query}'."
-
-        header = (
-            f"**QTL Peaks matching: {q}**\n\n"
-            f"Data source: {db_path} — table: {table_name}"
-        )
-        lines: list[str] = []
-        for idx, (source, gene_symbol, phenotype, lod_value, lod_source) in enumerate(rows, start=1):
-            try:
-                lod_num = float(lod_value) if lod_value is not None else float('nan')
-            except Exception:
-                lod_num = float('nan')
-            src_txt = str(source) if source not in (None, "") else "Unknown source"
-            label = pick_gene_or_phenotype(src_txt, gene_symbol, phenotype) or "Unknown"
-            lod_from = lod_source or "unknown"
-            lines.append(f"{idx}. LOD {lod_num:.3f} ({lod_from}) — {label} — Source: {src_txt}")
-
-        return header + "\n" + "\n".join(lines)
-
-    finally:
-        try:
-            con.close()
-        except Exception:
-            pass
+# moved to rag/duckdbtools.py
 
 # Update your tool registry:
 tool_dict = {
@@ -879,10 +648,21 @@ tool_dict = {
     "get_top_tissue_expression": get_top_tissue_expression,
     "get_ensembl_info": get_ensembl_info,
     "get_protein_interactions" : get_protein_interactions,
-    "get_top_lod_peaks": get_top_lod_peaks,
-    "search_qtl_peaks": search_qtl_peaks,
+    "get_top_lod_peaks": qtl_get_top_lod_peaks,
+    "search_qtl_peaks": qtl_search_qtl_peaks,
+    "search_qtl_by_genomic_position": qtl_search_by_pos,
+    "find_traits_near_locus": qtl_find_traits_near_locus,
+    "search_clinical_traits_by_position": qtl_search_clinical,
+    "search_metabolites_by_position": qtl_search_metabolites,
+    "search_lipids_by_position": qtl_search_lipids,
+    "search_liver_genes_by_position": qtl_search_genes,
+    "search_liver_isoforms_by_position": qtl_search_isoforms,
+    "search_liver_splice_junctions_by_position": qtl_search_splice,
+    "get_genes_near_position": qtl_get_genes,
+    "get_isoforms_near_position": qtl_get_isoforms,
+    "get_splice_junctions_near_position": qtl_get_splice,
 }
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":
-	print(get_top_tissue_expression("Tdpoz2"))
+	print(qtl_search_by_pos(chromosome="5", position=142, unit="mb", window_kb=4000))

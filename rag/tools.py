@@ -5,7 +5,7 @@
 try:
     from rag.helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
 except ImportError:  # fallback when running inside rag/ directly
-    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_speci
+    from helpers import _impc_fetch_significant_phenotypes, _resolve_ortholog_pair, _fetch_gtex_expression_local, _ensembl_request, _ensembl_lookup_gene_id, _normalize_species, _infer_species_from_gene
 from pathlib import Path
 from typing import Dict, Any, List
 from functools import lru_cache
@@ -15,7 +15,7 @@ import pandas as pd
 import requests
 from datetime import datetime
 import re
-from gwas_integration import GWASCatalog
+# from gwas_integration import GWASCatalog
 try:
     # Import BioPlex helpers (they handle lazy imports internally)
     from rag.helpers import _bioplex_fetch_interactions, _bioplex_interactors_for_symbol
@@ -618,6 +618,25 @@ def get_protein_interactions(gene_symbol: str) -> str:
 
     return f"{summary_title}\n\n{output_293t}\n\n{output_hct116}"
 
+def gwas_gene_description(gene_name: str) -> str:
+    """
+    Get detailed information about a gene from the GWAS Catalog.
+    
+    Args:
+        gene_name: The gene symbol to query (e.g., "BRCA1", "APOE")
+    
+    Returns:
+        Formatted string with GWAS information about the gene
+    """
+    url = f"https://www.ebi.ac.uk/gwas/rest/api/v2/genes/{gene_name}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return data
+    except Exception as e:
+        return f"Error processing GWAS trait query: {str(e)}"
+
 
 # Update your tool registry:
 tool_dict = {
@@ -629,8 +648,10 @@ tool_dict = {
     "get_impc_gene_summary": get_impc_gene_summary,
     "get_top_tissue_expression": get_top_tissue_expression,
     "get_ensembl_info": get_ensembl_info,
-    "get_protein_interactions" : get_protein_interactions
+    "get_protein_interactions" : get_protein_interactions,
+    "gwas_gene_description": gwas_gene_description
 }
+
 
 # --------------------- Manual testing entrypoint ---------------------
 if __name__ == "__main__":

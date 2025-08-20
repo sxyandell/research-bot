@@ -1201,9 +1201,11 @@ You route bioinformatics QTL database queries to the best tool. Return ONLY: {{"
     - For "regulatory elements" or "binding sites" use `query_ensembl_api` with query_type='regulation'
     - Use `get_enhanced_gene_details` when users ask for "Ensembl data", "variants", or "comprehensive" gene information.
     - Use `get_cross_species_gene_info` when users mention "human orthologs", "cross-species", or "human-mouse comparison".
-6.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
-7.  If it is a broad biological concept queries use 'semantic_search'
-8.  Default to `semantic_search` if no tool fits.
+6.  **GWAS Integration:**
+    - For queries about specific genes and their GWAS data, use `gwas_gene_description(gene_name='GENE_SYMBOL')`
+7.  You must respond in JSON format: `{{"tool_name": "...", "arguments": {{...}} }}`.
+8.  If it is a broad biological concept queries use 'semantic_search'
+9.  Default to `semantic_search` if no tool fits.
 
 **Tools:** {tools_json_str}
 """

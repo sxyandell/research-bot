@@ -142,14 +142,14 @@ python rag/tools.py
 
 ---
 
-## Next Steps (to be refined together)
+## Next Steps
 
 - [ ] Unify tool output formatting with the plain-text response policy.
 - [ ] Re-enable and optimize Tabula Muris integration in `get_top_tissue_expression`.
-- [ ] Add vector store and embeddings pipeline for retrieval over QTL and literature.
-- [ ] Expose a FastAPI service (`rag/api.py`) with chat and tool endpoints.
+- [ ] Add vector store and embeddings pipeline for retrieval over QTL.
+- [ ] Refine a FastAPI service (`rag/api.py`) with chat and tool endpoints for stateless use.
 - [ ] Configuration via `.env` and CLI flags for `db.py`.
-- [ ] Automated tests and CI.
+- [ ] Develop refined frontend using NextJS.
 
 ---
 
@@ -157,10 +157,10 @@ python rag/tools.py
 
 ### Kalynn:
 
-- Architected new tool usage system with ollama and built out the new RAG system
-- Created human ortholog, human expression, impc, and tissue tools
-- Built a temporary ui to see the chatbot progress (server.py) with FastAPI and JS
-- Architected and built the duckdb data store
-- Set up Jira to monitor progress and stay on-track
+- Architected new tool usage system with ollama and built out the new RAG system.
+- Created human ortholog, human expression, impc, protein interaction, and tissue tools.
+- Built a temporary ui to see the chatbot progress (server.py) with FastAPI and JS.
+- Architected and built the duckdb data store.
+- Set up Jira to monitor progress and stay on-track.
 
 ### Sarah

@@ -637,6 +637,21 @@ def gwas_gene_description(gene_name: str) -> str:
     except Exception as e:
         return f"Error processing GWAS trait query: {str(e)}"
 
+def gwas_gene_associations(association_id: str) -> str:
+    """
+    Get all associations for a gene from the GWAS Catalog.
+    """
+
+    url = f"https://www.ebi.ac.uk/gwas/rest/api/v2/associations{association_id}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return data
+    except Exception as e:
+        return f"Error processing GWAS trait query: {str(e)}"
+
+
 
 # Update your tool registry:
 tool_dict = {
@@ -649,7 +664,8 @@ tool_dict = {
     "get_top_tissue_expression": get_top_tissue_expression,
     "get_ensembl_info": get_ensembl_info,
     "get_protein_interactions" : get_protein_interactions,
-    "gwas_gene_description": gwas_gene_description
+    "gwas_gene_description": gwas_gene_description,
+    "gwas_gene_associations": gwas_gene_associations
 }
 
 

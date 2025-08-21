@@ -25,11 +25,7 @@ try:
 except ImportError:  # fallback when running inside rag/ directly
     from helpers import _bioplex_fetch_interactions, _bioplex_interactors_for_symbol
 
-# Import DuckDB display helpers
-try:
-    from rag.duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr, build_gene_or_phenotype_case_expr, build_position_mb_expr, build_normalized_chromosome_expr, sanitize_sql_literal
-except ImportError:  # fallback for running inside rag/
-    from duckdbhelpers import pick_gene_or_phenotype, is_empty_value, build_lod_value_and_source_expr, build_gene_or_phenotype_case_expr, build_position_mb_expr, build_normalized_chromosome_expr, sanitize_sql_literal
+# DuckDB helper imports removed (no longer needed)
 
 try:
     from rag.duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_liver_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
@@ -648,8 +644,10 @@ tool_dict = {
     "get_top_tissue_expression": get_top_tissue_expression,
     "get_ensembl_info": get_ensembl_info,
     "get_protein_interactions" : get_protein_interactions,
+    # QTL search tools
     "get_top_lod_peaks": qtl_get_top_lod_peaks,
     "search_qtl_peaks": qtl_search_qtl_peaks,
+    "search": qtl_search_qtl_peaks,
     "search_qtl_by_genomic_position": qtl_search_by_pos,
     "find_traits_near_locus": qtl_find_traits_near_locus,
     "search_clinical_traits_by_position": qtl_search_clinical,

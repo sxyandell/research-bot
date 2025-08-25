@@ -28,20 +28,10 @@ except ImportError:  # fallback when running inside rag/ directly
 # DuckDB helper imports removed (no longer needed)
 
 try:
-    from rag.duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_liver_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
+    from rag.duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
 except ImportError:
-    from duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_liver_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
+    from duckdbtools import get_top_lod_peaks as qtl_get_top_lod_peaks, search_qtl_peaks as qtl_search_qtl_peaks, search_qtl_by_genomic_position as qtl_search_by_pos, find_traits_near_locus as qtl_find_traits_near_locus, search_clinical_traits_by_position as qtl_search_clinical, search_metabolites_by_position as qtl_search_metabolites, search_lipids_by_position as qtl_search_lipids, search_genes_by_position as qtl_search_genes, search_liver_isoforms_by_position as qtl_search_isoforms, search_liver_splice_junctions_by_position as qtl_search_splice, get_genes_near_position as qtl_get_genes, get_isoforms_near_position as qtl_get_isoforms, get_splice_junctions_near_position as qtl_get_splice
 
-
-
-
-def add_numbers(num1: int, num2: int):
-    """Adds two numbers together.
-    Args:
-        num1: The first number.
-        num2: The second number.
-    """
-    return num1 + num2
 
 
 def convert_mouse_to_human_gene(gene_symbol: str):
@@ -635,7 +625,6 @@ def get_protein_interactions(gene_symbol: str) -> str:
 
 # Update your tool registry:
 tool_dict = {
-    "add_numbers": add_numbers,
     "convert_mouse_to_human_gene": convert_mouse_to_human_gene,
     "convert_mouse_to_human_ortholog_info": convert_mouse_to_human_ortholog_info,
     "get_impc_knockout_status": get_impc_knockout_status,

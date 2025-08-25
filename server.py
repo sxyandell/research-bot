@@ -12,6 +12,13 @@ from starlette.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
 
+# Load environment variables from .env.local if present
+try:
+	from dotenv import load_dotenv
+	load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env.local"))
+except Exception:
+	pass
+
 from rag.chatbot import Chatbot
 from rag.tools import tool_dict
 
@@ -49,7 +56,7 @@ class ChatRequest(BaseModel):
 
 
 # Singleton chatbot to keep conversation context
-MODEL_NAME = os.getenv("CHAT_MODEL", "qwen3:8b")
+MODEL_NAME = os.getenv("CHAT_MODEL", "gpt-5")
 chatbot = Chatbot(MODEL_NAME, tool_dict)
 
 
